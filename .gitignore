@@ -10,6 +10,10 @@
 # http://github.com/RailsApps/rails-composer/issues
 #----------------------------------------------------------------------------
 
+# RVM configure file
+.ruby-version
+.ruby-gemset
+
 # bundler state
 /.bundle
 /vendor/bundle/

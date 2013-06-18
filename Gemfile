@@ -32,3 +32,5 @@ gem "better_errors", ">= 0.7.2", :group => :development
 gem "binding_of_caller", ">= 0.7.1", :group => :development, :platforms => [:mri_19, :rbx]
 
 gem "pry-rails", "~> 0.3.1", :group => :development
+gem "capistrano", "~> 2.15.4", :group => :development
+gem "rvm-capistrano", "~> 1.3.1", :group => :development
