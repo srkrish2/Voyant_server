@@ -34,3 +34,4 @@ gem "binding_of_caller", ">= 0.7.1", :group => :development, :platforms => [:mri
 gem "pry-rails", "~> 0.3.1", :group => :development
 gem "capistrano", "~> 2.15.4", :group => :development
 gem "rvm-capistrano", "~> 1.3.1", :group => :development
+gem "guard-migrate", "~> 0.1.7", :group => :development
