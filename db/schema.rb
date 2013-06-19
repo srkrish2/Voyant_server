@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130619214136) do
+ActiveRecord::Schema.define(:version => 20130619214800) do
 
   create_table "audience_configurations", :force => true do |t|
     t.integer  "design_id",         :null => false
@@ -71,6 +71,13 @@ ActiveRecord::Schema.define(:version => 20130619214136) do
     t.float    "turker_price", :default => 0.0
     t.datetime "created_at",                     :null => false
     t.datetime "updated_at",                     :null => false
+  end
+
+  create_table "first_notice_feedbacks", :force => true do |t|
+    t.integer  "design_id",           :null => false
+    t.integer  "element_feedback_id", :null => false
+    t.datetime "created_at",          :null => false
+    t.datetime "updated_at",          :null => false
   end
 
   create_table "goal_configurations", :force => true do |t|
