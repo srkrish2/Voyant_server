@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130619204313) do
+ActiveRecord::Schema.define(:version => 20130619212108) do
 
   create_table "audience_configurations", :force => true do |t|
     t.integer  "design_id",         :null => false
@@ -62,6 +62,17 @@ ActiveRecord::Schema.define(:version => 20130619204313) do
     t.float    "turker_price", :default => 0.0
     t.datetime "created_at",                     :null => false
     t.datetime "updated_at",                     :null => false
+  end
+
+  create_table "impression_configurations", :force => true do |t|
+    t.integer  "design_id",                       :null => false
+    t.boolean  "is_required",   :default => true
+    t.integer  "turker_num1",   :default => 0
+    t.float    "turker_price1", :default => 0.0
+    t.integer  "turker_num2",   :default => 0
+    t.float    "turker_price2", :default => 0.0
+    t.datetime "created_at",                      :null => false
+    t.datetime "updated_at",                      :null => false
   end
 
   create_table "projects", :force => true do |t|
