@@ -7,9 +7,15 @@ describe User do
       :name => "Example User",
       :email => "user@example.com",
       :password => "changeme",
-      :password_confirmation => "changeme"
+      :password_confirmation => "changeme",
+      :design_experience => 0
     }
   end
+
+  describe "design_experience" do
+    it "should be in range [0,1,2]"
+  end
+
 
   it "should create a new instance given a valid attribute" do
     User.create!(@attr)
