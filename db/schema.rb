@@ -11,24 +11,33 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130619181304) do
+ActiveRecord::Schema.define(:version => 20130619191731) do
 
   create_table "boxareas", :force => true do |t|
-    t.integer  "turker_id"
-    t.integer  "feedback_id"
-    t.string   "feedback_type"
-    t.float    "top_left_x"
-    t.float    "top_left_y"
-    t.float    "bottom_right_x"
-    t.float    "bottom_right_y"
+    t.integer  "turker_id",      :null => false
+    t.integer  "feedback_id",    :null => false
+    t.string   "feedback_type",  :null => false
+    t.float    "top_left_x",     :null => false
+    t.float    "top_left_y",     :null => false
+    t.float    "bottom_right_x", :null => false
+    t.float    "bottom_right_y", :null => false
     t.text     "description"
     t.datetime "created_at",     :null => false
     t.datetime "updated_at",     :null => false
   end
 
+  create_table "designs", :force => true do |t|
+    t.integer  "project_id"
+    t.integer  "user_id",     :null => false
+    t.string   "name",        :null => false
+    t.text     "description"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
+
   create_table "projects", :force => true do |t|
-    t.integer  "user_id"
-    t.string   "name"
+    t.integer  "user_id",     :null => false
+    t.string   "name",        :null => false
     t.text     "description"
     t.datetime "created_at",  :null => false
     t.datetime "updated_at",  :null => false
@@ -46,9 +55,9 @@ ActiveRecord::Schema.define(:version => 20130619181304) do
   add_index "roles", ["name"], :name => "index_roles_on_name"
 
   create_table "turkers", :force => true do |t|
-    t.integer  "age"
+    t.integer  "age",                              :null => false
     t.integer  "gender",            :default => 0
-    t.string   "country"
+    t.string   "country",                          :null => false
     t.integer  "design_experience", :default => 0
     t.datetime "created_at",                       :null => false
     t.datetime "updated_at",                       :null => false
