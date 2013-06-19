@@ -11,7 +11,17 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130619191731) do
+ActiveRecord::Schema.define(:version => 20130619193251) do
+
+  create_table "audience_configurations", :force => true do |t|
+    t.integer  "design_id",         :null => false
+    t.string   "gender",            :null => false
+    t.string   "age",               :null => false
+    t.string   "country",           :null => false
+    t.string   "design_experience", :null => false
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
+  end
 
   create_table "boxareas", :force => true do |t|
     t.integer  "turker_id",      :null => false
