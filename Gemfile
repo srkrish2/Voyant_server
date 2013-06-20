@@ -38,3 +38,5 @@ gem "guard-rails", ">= 0.4.0", :group => :development
 gem "guard-rspec", ">= 2.5.2", :group => :development
 gem "growl", "~> 1.0.3", :group => :development
 gem "annotate", "~> 2.5.0", :group => :development
+
+gem "jquery-ui-rails", "~> 4.0.3"
