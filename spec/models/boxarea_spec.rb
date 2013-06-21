@@ -48,4 +48,16 @@ describe Boxarea do
       it "should be required"
     end
   end
+
+  describe "associations" do
+    it "should belong to some turker" do
+      box = Boxarea.new
+      expect{box.turker}.to_not raise_error
+    end
+
+    it "should belong to feedback" do
+      box = Boxarea.new
+      expect{box.feedback}.to_not raise_error
+    end
+  end
 end

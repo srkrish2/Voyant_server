@@ -16,5 +16,10 @@
 #
 
 class Boxarea < ActiveRecord::Base
-  # attr_accessible :title, :body
+  # Accessible
+  attr_accessible :top_left_x, :top_left_y, :bottom_right_x, :bottom_right_y, :description
+  # Associations
+  belongs_to :turker
+  belongs_to :feedback, :polymorphic => true
+  # Validations
 end

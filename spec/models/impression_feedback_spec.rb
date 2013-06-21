@@ -22,4 +22,11 @@ describe ImpressionFeedback do
       it "should be required"
     end
   end
+
+  describe "associations" do
+    it "should have many boxareas" do
+      impression_feedback = ImpressionFeedback.new
+      expect{impression_feedback.boxareas}.not_to raise_error
+    end
+  end
 end

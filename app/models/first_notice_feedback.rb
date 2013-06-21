@@ -10,5 +10,6 @@
 #
 
 class FirstNoticeFeedback < ActiveRecord::Base
-  # attr_accessible :title, :body
+  # Associations
+  has_many :boxareas, :as => :feedback
 end

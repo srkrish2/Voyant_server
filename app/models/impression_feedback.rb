@@ -11,5 +11,8 @@
 #
 
 class ImpressionFeedback < ActiveRecord::Base
-  # attr_accessible :title, :body
+  # Accessible
+  attr_accessible :name
+  # Association
+  has_many :boxareas, :as => :feedback
 end

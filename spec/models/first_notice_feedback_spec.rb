@@ -21,4 +21,11 @@ describe FirstNoticeFeedback do
       it "should be required"
     end
   end
+
+  describe "associations" do
+    it "should have many boxareas" do
+      first_notice_feedback = FirstNoticeFeedback.new
+      expect{first_notice_feedback.boxareas}.not_to raise_error
+    end
+  end
 end

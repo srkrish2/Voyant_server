@@ -12,5 +12,9 @@
 #
 
 class ElementFeedback < ActiveRecord::Base
-  # attr_accessible :title, :body
+  # Accessible
+  attr_accessible :name
+  # Validations
+  # Associations
+  has_many :boxareas, :as => :feedback
 end

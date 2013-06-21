@@ -12,5 +12,14 @@
 #
 
 class Turker < ActiveRecord::Base
-  # attr_accessible :title, :body
+  attr_accessible :age, :gender, :country, :design_experience
+
+  # Validations
+  validates :age, :presence => {:message => "Age is required"}
+  validates :age, :numericality => {:only_integer => true, :greater_than => 0, :message => "Age is invalid"}
+  validates :gender, :inclusion => {:in => 0..1, :message => "Gender is invalide"}
+  validates :country, :presence => {:message => "Country is required"}
+  validates :design_experience, :inclusion => {:in => 0..2, :message => "Design Experience is invalid"}
+  # Associations
+  has_many :boxareas
 end

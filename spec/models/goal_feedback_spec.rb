@@ -26,4 +26,11 @@ describe GoalFeedback do
       it "should be in range 1~7"
     end
   end
+
+  describe "associations" do
+    it "should have many boxareas" do
+      goal_feedback = GoalFeedback.new
+      expect{goal_feedback.boxareas}.not_to raise_error
+    end
+  end
 end

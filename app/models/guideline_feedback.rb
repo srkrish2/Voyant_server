@@ -11,5 +11,8 @@
 #
 
 class GuidelineFeedback < ActiveRecord::Base
-  # attr_accessible :title, :body
+  # Accessible
+  #attr_accessible :rating
+  # Associations
+  has_many :boxareas, :as => :feedback
 end

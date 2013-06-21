@@ -29,4 +29,12 @@ describe ElementFeedback do
       it "should be unique"
     end
   end
+
+  describe "association" do
+    it "should have many boxareas" do
+      element_feedback = ElementFeedback.new
+      expect{element_feedback.boxareas}.not_to raise_error
+    end
+
+  end
 end

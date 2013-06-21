@@ -26,4 +26,11 @@ describe GuidelineFeedback do
       it "should be in range 1~7"
     end
   end
+
+  describe "associations" do
+    it "should have many boxareas" do
+      guideline_feedback = GuidelineFeedback.new
+      expect{guideline_feedback.boxareas}.not_to raise_error
+    end
+  end
 end
