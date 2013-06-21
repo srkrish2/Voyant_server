@@ -16,5 +16,5 @@ class ElementFeedback < ActiveRecord::Base
   attr_accessible :name
   # Validations
   # Associations
-  has_many :boxareas, :as => :feedback
+  has_many :boxareas, :as => :feedback, :dependent => :destroy
 end

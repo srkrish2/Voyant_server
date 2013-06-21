@@ -14,5 +14,5 @@ class GoalFeedback < ActiveRecord::Base
   # Accessible
   #attr_accessible :rating
   # Associations
-  has_many :boxareas, :as => :feedback
+  has_many :boxareas, :as => :feedback, :dependent => :destroy
 end
