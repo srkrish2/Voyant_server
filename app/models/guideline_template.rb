@@ -11,5 +11,8 @@
 #
 
 class GuidelineTemplate < ActiveRecord::Base
-  # attr_accessible :title, :body
+  # Accessible
+  attr_accessible :title, :description
+  # Associations
+  belongs_to :user
 end

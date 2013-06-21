@@ -11,5 +11,9 @@
 #
 
 class Project < ActiveRecord::Base
-  # attr_accessible :title, :body
+  # Accessible
+  attr_accessible :name, :description
+  # Associations
+  belongs_to :user
+  has_many :designs, :dependent => :nullify
 end

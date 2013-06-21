@@ -12,8 +12,10 @@
 #
 
 class Design < ActiveRecord::Base
-
-  attr_accessible :picture
-  
+  # Accessible
+  attr_accessible :picture, :name, :description
+  # Associations
   has_attached_file :picture, :styles => {:medium => "300x300", :thumb => "100x100"}, :default_url => "images/:style/missing.png"
+  belongs_to :user
+  belongs_to :project
 end
