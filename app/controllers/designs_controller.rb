@@ -25,6 +25,8 @@ class DesignsController < ApplicationController
   # GET /designs/new
   # GET /designs/new.xml
   def new
+    render
+    return
     @design = Design.new
 
     respond_to do |format|
