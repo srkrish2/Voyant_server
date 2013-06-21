@@ -14,5 +14,8 @@
 #
 
 class GuidelineConfiguration < ActiveRecord::Base
-  # attr_accessible :title, :body
+  # Accessible
+  attr_accessible :title, :description, :is_required, :turker_num, :turker_price
+  # Associations
+  belongs_to :design
 end

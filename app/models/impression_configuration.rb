@@ -14,5 +14,8 @@
 #
 
 class ImpressionConfiguration < ActiveRecord::Base
-  # attr_accessible :title, :body
+  # Accessible
+  attr_accessible :is_required, :turker_num1, :turker_price1, :turker_num2, :turker_price2
+  # Associations
+  belongs_to :design
 end

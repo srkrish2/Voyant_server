@@ -1,0 +1,14 @@
+%label Name
+%label#name
+
+%label Description
+%label#description
+
+%image#picture(src="")
+
+
+:javascript
+	data = #{@design.to_json};
+	
+	$("#name").html(data.name);
+	$("#description").html(data.description);

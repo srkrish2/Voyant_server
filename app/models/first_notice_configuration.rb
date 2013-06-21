@@ -12,5 +12,8 @@
 #
 
 class FirstNoticeConfiguration < ActiveRecord::Base
-  # attr_accessible :title, :body
+  # Accessible
+  attr_accessible :is_required, :turker_num, :turker_price
+  # Associations
+  belongs_to :design
 end

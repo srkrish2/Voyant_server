@@ -13,5 +13,8 @@
 #
 
 class AudienceConfiguration < ActiveRecord::Base
-  # attr_accessible :title, :body
+  # Accissible
+  attr_accessible :gender, :age, :country, :design_experience
+  # Associations
+  belongs_to :design
 end
