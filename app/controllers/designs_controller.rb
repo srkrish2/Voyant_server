@@ -39,15 +39,13 @@ class DesignsController < ApplicationController
   # POST /designs
   # POST /designs.xml
   def create
-    @design = Design.new
-    @design.name = params[:name]
-    @design.description = params[:description]
+    @design = Design.new(params[:design])
     @design.user_id = current_user.id
 
     respond_to do |format|
       if @design.save
         flash[:notice] = 'Design was successfully created.'
-        format.html { redirect_to(@design) }
+        format.html { redirect_to(edit_design_url(@design)) }
         format.json  { render :json => @design, :status => :created, :location => @design }
       else
         format.html { render :action => "new" }
