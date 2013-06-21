@@ -1,0 +1,17 @@
+%a.btn-primary.btn(href="#{new_design_path}") New Design
+
+%hr
+
+.container
+  .row
+    .span12
+      %ul.thumbnails
+        - @designs.each do |design|
+          %li.span2(style="background: #eef")
+            %a.thumbnail(href="#{design_path(design)}")
+              %image(src="#{design.picture.url(:thumb)}")
+            %h3= design.name
+            %p= design.description
+            %button.btn.btn-success Publish
+            %button.btn.btn-danger Delete
+
