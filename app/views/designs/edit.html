@@ -1,4 +1,6 @@
-<div class = "span4">
+<div class = "span12  row-fluid">
+
+<div class = "span2">
 	<image src=<%= "#{image_path("1.png")}" %>></image>
 </div>
 
@@ -6,7 +8,7 @@
 <div id="accordion" class="accordion span4">
 	<div class="accordion-group" >
 		<div class="accordion-heading">
-			<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#audienceTab">Audience</a>
+			<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#audienceTab"><span style="padding: 0 0 0 15px;">Audience</span></a>
 		</div>
 		<div id="audienceTab" class="accordion-body collapse">
 			<div class="accordion-inner">
@@ -19,7 +21,7 @@
 
 	<div class="accordion-group">
 		<div class="accordion-heading">
-			<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#elementsTab">Elements</a>
+			<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#elementsTab"><span style="padding: 0 0 0 15px;">Elements</span></a>
 		</div>
 		<div id="elementsTab" class="accordion-body collapse">
 			<div class="accordion-inner">
@@ -29,10 +31,12 @@
 	</div>
 
 	<div class="accordion-group">
-		<div class="accordion-heading">
-			<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#firstNoticeTab"> <span>
-				<input type="checkbox" id ="cb_notice"/>
-				First Notice </span></a>
+		<div class="accordion-heading  row-fluid">
+			<span class ="span1" style="padding: 5px 0 0 10px;"><input type="checkbox" id ="cb_notice"/> 
+			</span>
+			<a class="accordion-toggle span6" style="padding-left: 0px;" data-toggle="collapse" data-parent="#accordion" href="#firstNoticeTab"> 
+				<span class = "pull-left">First Notices</span> 
+			</a>
 		</div>
 		<div id="firstNoticeTab" class="accordion-body collapse">
 			<div class="accordion-inner">
@@ -46,10 +50,12 @@
 	</div>
 
 	<div class="accordion-group">
-		<div class="accordion-heading">
-			<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#impressionTab"> <span>
-				<input type="checkbox" id ="cb_imp"/>
-				Impressions </span></a>
+		<div class="accordion-heading  row-fluid">
+			<span class ="span1" style="padding: 5px 0 0 10px;"><input type="checkbox" id ="cb_imp"/> 
+			</span>
+			<a class="accordion-toggle span6" style="padding-left: 0px;" data-toggle="collapse" data-parent="#accordion" href="#impressionTab"> 
+				<span class = "pull-left">Impressions</span> 
+			</a>
 		</div>
 		<div id="impressionTab" class="accordion-body collapse">
 			<div class="accordion-inner">
@@ -63,10 +69,12 @@
 	</div>
 
 	<div class="accordion-group">
-		<div class="accordion-heading">
-			<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#goalTab"> <span>
-				<input type="checkbox" id ="cb_goal"/>
-				Goals </span></a>
+		<div class="accordion-heading  row-fluid">
+			<span class ="span1" style="padding: 5px 0 0 10px;"><input type="checkbox" id ="cb_goal"/> 
+			</span>
+			<a class="accordion-toggle span6" style="padding-left: 0px;" data-toggle="collapse" data-parent="#accordion" href="#goalTab"> 
+				<span class = "pull-left">Goals</span> 
+			</a>
 		</div>
 		<div id="goalTab" class="accordion-body collapse">
 			<div class="accordion-inner">
@@ -81,9 +89,11 @@
 
 	<div class="accordion-group">
 		<div class="accordion-heading row-fluid">
-			<span class ="span1" style="padding: 5px 0 0 10px;"><input type="checkbox" id ="cb_guide"class ="checkbox"/> </span>
+			<span class ="span1" style="padding: 5px 0 0 10px;"><input type="checkbox" id ="cb_guide"/> 
+			</span>
 			<a class="accordion-toggle span6" style="padding-left: 0px;" data-toggle="collapse" data-parent="#accordion" href="#guideTab"> 
-				<span class = "pull-left">Guidelines</span> </a>
+				<span class = "pull-left">Guidelines</span> 
+			</a>
 		</div>
 		<div id="guideTab" class="accordion-body collapse">
 			<div class="accordion-inner">
@@ -96,18 +106,21 @@
 	</div>
 
 </div>
-   <input type="submit" value="Submit" id = "submit-btn" >
+</div>
+<div class = "span6 offset2">
+<input type="submit" value="Submit" id = "submit-btn" >
+</div>
 <script>
 var fed_config = {is_requested:{audience:true, element:true, impression:true, first_notice:true, guideline: true, goal: true}, audience:{gender:[true,false],age:[true,true,true,true,true,true],country:[true,true,true,true,true]}, element:[{name:'object',is_requried:true},{name:'color',is_requried:true},{name:'activity',is_requried:true},{name:'shape',is_requried:true}], goal:[{is_requried:true,title:'goal1',description:'desb1'},{is_requried:true,title:'goal2',description:'desb2'}], guideline:[{is_requried:true,title:'guideline1',description:'desb1'},{is_requried:true,title:'guideline2',description:'desb2'}]};
 
 $(function() {
 		
-		$('#audi').append('<div ' + 'id = "gender"'+'><p style = "font-weight:bold">Gender:</p></div>');
+		$('#audi').append('<div class =  "row-fluid"' + 'id = "gender"'+'><p style = "font-weight:bold">Gender:</p></div>');
 		
 		addCheckbox("gender","female",fed_config.audience.gender[0]);
 		addCheckbox("gender","male",fed_config.audience.gender[1]);
 		
-		$('#audi').append('<div ' + 'id = "age"'+'><p style = "font-weight:bold">Age:</p></div>');
+		$('#audi').append('<div class =  "row-fluid"' + 'id = "age"'+'><p style = "font-weight:bold">Age:</p></div>');
 		addCheckbox("age","< 20",true);
 		addCheckbox("age","21-30",true);
 		addCheckbox("age","31-40",true);
@@ -115,14 +128,14 @@ $(function() {
 		addCheckbox("age","51-60",true);
 		addCheckbox("age",">60",true);
 		
-		$('#audi').append('<div ' + 'id = "country"'+'><p style = "font-weight:bold">Country:</p></div>');
+		$('#audi').append('<div class =  "row-fluid"' + 'id = "country"'+'><p style = "font-weight:bold">Country:</p></div>');
 		addCheckbox("country","USA",true);
 		addCheckbox("country","India",true);
 		addCheckbox("country","UK",true);
 		addCheckbox("country","Canada",true);
 		addCheckbox("country","other",true);
 		
-		$('#ele').append('<div ' + 'id = "eletype"'+'><p style = "font-weight:bold">Element Type:</p></div>');
+		$('#ele').append('<div class =  "row-fluid"' + 'id = "eletype"'+'><p style = "font-weight:bold">Element Type:</p></div>');
 
 		addCheckbox("eletype","object",true);
 		addCheckbox("eletype","color",true);
@@ -222,7 +235,7 @@ function addCheckbox(containerid,name,ischecked, cbid) {
 	   
 	   cbid = typeof cbid !== 'undefined' ? cbid : 'cb_'+containerid+'_'+inputs.length;
 	   
-	   var tmp = $('<label class = "checkbox"/>', { 'for': cbid}).appendTo(container);
+	   var tmp = $('<label class = "checkbox span3"/>', { 'for': cbid}).appendTo(container);
 	   $('<input />', { type: 'checkbox', id: cbid, value: name}).appendTo(tmp);
 	   $(tmp).append(document.createTextNode(name));
 	   $('#'+cbid).prop("checked", ischecked);
@@ -248,6 +261,12 @@ function addRowContent(arrcontent, mode, isEditable)
     		$('#'+'td_'+mode+'_content_'+i).addClass("editable");
     	}	
         addCheckbox('cbcontainer_'+mode+'_'+i,'',true, 'cb_'+mode+'_'+i); 
+        var labletmp = $('#'+'cb_'+mode+'_'+i).parent().get(0);
+        $(labletmp).removeClass("span3");
+        //$(labletmp).css("width","10px");
+        $(labletmp).css("padding-left","40px");
+        $(labletmp).css("padding-top","6px");
+
     }
     
 	
@@ -268,7 +287,11 @@ function addButton(mode)
 		$('#'+'td_'+mode+'_title_'+rowCount).addClass("editable");
 		$('#'+'td_'+mode+'_content_'+rowCount).addClass("editable");
         //addCheckbox('cbcontainer_'+mode+'_'+rowCount,''+mode+''+(rowCount+1), 'cb_'+mode+'_'+rowCount); 
-        addCheckbox('cbcontainer_'+mode+'_'+rowCount,'', 'cb_'+mode+'_'+rowCount);
+        addCheckbox('cbcontainer_'+mode+'_'+rowCount,'',true, 'cb_'+mode+'_'+rowCount);
+        var labletmp = $('#'+'cb_'+mode+'_'+rowCount).parent().get(0);
+        $(labletmp).removeClass("span3");
+        $(labletmp).css("padding-left","40px");
+        $(labletmp).css("padding-top","6px");
         
         setTxtEditable();
 
