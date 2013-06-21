@@ -12,20 +12,9 @@
 #  updated_at   :datetime         not null
 #
 
-require 'spec_helper'
-
-describe ElementConfigurations do
-  
-  describe "validate" do
-
-    describe "design" do
-      it "should be required"
-    end
-
-    describe "name" do
-      it "should be required"
-    end
-
-  end
-
+class ElementConfiguration < ActiveRecord::Base
+  # Accessible
+  attr_accessible :name, :is_required, :turker_num, :turker_price
+  # Associations
+  belongs_to :design
 end

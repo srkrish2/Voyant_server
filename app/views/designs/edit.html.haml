@@ -1,0 +1,263 @@
+.span4
+  %image(src="#{@design.picture.url(:thumb)}")
+#accordion.accordion.span4
+  .accordion-group
+    .accordion-heading
+      %a.accordion-toggle{"data-parent" => "#accordion", "data-toggle" => "collapse", :href => "#audienceTab"} Audience
+    #audienceTab.accordion-body.collapse
+      .accordion-inner
+        #audi.content
+          Anim pariatur cliche...
+  .accordion-group
+    .accordion-heading
+      %a.accordion-toggle{"data-parent" => "#accordion", "data-toggle" => "collapse", :href => "#elementsTab"} Elements
+    #elementsTab.accordion-body.collapse
+      .accordion-inner
+        #ele.content
+  .accordion-group
+    .accordion-heading
+      %a.accordion-toggle{"data-parent" => "#accordion", "data-toggle" => "collapse", :href => "#firstNoticeTab"}
+        %span
+          %input#cb_notice{:type => "checkbox"}/
+          First Notice
+    #firstNoticeTab.accordion-body.collapse
+      .accordion-inner
+        #notice.content
+          %p
+            Intro...
+  .accordion-group
+    .accordion-heading
+      %a.accordion-toggle{"data-parent" => "#accordion", "data-toggle" => "collapse", :href => "#impressionTab"}
+        %span
+          %input#cb_imp{:type => "checkbox"}/
+          Impressions
+    #impressionTab.accordion-body.collapse
+      .accordion-inner
+        #imp.content
+          %p
+            Intro...
+  .accordion-group
+    .accordion-heading
+      %a.accordion-toggle{"data-parent" => "#accordion", "data-toggle" => "collapse", :href => "#goalTab"}
+        %span
+          %input#cb_goal{:type => "checkbox"}/
+          Goals
+    #goalTab.accordion-body.collapse
+      .accordion-inner
+        #instru_goal.instru
+        %table#goal.content
+          %tbody
+        #goal_div.content
+  .accordion-group
+    .accordion-heading.row-fluid
+      %span.span1{:style => "padding: 5px 0 0 10px;"}
+        %input#cb_guide.checkbox{:type => "checkbox"}/
+      %a.accordion-toggle.span6{"data-parent" => "#accordion", "data-toggle" => "collapse", :href => "#guideTab", :style => "padding-left: 0px;"}
+        %span.pull-left Guidelines
+    #guideTab.accordion-body.collapse
+      .accordion-inner
+        %table#guide.content
+          %tbody
+        #guide_div.content
+%input#submit-btn{:type => "submit", :value => "Submit"}/
+:javascript
+  var fed_config = {is_required:{audience:true, element:true, impression:true, first_notice:true, guideline: true, goal: true}, audience:{gender:[true,false],age:[true,true,true,true,true,true],country:[true,true,true,true,true]}, element:[{name:'object',is_required:true},{name:'color',is_required:true},{name:'activity',is_required:true},{name:'shape',is_required:true}], goal:[{is_required:true,title:'goal1',description:'desb1'},{is_required:true,title:'goal2',description:'desb2'}], guideline:[{is_required:true,title:'guideline1',description:'desb1'},{is_required:true,title:'guideline2',description:'desb2'}]};
+  
+  $(function() {
+  		
+  		$('#audi').append('<div ' + 'id = "gender"'+'><p style = "font-weight:bold">Gender:</p></div>');
+  		
+      var genderNames = #{User::GenderNames};
+      for(var i = 0; i < genderNames.length; i++){
+        addCheckbox("gender",genderNames[i],fed_config.audience.gender[i]);
+      }
+  		
+  		$('#audi').append('<div ' + 'id = "age"'+'><p style = "font-weight:bold">Age:</p></div>');
+      var ageNames = #{User::AgeRanges.keys};
+      for(var i = 0; i < ageNames.length; i++){
+        addCheckbox("age",ageNames[i],true);
+      }
+  		
+  		$('#audi').append('<div ' + 'id = "country"'+'><p style = "font-weight:bold">Country:</p></div>');
+      var countryNames = #{User::CountryNames};
+      for(var i = 0; i < countryNames.length; i++){
+        addCheckbox("country",countryNames[i],true);
+      }
+  		
+  		$('#ele').append('<div ' + 'id = "eletype"'+'><p style = "font-weight:bold">Element Type:</p></div>');
+  
+  		addCheckbox("eletype","object",true);
+  		addCheckbox("eletype","color",true);
+  		addCheckbox("eletype","activity",true);
+  		addCheckbox("eletype","shape",true);
+  
+  		$('#ele').append('<input type="text" id="txtName" />');
+  		$('#ele').append('<input type="button" value="add" id="btnaddEle" />');
+  		$('#btnaddEle').click(function() {
+  	        addCheckbox("eletype", $('#txtName').val(), true);
+  	    });
+  
+  	
+      
+      var goalcontent = [{"title":"g1","content":"Click to edit1"},{"title":"g2","content":"Click to edit1"}];
+      var guidecontent = [{"title":"guide1","content":"guide1 content"},{"title":"guide2","content":"Click to edit"}];
+  
+      //goal
+      addRowContent(goalcontent,'goal',true);
+      addButton('goal');
+      //var rowCount = $('#myTable tr').length;
+      //$(".id39").each(function() {
+      // var currentValue = $(this).text();
+  	//});
+     
+      //guide
+      addRowContent(guidecontent,'guide',false);
+      addButton('guide');
+  
+  
+      setTxtEditable();
+  
+  	var divID = "#instru_goal";
+  	var txt = "You will have the perceived ratings and rationale for each of the stated design goals. Describe each goal in lay language.";
+  			
+  			
+  	$(divID).append('<div class="comment more">'+txt+'</div>');
+  
+  
+  	var showChar = 121;
+  	var ellipsestext = "...";
+  	var moretext = "more";
+  	var lesstext = "less";
+  	$('.more').each(function() {
+  		var content = $(this).html();
+  
+  		if(content.length > showChar) {
+  
+  			var c = content.substr(0, showChar);
+  			var h = content.substr(showChar-1, content.length - showChar);
+  
+  			var html = c + '<span class="moreelipses">'+ellipsestext+'</span><span class="morecontent"><span>' + h + '</span>&nbsp;&nbsp;<a href="" class="morelink">'+moretext+'</a></span>';
+  
+  			$(this).html(html);
+  		}
+  
+  	});
+  
+  	$(".morelink").click(function(){
+  		if($(this).hasClass("less")) {
+  			$(this).removeClass("less");
+  			$(this).html(moretext);
+  		} else {
+  			$(this).addClass("less");
+  			$(this).html(lesstext);
+  		}
+  		$(this).parent().prev().toggle();
+  		$(this).prev().toggle();
+  		return false;
+  	});
+  
+  
+  
+    $("#submit-btn").click(function(){
+      $.ajax({
+        type: "PUT",
+        url: "#{design_path(@design)}",
+        data: fed_config,
+        dataType: "json",
+        done: function(){
+          alert("dfsd:waf");
+        },
+        success: function(){
+          document.location.href = "#{designs_path}";
+        },
+        fail: function(){
+          alert("Failed");
+        }
+      });
+    });
+  
+  
+  }); 	
+  	
+  	
+  	
+  	
+  function addCheckbox(containerid,name,ischecked, cbid) {
+  	   var container = $('#'+containerid);
+  	   var inputs = container.find('input');
+  	   
+  	   cbid = typeof cbid !== 'undefined' ? cbid : 'cb_'+containerid+'_'+inputs.length;
+  	   
+  	   var tmp = $('<label class = "checkbox"/>', { 'for': cbid}).appendTo(container);
+  	   $('<input />', { type: 'checkbox', id: cbid, value: name}).appendTo(tmp);
+  	   $(tmp).append(document.createTextNode(name));
+  	   $('#'+cbid).prop("checked", ischecked);
+  
+  
+  	}
+  	
+  
+  function addRowContent(arrcontent, mode, isEditable)
+  {
+  	for (var i = 0; i < arrcontent.length; i++) {
+  
+          $('#'+mode+' > tbody:last').append('\
+          		<tr>\
+          		    <td id = "'+'cbcontainer_'+mode+'_'+i+'" style="width:10px;"></td>\
+          		    <td id = "'+'td_'+mode+'_title_'+i+'">'+arrcontent[i].title+'</td>\
+         		        <td id = "'+'td_'+mode+'_content_'+i+'">'+arrcontent[i].content+'</td>\
+         		    </tr>');
+          
+          if(isEditable)
+      	{
+      		$('#'+'td_'+mode+'_title_'+i).addClass("editable");
+      		$('#'+'td_'+mode+'_content_'+i).addClass("editable");
+      	}	
+          addCheckbox('cbcontainer_'+mode+'_'+i,'',true, 'cb_'+mode+'_'+i); 
+      }
+      
+  	
+  
+  }
+  
+  function addButton(mode)
+  {
+  	$('#'+mode+'_div').append('<input type="button" value="add" id="btnadd'+mode+'" />');
+  	$('#btnadd'+mode).click(function() {
+  		var rowCount = $('#'+mode+' tr').length;
+  		$('#'+mode+' > tbody:last').append('\
+  				<tr>\
+  					<td id = "'+'cbcontainer_'+mode+'_'+rowCount+'"></td>\
+  					<td id = "'+'td_'+mode+'_title_'+rowCount+'">'+mode+(rowCount+1)+'</td>\
+  					<td id = "'+'td_'+mode+'_content_'+rowCount+'">'+'Click to edit'+'</td>\
+  				</tr>');
+  		$('#'+'td_'+mode+'_title_'+rowCount).addClass("editable");
+  		$('#'+'td_'+mode+'_content_'+rowCount).addClass("editable");
+          //addCheckbox('cbcontainer_'+mode+'_'+rowCount,''+mode+''+(rowCount+1), 'cb_'+mode+'_'+rowCount); 
+          addCheckbox('cbcontainer_'+mode+'_'+rowCount,'', 'cb_'+mode+'_'+rowCount);
+          
+          setTxtEditable();
+  
+      });
+  }
+  function setTxtEditable() {
+  	//$('td:contains("Click to edit")').click(
+  	$('.editable').click(
+  		    function(){
+  		        var text = $(this).text();
+  		        $(this).text('');
+  		        //$('<input type="text" />').appendTo($(this)).val(text).select().blur(
+  		        $('<textarea style = "width:250px" />').appendTo($(this)).val(text).select().blur(
+  		            function(){
+  		                var newText;
+  		                if($(this).val()=='')
+  		                {
+  			                var newText = 'Click to edit';
+  
+  		                }else{
+  			                var newText = $(this).val();	
+  		                }	
+  		                $(this).parent().text(newText).find('input:text').remove();
+  		            });
+  		    });
+  }

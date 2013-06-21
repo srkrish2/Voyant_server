@@ -39,15 +39,13 @@ class DesignsController < ApplicationController
   # POST /designs
   # POST /designs.xml
   def create
-    @design = Design.new
-    @design.name = params[:name]
-    @design.description = params[:description]
+    @design = Design.new(params[:design])
     @design.user_id = current_user.id
 
     respond_to do |format|
       if @design.save
         flash[:notice] = 'Design was successfully created.'
-        format.html { redirect_to(@design) }
+        format.html { redirect_to(edit_design_url(@design)) }
         format.json  { render :json => @design, :status => :created, :location => @design }
       else
         format.html { render :action => "new" }
@@ -60,13 +58,81 @@ class DesignsController < ApplicationController
   # PUT /designs/1.xml
   def update
     respond_to do |format|
-      if @design.update_attributes(params[:design])
-        flash[:notice] = 'Design was successfully updated.'
-        format.html { redirect_to(@design) }
-        format.xml  { head :ok }
-      else
-        format.html { render :action => "edit" }
-        format.xml  { render :xml => @design.errors, :status => :unprocessable_entity }
+      # Set audience_configuration
+      audience_configuration = AudienceConfiguration.new
+      genders = []
+      params[:audience][:gender].each_with_index {|gender,index| genders << index if gender }
+      audience_configuration.gender = genders.join(";")
+
+      ages = []
+      params[:audience][:age].each_with_index {|age, index| ages << index if age}
+      audience_configuration.age = ages.join(";")
+
+      countries = []
+      params[:audience][:country].each_with_index {|country, index| countries << index if country}
+      audience_configuration.country = countries.join(";")
+      audience_configuration.design_experience = ""
+
+      audience_configuration.design = @design
+
+      # Set element_configuration
+      element_configurations = []
+      params[:element].each do |index,e|
+        element_configuration = ElementConfiguration.new(e)
+        element_configuration.design = @design
+        element_configurations << element_configuration
+      end
+
+      # Set first_notice_configuration
+      first_notice_configuration = FirstNoticeConfiguration.new(:is_required => params[:is_required][:first_notice])
+      first_notice_configuration.design = @design
+
+      # Set impression_configuration
+      impression_configuration = ImpressionConfiguration.new(:is_required => params[:is_required][:impression])
+      impression_configuration.design = @design
+
+      # Set goal_configuration
+      goal_configurations = []
+      params[:goal].each do |key,g|
+        goal_configuration = GoalConfiguration.new(g)
+        goal_configuration.design = @design
+        goal_configurations << goal_configuration
+      end
+
+      # Set guideline_configuration
+      guideline_configurations = []
+      params[:guideline].each do |key,g|
+        guideline_configuration = GuidelineConfiguration.new(g)
+        guideline_configuration.design = @design
+        guideline_configurations << guideline_configuration
+      end
+
+      Design.transaction do
+        begin
+          @design.audience_configuration.delete
+          @design.element_configurations.delete_all
+          @design.first_notice_configuration.delete
+          @design.impression_configuration.delete
+          @design.goal_configurations.delete_all
+          @design.guideline_configurations.delete_all
+
+
+          audience_configuration.save!
+          element_configurations.each {|e| e.save!}
+          first_notice_configuration.save!
+          impression_configuration.save!
+          goal_configurations.each {|g| g.save!}
+          guideline_configurations.each {|g| g.save!}
+
+          flash[:notice] = 'Design was successfully updated.'
+          format.html { redirect_to(@design) }
+          format.json  { render :json => {:status => :ok }}
+
+        rescue
+          format.html { render :action => "edit" }
+          format.json  { render :json => {:message => "Can not save the those configurations", :status => :unprocessable_entity }}
+
+        end
       end
     end
   end

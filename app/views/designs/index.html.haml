@@ -8,10 +8,10 @@
       %ul.thumbnails
         - @designs.each do |design|
           %li.span2(style="background: #eef")
-            %a.thumbnail(href="#{design_path(design)}")
+            %a.thumbnail(href="#{edit_design_path(design)}")
               %image(src="#{design.picture.url(:thumb)}")
             %h3= design.name
             %p= design.description
             %button.btn.btn-success Publish
-            %button.btn.btn-danger Delete
+            = link_to 'Delete', design_path(design), :method => :delete, :class => "btn btn-danger", :confirm => 'Confirm to Delete?'
 
