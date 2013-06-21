@@ -1,0 +1,24 @@
+%label Name
+%input#name
+
+%label Description
+%input#description
+
+%hr
+
+%button.btn.btn-primary#submit-btn Submit
+
+:javascript
+  $("#submit-btn").click(function(){
+    $.ajax({
+      type: "POST",
+      url: "/designs",
+      data: {name: $("#name").val(), description: $("#description").val()},
+      success: function(){
+        alert("Success");
+      },
+      fail: function(){
+        alert("Failed");
+      }
+    });
+  });

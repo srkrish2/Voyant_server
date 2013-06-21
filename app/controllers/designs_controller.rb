@@ -25,8 +25,6 @@ class DesignsController < ApplicationController
   # GET /designs/new
   # GET /designs/new.xml
   def new
-    render
-    return
     @design = Design.new
 
     respond_to do |format|
@@ -41,7 +39,10 @@ class DesignsController < ApplicationController
   # POST /designs
   # POST /designs.xml
   def create
-    @design = Design.new(params[:design])
+    @design = Design.new
+    @design.name = params[:name]
+    @design.description = params[:description]
+    @design.user_id = current_user.id
 
     respond_to do |format|
       if @design.save
