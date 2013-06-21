@@ -1,90 +1,94 @@
-.span4
-  %image(src="#{@design.picture.url(:thumb)}")
-#accordion.accordion.span4
-  .accordion-group
-    .accordion-heading
-      %a.accordion-toggle{"data-parent" => "#accordion", "data-toggle" => "collapse", :href => "#audienceTab"} Audience
-    #audienceTab.accordion-body.collapse
-      .accordion-inner
-        #audi.content
-          Anim pariatur cliche...
-  .accordion-group
-    .accordion-heading
-      %a.accordion-toggle{"data-parent" => "#accordion", "data-toggle" => "collapse", :href => "#elementsTab"} Elements
-    #elementsTab.accordion-body.collapse
-      .accordion-inner
-        #ele.content
-  .accordion-group
-    .accordion-heading
-      %a.accordion-toggle{"data-parent" => "#accordion", "data-toggle" => "collapse", :href => "#firstNoticeTab"}
-        %span
+.span12.row-fluid
+  .span2
+    %image(src="#{@design.picture.url(:thumb)}")
+  #accordion.accordion.span4
+    .accordion-group
+      .accordion-heading
+        %a.accordion-toggle{"data-parent" => "#accordion", "data-toggle" => "collapse", :href => "#audienceTab"}
+          %span{:style => "padding: 0 0 0 15px;"} Audience
+      #audienceTab.accordion-body.collapse
+        .accordion-inner
+          #audi.content
+            Anim pariatur cliche...
+    .accordion-group
+      .accordion-heading
+        %a.accordion-toggle{"data-parent" => "#accordion", "data-toggle" => "collapse", :href => "#elementsTab"}
+          %span{:style => "padding: 0 0 0 15px;"} Elements
+      #elementsTab.accordion-body.collapse
+        .accordion-inner
+          #ele.content
+    .accordion-group
+      .accordion-heading.row-fluid
+        %span.span1{:style => "padding: 5px 0 0 10px;"}
           %input#cb_notice{:type => "checkbox"}/
-          First Notice
-    #firstNoticeTab.accordion-body.collapse
-      .accordion-inner
-        #notice.content
-          %p
-            Intro...
-  .accordion-group
-    .accordion-heading
-      %a.accordion-toggle{"data-parent" => "#accordion", "data-toggle" => "collapse", :href => "#impressionTab"}
-        %span
+        %a.accordion-toggle.span6{"data-parent" => "#accordion", "data-toggle" => "collapse", :href => "#firstNoticeTab", :style => "padding-left: 0px;"}
+          %span.pull-left First Notices
+      #firstNoticeTab.accordion-body.collapse
+        .accordion-inner
+          #notice.content
+            %p
+              Intro...
+    .accordion-group
+      .accordion-heading.row-fluid
+        %span.span1{:style => "padding: 5px 0 0 10px;"}
           %input#cb_imp{:type => "checkbox"}/
-          Impressions
-    #impressionTab.accordion-body.collapse
-      .accordion-inner
-        #imp.content
-          %p
-            Intro...
-  .accordion-group
-    .accordion-heading
-      %a.accordion-toggle{"data-parent" => "#accordion", "data-toggle" => "collapse", :href => "#goalTab"}
-        %span
+        %a.accordion-toggle.span6{"data-parent" => "#accordion", "data-toggle" => "collapse", :href => "#impressionTab", :style => "padding-left: 0px;"}
+          %span.pull-left Impressions
+      #impressionTab.accordion-body.collapse
+        .accordion-inner
+          #imp.content
+            %p
+              Intro...
+    .accordion-group
+      .accordion-heading.row-fluid
+        %span.span1{:style => "padding: 5px 0 0 10px;"}
           %input#cb_goal{:type => "checkbox"}/
-          Goals
-    #goalTab.accordion-body.collapse
-      .accordion-inner
-        #instru_goal.instru
-        %table#goal.content
-          %tbody
-        #goal_div.content
-  .accordion-group
-    .accordion-heading.row-fluid
-      %span.span1{:style => "padding: 5px 0 0 10px;"}
-        %input#cb_guide.checkbox{:type => "checkbox"}/
-      %a.accordion-toggle.span6{"data-parent" => "#accordion", "data-toggle" => "collapse", :href => "#guideTab", :style => "padding-left: 0px;"}
-        %span.pull-left Guidelines
-    #guideTab.accordion-body.collapse
-      .accordion-inner
-        %table#guide.content
-          %tbody
-        #guide_div.content
-%input#submit-btn{:type => "submit", :value => "Submit"}/
+        %a.accordion-toggle.span6{"data-parent" => "#accordion", "data-toggle" => "collapse", :href => "#goalTab", :style => "padding-left: 0px;"}
+          %span.pull-left Goals
+      #goalTab.accordion-body.collapse
+        .accordion-inner
+          #instru_goal.instru
+          %table#goal.content
+            %tbody
+          #goal_div.content
+    .accordion-group
+      .accordion-heading.row-fluid
+        %span.span1{:style => "padding: 5px 0 0 10px;"}
+          %input#cb_guide{:type => "checkbox"}/
+        %a.accordion-toggle.span6{"data-parent" => "#accordion", "data-toggle" => "collapse", :href => "#guideTab", :style => "padding-left: 0px;"}
+          %span.pull-left Guidelines
+      #guideTab.accordion-body.collapse
+        .accordion-inner
+          %table#guide.content
+            %tbody
+          #guide_div.content
+.span6.offset2
+  %input#submit-btn{:type => "submit", :value => "Submit"}/
 :javascript
-  var fed_config = {is_required:{audience:true, element:true, impression:true, first_notice:true, guideline: true, goal: true}, audience:{gender:[true,false],age:[true,true,true,true,true,true],country:[true,true,true,true,true]}, element:[{name:'object',is_required:true},{name:'color',is_required:true},{name:'activity',is_required:true},{name:'shape',is_required:true}], goal:[{is_required:true,title:'goal1',description:'desb1'},{is_required:true,title:'goal2',description:'desb2'}], guideline:[{is_required:true,title:'guideline1',description:'desb1'},{is_required:true,title:'guideline2',description:'desb2'}]};
+  var fed_config = {is_requested:{audience:true, element:true, impression:true, first_notice:true, guideline: true, goal: true}, audience:{gender:[true,false],age:[true,true,true,true,true,true],country:[true,true,true,true,true]}, element:[{name:'object',is_requried:true},{name:'color',is_requried:true},{name:'activity',is_requried:true},{name:'shape',is_requried:true}], goal:[{is_requried:true,title:'goal1',description:'desb1'},{is_requried:true,title:'goal2',description:'desb2'}], guideline:[{is_requried:true,title:'guideline1',description:'desb1'},{is_requried:true,title:'guideline2',description:'desb2'}]};
   
   $(function() {
   		
-  		$('#audi').append('<div ' + 'id = "gender"'+'><p style = "font-weight:bold">Gender:</p></div>');
+  		$('#audi').append('<div class =  "row-fluid"' + 'id = "gender"'+'><p style = "font-weight:bold">Gender:</p></div>');
   		
       var genderNames = #{User::GenderNames};
       for(var i = 0; i < genderNames.length; i++){
         addCheckbox("gender",genderNames[i],fed_config.audience.gender[i]);
       }
   		
-  		$('#audi').append('<div ' + 'id = "age"'+'><p style = "font-weight:bold">Age:</p></div>');
+  		$('#audi').append('<div class =  "row-fluid"' + 'id = "age"'+'><p style = "font-weight:bold">Age:</p></div>');
       var ageNames = #{User::AgeRanges.keys};
       for(var i = 0; i < ageNames.length; i++){
         addCheckbox("age",ageNames[i],true);
       }
   		
-  		$('#audi').append('<div ' + 'id = "country"'+'><p style = "font-weight:bold">Country:</p></div>');
+  		$('#audi').append('<div class =  "row-fluid"' + 'id = "country"'+'><p style = "font-weight:bold">Country:</p></div>');
       var countryNames = #{User::CountryNames};
       for(var i = 0; i < countryNames.length; i++){
         addCheckbox("country",countryNames[i],true);
       }
   		
-  		$('#ele').append('<div ' + 'id = "eletype"'+'><p style = "font-weight:bold">Element Type:</p></div>');
+  		$('#ele').append('<div class =  "row-fluid"' + 'id = "eletype"'+'><p style = "font-weight:bold">Element Type:</p></div>');
   
   		addCheckbox("eletype","object",true);
   		addCheckbox("eletype","color",true);
@@ -160,15 +164,11 @@
   
     $("#submit-btn").click(function(){
       $.ajax({
-        type: "PUT",
-        url: "#{design_path(@design)}",
+        type: "POST",
+        url: "/edit",
         data: fed_config,
-        dataType: "json",
-        done: function(){
-          alert("dfsd:waf");
-        },
         success: function(){
-          document.location.href = "#{designs_path}";
+          alert("Success");
         },
         fail: function(){
           alert("Failed");
@@ -188,7 +188,7 @@
   	   
   	   cbid = typeof cbid !== 'undefined' ? cbid : 'cb_'+containerid+'_'+inputs.length;
   	   
-  	   var tmp = $('<label class = "checkbox"/>', { 'for': cbid}).appendTo(container);
+  	   var tmp = $('<label class = "checkbox span3"/>', { 'for': cbid}).appendTo(container);
   	   $('<input />', { type: 'checkbox', id: cbid, value: name}).appendTo(tmp);
   	   $(tmp).append(document.createTextNode(name));
   	   $('#'+cbid).prop("checked", ischecked);
@@ -214,6 +214,12 @@
       		$('#'+'td_'+mode+'_content_'+i).addClass("editable");
       	}	
           addCheckbox('cbcontainer_'+mode+'_'+i,'',true, 'cb_'+mode+'_'+i); 
+          var labletmp = $('#'+'cb_'+mode+'_'+i).parent().get(0);
+          $(labletmp).removeClass("span3");
+          //$(labletmp).css("width","10px");
+          $(labletmp).css("padding-left","40px");
+          $(labletmp).css("padding-top","6px");
+  
       }
       
   	
@@ -234,7 +240,11 @@
   		$('#'+'td_'+mode+'_title_'+rowCount).addClass("editable");
   		$('#'+'td_'+mode+'_content_'+rowCount).addClass("editable");
           //addCheckbox('cbcontainer_'+mode+'_'+rowCount,''+mode+''+(rowCount+1), 'cb_'+mode+'_'+rowCount); 
-          addCheckbox('cbcontainer_'+mode+'_'+rowCount,'', 'cb_'+mode+'_'+rowCount);
+          addCheckbox('cbcontainer_'+mode+'_'+rowCount,'',true, 'cb_'+mode+'_'+rowCount);
+          var labletmp = $('#'+'cb_'+mode+'_'+rowCount).parent().get(0);
+          $(labletmp).removeClass("span3");
+          $(labletmp).css("padding-left","40px");
+          $(labletmp).css("padding-top","6px");
           
           setTxtEditable();
   
