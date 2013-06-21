@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130619220030) do
+ActiveRecord::Schema.define(:version => 20130621013504) do
 
   create_table "audience_configurations", :force => true do |t|
     t.integer  "design_id",         :null => false
@@ -38,11 +38,15 @@ ActiveRecord::Schema.define(:version => 20130619220030) do
 
   create_table "designs", :force => true do |t|
     t.integer  "project_id"
-    t.integer  "user_id",     :null => false
-    t.string   "name",        :null => false
+    t.integer  "user_id",              :null => false
+    t.string   "name",                 :null => false
     t.text     "description"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
+    t.datetime "created_at",           :null => false
+    t.datetime "updated_at",           :null => false
+    t.string   "picture_file_name"
+    t.string   "picture_content_type"
+    t.integer  "picture_file_size"
+    t.datetime "picture_updated_at"
   end
 
   create_table "element_configurations", :force => true do |t|

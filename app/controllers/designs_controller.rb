@@ -31,7 +31,6 @@ class DesignsController < ApplicationController
 
     respond_to do |format|
       format.html # new.html.erb
-      format.xml  { render :xml => @design }
     end
   end
 
@@ -48,10 +47,10 @@ class DesignsController < ApplicationController
       if @design.save
         flash[:notice] = 'Design was successfully created.'
         format.html { redirect_to(@design) }
-        format.xml  { render :xml => @design, :status => :created, :location => @design }
+        format.json  { render :json => @design, :status => :created, :location => @design }
       else
         format.html { render :action => "new" }
-        format.xml  { render :xml => @design.errors, :status => :unprocessable_entity }
+        format.json  { render :json => @design.errors, :status => :unprocessable_entity }
       end
     end
   end
