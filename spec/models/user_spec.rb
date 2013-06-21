@@ -37,6 +37,13 @@ describe User do
     }
   end
 
+  describe "assign roles" do
+    it "should have default role as user" do
+      @user = User.create!(@attr)
+      @user.has_role?(:user).should eql(true)
+    end
+  end
+
   describe "design_experience" do
     it "should be in range [0,1,2]"
   end
@@ -130,5 +137,6 @@ describe User do
     end
 
   end
+
 
 end

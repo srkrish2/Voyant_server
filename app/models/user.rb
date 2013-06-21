@@ -31,6 +31,7 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable, :confirmable,
          :recoverable, :rememberable, :trackable, :validatable
 
+  after_create :assign_default_role
 
   DesignExperienceNames = ["Nothing","Novice","Expert"]
 
@@ -38,6 +39,11 @@ class User < ActiveRecord::Base
   attr_accessible :role_ids, :as => :admin
   attr_accessible :name, :email, :password, :password_confirmation, :remember_me, :design_experience
   
+
+  protected
+  def assign_default_role
+    self.add_role :user
+  end
 
 
 end

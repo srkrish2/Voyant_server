@@ -28,5 +28,12 @@ class Ability
     #   can :update, Article, :published => true
     #
     # See the wiki for details: https://github.com/ryanb/cancan/wiki/Defining-Abilities
+    #
+    if user.has_role? :user
+      # Design
+      can [:read, :update, :destroy, :index], Design, :user_id => user.id
+      can :create, Design
+
+    end
   end
 end
