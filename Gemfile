@@ -40,3 +40,4 @@ gem "growl", "~> 1.0.3", :group => :development
 gem "annotate", "~> 2.5.0", :group => :development
 
 gem "jquery-ui-rails", "~> 4.0.3"
+gem "paperclip", "~> 3.4.2"
