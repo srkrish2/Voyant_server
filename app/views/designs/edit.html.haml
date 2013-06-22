@@ -65,7 +65,7 @@
 .span6.offset2
   %input#submit-btn{:type => "submit", :value => "Submit"}/
 :javascript
-  var fed_config = {is_requested:{audience:true, element:true, impression:true, first_notice:true, guideline: true, goal: true}, audience:{gender:[true,false],age:[true,true,true,true,true,true],country:[true,true,true,true,true]}, element:[{name:'object',is_requried:true},{name:'color',is_requried:true},{name:'activity',is_requried:true},{name:'shape',is_requried:true}], goal:[{is_requried:true,title:'goal1',description:'desb1'},{is_requried:true,title:'goal2',description:'desb2'}], guideline:[{is_requried:true,title:'guideline1',description:'desb1'},{is_requried:true,title:'guideline2',description:'desb2'}]};
+  var fed_config = {is_required:{audience:true, element:true, impression:true, first_notice:true, guideline: true, goal: true}, audience:{gender:[true,false],age:[true,true,true,true,true,true],country:[true,true,true,true,true]}, element:[{name:'object',is_required:true},{name:'color',is_required:true},{name:'activity',is_required:true},{name:'shape',is_required:true}], goal:[{is_required:true,title:'goal1',description:'desb1'},{is_required:true,title:'goal2',description:'desb2'}], guideline:[{is_required:true,title:'guideline1',description:'desb1'},{is_required:true,title:'guideline2',description:'desb2'}]};
   
   $(function() {
   		
@@ -164,14 +164,16 @@
   
     $("#submit-btn").click(function(){
       $.ajax({
-        type: "POST",
-        url: "/edit",
+        type: "PUT",
+        url: "#{design_path(@design)}",
         data: fed_config,
-        success: function(){
+        dataType: "json",
+        success: function(data){
           alert("Success");
         },
-        fail: function(){
-          alert("Failed");
+        error: function(data){
+          message = JSON.parse(data.responseText);
+          alert(message.error);
         }
       });
     });

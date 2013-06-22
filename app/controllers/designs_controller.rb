@@ -110,10 +110,10 @@ class DesignsController < ApplicationController
 
       Design.transaction do
         begin
-          @design.audience_configuration.delete
+          @design.audience_configuration.delete if @design.audience_configuration
           @design.element_configurations.delete_all
-          @design.first_notice_configuration.delete
-          @design.impression_configuration.delete
+          @design.first_notice_configuration.delete if @design.first_notice_configuration
+          @design.impression_configuration.delete if @design.impression_configuration
           @design.goal_configurations.delete_all
           @design.guideline_configurations.delete_all
 
@@ -131,7 +131,8 @@ class DesignsController < ApplicationController
 
         rescue
           format.html { render :action => "edit" }
-          format.json  { render :json => {:message => "Can not save the those configurations", :status => :unprocessable_entity }}
+          format.json  { render :json => {:error => "Can not save the those configurations"}, :status => :unprocessable_entity }
+          #raise "fkjdlfjsdklfjsdkljffj"
 
         end
       end
