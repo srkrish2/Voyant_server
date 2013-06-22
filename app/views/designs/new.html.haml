@@ -1,5 +1,5 @@
 .span8.offset2
-  = simple_form_for(@design) do |f|
+  = simple_form_for @design, html: {class: "form-horizont"} do |f|
     = f.input :name
     = f.file_field :picture
     = f.input :description, input_html: {class: "span8"}

@@ -5,7 +5,8 @@ class DesignsController < ApplicationController
   # GET /designs
   # GET /designs.xml
   def index
-    @designs = Design.all
+    #@designs = Design.all
+    @design = Design.new
 
     respond_to do |format|
       format.html # index.html.erb
