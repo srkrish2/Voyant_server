@@ -65,7 +65,7 @@
 .span6.offset2
   %input#submit-btn{:type => "submit", :value => "Submit"}/
 :javascript
-  var fed_config = {is_requested:{audience:true, element:true, impression:true, first_notice:true, guideline: true, goal: true}, audience:{gender:[true,false],age:[true,true,true,true,true,true],country:[true,true,true,true,true]}, element:[{name:'object',is_required:true},{name:'color',is_required:true},{name:'activity',is_required:true},{name:'shape',is_required:true}], goal:[{is_required:true,title:'goal1',description:'desb1'},{is_required:true,title:'goal2',description:'desb2'}], guideline:[{is_required:true,title:'guideline1',description:'desb1'},{is_required:true,title:'guideline2',description:'desb2'}]};
+  var fed_config = {is_requested:{audience:true, element:true, impression:true, first_notice:true, guideline: true, goal: true}, audience:{gender:[true,false],age:[true,true,true,true,true,true],country:[true,true,true,true,true]}, element:[{name:'object',is_requried:true},{name:'color',is_requried:true},{name:'activity',is_requried:true},{name:'shape',is_requried:true}], goal:[{is_requried:true,title:'goal1',description:'desb1'},{is_requried:true,title:'goal2',description:'desb2'}], guideline:[{is_requried:true,title:'guideline1',description:'desb1'},{is_requried:true,title:'guideline2',description:'desb2'}]};
   
   $(function() {
   		
@@ -79,22 +79,21 @@
   		$('#audi').append('<div class =  "row-fluid"' + 'id = "age"'+'><p style = "font-weight:bold">Age:</p></div>');
       var ageNames = #{User::AgeRanges.keys};
       for(var i = 0; i < ageNames.length; i++){
-        addCheckbox("age",ageNames[i],fed_config.audience.age[i]);
+        addCheckbox("age",ageNames[i],true);
       }
   		
   		$('#audi').append('<div class =  "row-fluid"' + 'id = "country"'+'><p style = "font-weight:bold">Country:</p></div>');
       var countryNames = #{User::CountryNames};
       for(var i = 0; i < countryNames.length; i++){
-        addCheckbox("country",countryNames[i],fed_config.audience.country[i]);
+        addCheckbox("country",countryNames[i],true);
       }
   		
   		$('#ele').append('<div class =  "row-fluid"' + 'id = "eletype"'+'><p style = "font-weight:bold">Element Type:</p></div>');
   
-      for(var i = 0; i < fed_config.element.length; i++){
-        addCheckbox("eletype",fed_config.element[i].name,fed_config.element[i].is_required);
-      }
-  		//addCheckbox("eletype","object",true);
-
+  		addCheckbox("eletype","object",true);
+  		addCheckbox("eletype","color",true);
+  		addCheckbox("eletype","activity",true);
+  		addCheckbox("eletype","shape",true);
   
   		$('#ele').append('<input type="text" id="txtName" />');
   		$('#ele').append('<input type="button" value="add" id="btnaddEle" />');
