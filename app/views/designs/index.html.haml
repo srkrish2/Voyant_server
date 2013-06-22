@@ -1,4 +1,23 @@
-%a.btn-primary.btn(href="#{new_design_path}") New Design
+%a.btn-primary.btn(href="#new-design-modal" role="button" data-toggle="modal") New Design
+.modal.hide.fade#new-design-modal(tabindex="-1" role="dialog" aria-labelledby="new-design-modal-label" aria-hidden="true")
+  .modal-header
+    %button.close(data-dismiss="modal" aria-hidden="true" type="button") &times;
+    %h3#new-design-modal-label New Design
+  .modal-body
+    = simple_form_for @design, html: {class: "form-horizontal", id: "new-design-form"} do |f|
+      = f.input :name, inline_label: "dde"
+      = f.input :picture, label: "Design Picture"
+      = f.input :description, input_html: {rows:3}
+  .modal-footer
+    %button.btn(data-dismiss="modal" aria-hidden="true") Close
+    %button.btn.btn-primary#new-design-btn Save
+    :javascript
+      $(function(){
+        $("#new-design-btn").click(function(){
+          $("#new-design-form").submit();
+        });
+      });
+
 
 %hr
 
