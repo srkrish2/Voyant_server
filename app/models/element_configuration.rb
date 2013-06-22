@@ -17,4 +17,5 @@ class ElementConfiguration < ActiveRecord::Base
   attr_accessible :name, :is_required, :turker_num, :turker_price
   # Associations
   belongs_to :design
+  has_many :feedbacks, :class_name =>  "ElementFeedback", :foreign_key => :configuration_id, :dependent => :destroy
 end
