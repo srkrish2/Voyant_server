@@ -94,11 +94,17 @@
         addCheckbox("eletype",fed_config.element[i].name,fed_config.element[i].is_required);
       }
   		//addCheckbox("eletype","object",true);
-
+      
+      $('#cb_notice').prop("checked", fed_config.is_required.first_notice);
+      
+      $('#cb_notice').prop("checked", fed_config.is_required.first_notice);
+      $('#cb_imp').prop("checked", fed_config.is_required.impression);
+      $('#cb_guide').prop("checked", fed_config.is_required.guideline);
+      $('#cb_goal').prop("checked", fed_config.is_required.goal);
   
-  		$('#ele').append('<input type="text" id="txtName" />');
-  		$('#ele').append('<input type="button" value="add" id="btnaddEle" />');
-  		$('#btnaddEle').click(function() {
+  	  $('#ele').append('<input type="text" id="txtName" />');
+  	  $('#ele').append('<input type="button" value="add" id="btnaddEle" />');
+  	  $('#btnaddEle').click(function() {
   	        addCheckbox("eletype", $('#txtName').val(), true);
   	    });
   
@@ -165,14 +171,20 @@
   
     $("#submit-btn").click(function(){
     
-     fed_config.is_requested.audience = true;
+     fed_config.is_required.audience = true;
      fed_config.audience.gender = getValuefromCheckboxes('gender');
      fed_config.audience.age = getValuefromCheckboxes('age');
      fed_config.audience.country = getValuefromCheckboxes('country');
     
-    fed_config.is_requested.element = true;
-
-     alert(JSON.stringify(fed_config.audience.gender));
+     fed_config.is_required.element = true;
+     fed_config.is_required.first_notice = getValuefromCheckboxes('cb_notice');
+     fed_config.is_required.impression = getValuefromCheckboxes('cb_imp');
+     fed_config.is_required.goal =  getValuefromCheckboxes('cb_goal');
+     fed_config.is_required.guideline =  getValuefromCheckboxes('cb_guide');
+     
+     fed_config.goal = getValuefromCheckboxes('goal');
+     console.log(fed_config);
+     //alert(JSON.stringify( fed_config.goal));
      //alert(JSON.stringify(fed_config));
      
       $.ajax({
@@ -181,11 +193,11 @@
         data: fed_config,
         dataType: "json",
         success: function(data){
-          alert("Success");
+          console.log("Success");
         },
         error: function(data){
           message = JSON.parse(data.responseText);
-          alert(message.error);
+          console.log(message.error);
         }
       });
     });
@@ -196,25 +208,62 @@
   	
 
   	
-  function getValuefromCheckboxes(model)
+  function getValuefromCheckboxes(mode)
   {
-  	   
-  	   switch(model)
+  	   var arrChecked = [];
+  	   switch(mode)
   	   {
-  	   	case "1":
-  	   	alert("11");
-  	   	
-  	   	case "1":
-  	   	alert("11");
-  	   	
-  	   	default:
-  	   	var arrChecked = [];
-        //model = element;
-        var container = $('#'+model);
+  	   	case "eletype":
+  	   	arrChecked = [];
+  	   	var container = $('#'+mode);
         var inputs = container.find('input');
         for (var i = 0; i < inputs.length; i++) {
           
-          if ($('#'+'cb_'+model+'_'+i).is(':checked')) {
+          var label = $('#'+'cb_'+mode+'_'+i).attr('value');
+          console.log(label);
+          if ($('#'+'cb_'+mode+'_'+i).is(':checked')) {
+            arrChecked.push({name:label,is_required:true});            
+          } else {
+             arrChecked.push({name:label,is_required:false});       
+          } 
+        }
+        return arrChecked;
+  	   	break;
+
+  	   	
+  	   	case "goal":
+  	   	case "guide": 
+  	   	  arrChecked = []; 	   	
+  	   	  for (var i = 0; i < $('#'+mode+' tr').length; i++) {
+          
+          if ($('#'+'cb_'+mode+'_'+i).is(':checked')) {
+            arrChecked.push({title:$('#'+'td_'+mode+'_title_'+i).text(),description:$('#'+'td_'+mode+'_content_'+i).text(),is_required:true});            
+          } else {
+            arrChecked.push({title:$('#'+'td_'+mode+'_title_'+i).text(),description:$('#'+'td_'+mode+'_content_'+i).text(),is_required:false});            
+          } 
+        }
+        return arrChecked;
+  	   	break;
+  	   	
+  	   	case "cb_imp":
+  	   	case "cb_notice":
+  	   	case "cb_goal":
+  	   	case "cb_guide":
+  	   	if ( $('#'+mode).is(':checked')) {
+            return true;         
+          } else {
+            return false;
+            } 
+  	   	break;
+  	   	
+  	   	default:
+  	    arrChecked = [];
+        //mode = element;
+        var container = $('#'+mode);
+        var inputs = container.find('input');
+        for (var i = 0; i < inputs.length; i++) {
+          
+          if ($('#'+'cb_'+mode+'_'+i).is(':checked')) {
           
           arrChecked.push(true);
           
@@ -222,10 +271,10 @@
             arrChecked.push(false);
           } 
         }
-       return arrChecked;
   	   }
 
-   	   
+   	   return arrChecked;
+
    
   } 
   	
