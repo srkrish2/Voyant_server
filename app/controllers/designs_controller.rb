@@ -1,6 +1,11 @@
 class DesignsController < ApplicationController
   #before_filter :find_design, :only => [:show, :edit, :update, :destroy]
-  load_and_authorize_resource
+  load_and_authorize_resource :except => :feedbacks
+
+  def feedbacks
+    @desing = Design.find(params[:id])
+
+  end
 
   # GET /designs
   # GET /designs.xml

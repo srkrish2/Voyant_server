@@ -6,6 +6,9 @@ Crowddesign::Application.routes.draw do
   devise_for :users
   resources :users
   resources :designs do
+    member do
+      get :feedbacks
+    end
     resources :element_feedbacks
   end
 
