@@ -164,6 +164,17 @@
   
   
     $("#submit-btn").click(function(){
+    
+     fed_config.is_requested.audience = true;
+     fed_config.audience.gender = getValuefromCheckboxes('gender');
+     fed_config.audience.age = getValuefromCheckboxes('age');
+     fed_config.audience.country = getValuefromCheckboxes('country');
+    
+    fed_config.is_requested.element = true;
+
+     alert(JSON.stringify(fed_config.audience.gender));
+     //alert(JSON.stringify(fed_config));
+     
       $.ajax({
         type: "POST",
         url: "/edit",
@@ -181,8 +192,43 @@
   }); 	
   	
   	
+
   	
+  function getValuefromCheckboxes(model)
+  {
+  	   
+  	   switch(model)
+  	   {
+  	   	case "1":
+  	   	alert("11");
+  	   	
+  	   	case "1":
+  	   	alert("11");
+  	   	
+  	   	default:
+  	   	var arrChecked = [];
+        //model = element;
+        var container = $('#'+model);
+        var inputs = container.find('input');
+        for (var i = 0; i < inputs.length; i++) {
+          
+          if ($('#'+'cb_'+model+'_'+i).is(':checked')) {
+          
+          arrChecked.push(true);
+          
+          } else {
+            arrChecked.push(false);
+          } 
+        }
+       return arrChecked;
+  	   }
+
+   	   
+   
+  } 
   	
+  //addCheckbox("eletype",fed_config.element[i].name,fed_config.element[i].is_required);
+
   function addCheckbox(containerid,name,ischecked, cbid) {
   	   var container = $('#'+containerid);
   	   var inputs = container.find('input');
