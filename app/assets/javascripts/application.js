@@ -21,3 +21,37 @@ $(document).ready(function() {
   /* Activating Best In Place */
   jQuery(".best_in_place").best_in_place();
 });
+
+function warning(message){
+  n = noty({
+    timeout: false,
+    text: message,
+    layout: "topRight",
+    type: "warning",
+    closeWith: ['click','hover'],
+    callback: {
+      afterShow: function(){
+        setTimeout(function(){
+          n.close();
+        },4000);
+      }
+    }
+  });
+}
+
+function information(message){
+  n = noty({
+    timeout: false,
+    text: message,
+    layout: "topRight",
+    type: "information",
+    closeWith: ['click','hover'],
+    callback: {
+      afterShow: function(){
+        setTimeout(function(){
+          n.close();
+        },4000);
+      }
+    }
+  });
+}
