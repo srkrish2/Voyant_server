@@ -9,6 +9,7 @@
 #  design_experience :integer          default(0)
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
+#  worker_id         :string(255)
 #
 
 class Turker < ActiveRecord::Base
@@ -20,6 +21,7 @@ class Turker < ActiveRecord::Base
   validates :gender, :inclusion => {:in => 0..1, :message => "Gender is invalide"}
   validates :country, :presence => {:message => "Country is required"}
   validates :design_experience, :inclusion => {:in => 0..2, :message => "Design Experience is invalid"}
+  validates :worker_id, :presence => {:message => "Worker ID is required"}
   # Associations
   has_many :boxareas
 end

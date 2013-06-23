@@ -15,4 +15,6 @@ class GoalFeedback < ActiveRecord::Base
   #attr_accessible :rating
   # Associations
   has_many :boxareas, :as => :feedback, :dependent => :destroy
+  belongs_to :design
+  belongs_to :configuration, :class_name => "GoalConfiguration"
 end

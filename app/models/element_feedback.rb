@@ -17,4 +17,7 @@ class ElementFeedback < ActiveRecord::Base
   # Validations
   # Associations
   has_many :boxareas, :as => :feedback, :dependent => :destroy
+  belongs_to :design
+  belongs_to :configuration, :class_name => "ElementConfiguration"
+  has_many :first_notice_feedbacks, :dependent => :destroy
 end

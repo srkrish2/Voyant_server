@@ -18,4 +18,5 @@ class GoalConfiguration < ActiveRecord::Base
   attr_accessible :title, :description, :is_required, :turker_num, :turker_price
   # Associations
   belongs_to :design
+  has_many :feedbacks, :class_name => "GoalFeedback", :foreign_key => :configuration_id, :dependent => :destroy
 end

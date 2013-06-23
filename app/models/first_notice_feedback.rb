@@ -12,4 +12,6 @@
 class FirstNoticeFeedback < ActiveRecord::Base
   # Associations
   has_many :boxareas, :as => :feedback, :dependent => :destroy
+  belongs_to :element_feedback
+  belongs_to :design
 end

@@ -9,6 +9,7 @@
 #  design_experience :integer          default(0)
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
+#  worker_id         :string(255)
 #
 
 require 'spec_helper'
@@ -17,46 +18,50 @@ describe Turker do
   describe "validate" do
     before(:each) do
       @attr = FactoryGirl.attributes_for(:turker)
+      @turker = Turker.new(@attr)
+      @turker.worker_id = "worker_id"
     end
 
     describe "age" do
       it "should be required" do
-        turker = Turker.new(@attr)
-        turker.age = ""
-        turker.should_not be_valid
+        @turker.age = ""
+        @turker.should_not be_valid
       end
       it "should greater than 0" do
-        turker = Turker.new(@attr)
-        turker.age = 0 
-        turker.should_not be_valid
+        @turker.age = 0 
+        @turker.should_not be_valid
       end
     end
 
     describe "gender" do
       it "should in ange [0,1]" do
-        turker = Turker.new(@attr)
-        turker.gender = 2
-        turker.should_not be_valid
-        turker.gender = -1
-        turker.should_not be_valid
+        @turker.gender = 2
+        @turker.should_not be_valid
+        @turker.gender = -1
+        @turker.should_not be_valid
       end
     end
 
     describe "country" do
       it "should be required" do
-        turker = Turker.new(@attr)
-        turker.country = ""
-        turker.should_not be_valid
+        @turker.country = ""
+        @turker.should_not be_valid
       end
     end
 
     describe "design_experience" do
       it "should be in range [0,1,2]" do
-        turker = Turker.new(@attr)
-        turker.design_experience = -1
-        turker.should_not be_valid
-        turker.design_experience = 3
-        turker.should_not be_valid
+        @turker.design_experience = -1
+        @turker.should_not be_valid
+        @turker.design_experience = 3
+        @turker.should_not be_valid
+      end
+    end
+
+    describe "worker_id" do
+      it "should be required" do
+        @turker.worker_id = ""
+        expect(@turker).not_to be_valid
       end
     end
 
