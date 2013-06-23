@@ -8,4 +8,10 @@ Crowddesign::Application.routes.draw do
   resources :designs do
     resources :element_feedbacks
   end
+
+  resources :turkers do
+    collection do
+      post :find
+    end
+  end
 end
