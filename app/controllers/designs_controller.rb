@@ -3,7 +3,7 @@ class DesignsController < ApplicationController
   load_and_authorize_resource :except => :feedbacks
 
   def feedbacks
-    @desing = Design.find(params[:id])
+    @design = Design.find(params[:id])
 
   end
 
