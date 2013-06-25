@@ -20,4 +20,8 @@ class ElementFeedback < ActiveRecord::Base
   belongs_to :design
   belongs_to :configuration, :class_name => "ElementConfiguration"
   has_many :first_notice_feedbacks, :dependent => :destroy
+  # Validations
+  validates :design_id, :presence => {:message => "Design is required"}
+  validates :configuration_id, :presence => {:message => "Configuration is required"}
+  validates :name, :presence => {:message => "Name is required"}
 end

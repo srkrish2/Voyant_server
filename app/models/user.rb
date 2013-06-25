@@ -33,7 +33,7 @@ class User < ActiveRecord::Base
 
   after_create :assign_default_role
 
-  GenderNames = ["female", "male"]
+  GenderNames = ["Female", "Male"]
   DesignExperienceNames = ["Nothing","Novice","Expert"]
   AgeRanges = {"<=20" => 1..20, "21-30" => 21..30, "31-40" => 31..40, "41-50" => 41..50, "51-60" => 51..60, ">60" => 61..1000}
   CountryNames = ["USA", "India", "UK", "Canada", "others"]

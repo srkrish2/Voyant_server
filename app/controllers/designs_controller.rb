@@ -55,7 +55,7 @@ class DesignsController < ApplicationController
         format.json  { render :json => @design, :status => :created, :location => @design }
       else
         format.html { render :action => "new" }
-        format.json  { render :json => @design.errors, :status => :unprocessable_entity }
+        format.json  { render :json => {:model_error => @design.errors}, :status => :unprocessable_entity }
       end
     end
   end

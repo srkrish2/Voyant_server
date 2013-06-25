@@ -18,4 +18,7 @@ class ElementConfiguration < ActiveRecord::Base
   # Associations
   belongs_to :design
   has_many :feedbacks, :class_name =>  "ElementFeedback", :foreign_key => :configuration_id, :dependent => :destroy
+  # Validations
+  validates :design_id, :presence => {:message => "Design is required"}
+  validates :name, :presence => {:message => "Name is required"}
 end
