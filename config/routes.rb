@@ -9,7 +9,11 @@ Crowddesign::Application.routes.draw do
     member do
       get :feedbacks
     end
-    resources :element_feedbacks
+    resources :element_feedbacks do
+      collection do
+        post :batch_create
+      end
+    end
   end
 
   resources :turkers do
