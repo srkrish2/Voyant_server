@@ -15,6 +15,9 @@
 //= require bootstrap
 //= require jquery.ui.all
 //= require best_in_place
+//= require d3
+//= require jshashtable
+//= require feedbackvis
 //= require_tree .
 
 $(document).ready(function() {

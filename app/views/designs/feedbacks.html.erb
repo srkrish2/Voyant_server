@@ -1,0 +1,533 @@
+<div class = "text-center">
+	<div id="container" >
+		<div id="viz" class="heatnetwork">
+
+			<div id="overlay"></div>
+		</div>
+
+		<div id="tabs" class="tabs">
+			<ul class="nav nav-tabs" id="myTab">
+		    </ul>
+		    <div class="tab-content" id ="myTabContent"></div>
+			
+
+		</div>
+		<div id="viz2" align='center' style='clear: both'></div>
+		
+		<div id='panel_heatnetwork'>
+
+
+		<div id='explain_heatnetwork' class="explaintxt" style ="max-height: 400px; overflow-y:auto;"></div>
+			
+
+		</div>
+
+	</div>
+	
+	</div>
+
+<script type="text/javascript">
+
+
+
+var current_tab;//#tabs-eleorg global var 
+var json_feedbackTypes = {"#tabs-eleorg":"ele","#tabs-notice":"ele","#tabs-imp":"imp","#tabs-goal":"goal","#tabs-criteria":"guide"};
+var explain_feedbackTypes = {"#tabs-eleorg":"#explain_heatnetwork","#tabs-notice":"#explain_heatnetwork","#tabs-imp":"#explain_imp","#tabs-goal":"#explain_goal","#tabs-criteria":"#explain_criteria"};
+
+var isHeatmapvisible = "false"; //global var
+var $panel_img = $('#panel_heatnetwork');
+
+
+var optFilters = {"ele":{"isClickedTextPanel":false,"isClickedLegendPanel":false,"subtypetxt":[]},
+		"imp":{"subtype":[]},
+		"goal":{"isClickedTextPanel":false,"isClickedLegendPanel":false,"subtypescore":[]},
+		"guide":{"isClickedTextPanel":false,"isClickedLegendPanel":false,"subtypescore":[]},
+		}; //global var
+//		"goal":{"subtype":["goal0","goal1"],"subtypescore":["goal0_0","goal0_6"]},
+//{"subtype":["object"],"txt":["smoothie"]
+
+var json_allColor = {"ele":{"object":0,"color":1,"activity":2,"shape":3}, "imp":{}, "goal":{},"guide":{}};
+//var arr_allColor = ["#69D2E7","#E0E4CC","#E08E79","#774F38","#95D4EC"];
+var arr_allColor = ["#aec7e8","#ffbb78","#98df8a","#f7b6d2","#c5b0d5","#ff9896"];
+var fillColorImp;
+
+
+var hash_ImpContent_IDinCloud = new Hashtable();
+var hash_eleSubtypetxt_IDinTable = new Hashtable();
+
+var tab_stackbar_goal;//global var
+var tab_stackbar_criteria;//tab_element
+var tab_element;//tab_element
+
+var object_heatnetwork;
+
+//need data
+//d3.json("jsonall.json", function(error, json_all) {
+var json_all = 
+{"nodes":[{"id":"n0","type":"guide","cord":["67","152","249","386"],"x":158,"y":269,"size":97916,"content":{"subtype":"guide0","score":"6","txt":"I think that it was fresh juice.So i choose it was fresh smoothie.It was used for drinking."}},{"id":"n1","type":"guide","cord":["113","135","229","403"],"x":171,"y":269,"size":62408,"content":{"subtype":"guide0","score":"6","txt":"The smoothies are all grouped together next to each other, not all over the design"}},{"id":"n2","type":"guide","cord":["16","293","252","394"],"x":134,"y":343.5,"size":162132,"content":{"subtype":"guide0","score":"3","txt":"I highlighted this area because it lacks a phone number, an address, the business name, and even what city\/state that it resides in."}},{"id":"n3","type":"guide","cord":["31","121","261","398"],"x":146,"y":259.5,"size":119370,"content":{"subtype":"guide0","score":"3","txt":"only glases with the straw present.That they are helpfull for drinking the fruit juice or any type of softdriks."}},{"id":"n4","type":"guide","cord":["20","21","242","108"],"x":131,"y":64.5,"size":28638,"content":{"subtype":"guide0","score":"6","txt":"This part of the design is using the space available to make a description of the product."}},{"id":"n5","type":"guide","cord":["15","14","251","398"],"x":133,"y":206,"size":97232,"content":{"subtype":"guide0","score":"3","txt":"The image is not so attractive because the color is so dull and not like to view this image "}},{"id":"n6","type":"guide","cord":["21","19","158","65"],"x":89.5,"y":42,"size":11508,"content":{"subtype":"guide0","score":"3","txt":"if you are highlighted this word i am surely to say this very attracted for the buyers"}},{"id":"n7","type":"guide","cord":["220","194","250","402"],"x":235,"y":298,"size":17880,"content":{"subtype":"guide1","score":"4","txt":"the green glass will be show full size and the colour got light, and provide some designs that will show more attraction"}},{"id":"n8","type":"guide","cord":["2","0","261","403"],"x":131.5,"y":201.5,"size":104377,"content":{"subtype":"guide1","score":"5","txt":"This design is according to the guidelines.The elements are aligned from left.which is perfect for this design"}},{"id":"n9","type":"guide","cord":["12","13","245","116"],"x":128.5,"y":64.5,"size":30057,"content":{"subtype":"guide1","score":"5","txt":"the elements are aligned from left side. line is joining them from left which is perfect for this design."}},{"id":"n10","type":"guide","cord":["22","122","250","395"],"x":136,"y":258.5,"size":117876,"content":{"subtype":"guide1","score":"2","txt":"I can not see any alignment between these elements. All elements are placed independently in the marked area."}},{"id":"n11","type":"guide","cord":["71","134","251","387"],"x":161,"y":260.5,"size":93780,"content":{"subtype":"guide1","score":"5","txt":"Its a 3 Glass of Juice or some cool drinks will sure match to the word \"Fresh & Smoothie\""}},{"id":"n12","type":"guide","cord":["26","12","27","394"],"x":26.5,"y":203,"size":406,"content":{"subtype":"guide1","score":"6","txt":"Because the text has a left justification which is clear and follows your guidelines for the image."}},{"id":"n13","type":"guide","cord":["20","89","261","394"],"x":140.5,"y":241.5,"size":116403,"content":{"subtype":"guide1","score":"5","txt":"this design makes people to easily identify the cool drinks. this is best design i have highlighted"}},{"id":"n14","type":"guide","cord":["195","177.5","261","310.5"],"x":228,"y":244,"size":32208,"content":{"subtype":"guide1","score":"3","txt":"the invisible part of the design is not reach the people to easily understand the drinks"}},{"id":"n15","type":"guide","cord":["12","11","261","401"],"x":136.5,"y":206,"size":102588,"content":{"subtype":"guide1","score":"4","txt":"In this smooth fresh juice if you drink the cool drinks & help for good health."}},{"id":"n16","type":"guide","cord":["11","13","248","391"],"x":129.5,"y":202,"size":95748,"content":{"subtype":"guide1","score":"6","txt":"In that fresh using drinking for juice .And help full of the health.In that smart of the good for us."}},{"id":"n17","type":"guide","cord":["14","4","244","395"],"x":129,"y":199.5,"size":91770,"content":{"subtype":"guide1","score":"4","txt":"This picture just copy from the same image which was shown before. But both have some other difference in the same."}},{"id":"n18","type":"guide","cord":["12","9.5","258","400.5"],"x":135,"y":205,"size":100860,"content":{"subtype":"guide1","score":"4","txt":"There is no difference between this picture and the other one before. Because all of the color has no change."}},{"id":"n19","type":"guide","cord":["1","1","261","111.5"],"x":131,"y":56.25,"size":29250,"content":{"subtype":"guide1","score":"4","txt":"the fonts in which they presented i like them most and combination of dark background the light colour fonts are superb"}},{"id":"n20","type":"guide","cord":["12","12.5","250","392.5"],"x":131,"y":202.5,"size":96390,"content":{"subtype":"guide1","score":"4","txt":"This selected design have smooth edges and attractive pictures. very smooth color and wording.\nthis is very nice picture."}},{"id":"n21","type":"guide","cord":["4.5","17","260.5","397"],"x":132.5,"y":207,"size":105984,"content":{"subtype":"guide1","score":"6","txt":"The picture and the text mentioned above perfectly matches the statement which needs to convey"}},{"id":"n22","type":"guide","cord":["80","212","132","356"],"x":106,"y":284,"size":29536,"content":{"subtype":"guide1","score":"3","txt":"strow is different colour.and drinks is only one colour select them.glass size is different size it."}},{"id":"n23","type":"guide","cord":["24","27","144","102"],"x":84,"y":64.5,"size":15480,"content":{"subtype":"guide1","score":"5","txt":"WE CAN SEE HERE, IN THE FIRST LINE COVERS 5 LETTERS(FRESH) BUT IN THE SECOND LINE THE SAME SPACE COVERS ONLY FOUR LETTERS SMOO"}},{"id":"n24","type":"guide","cord":["0","0","260","403"],"x":130,"y":201.5,"size":104780,"content":{"subtype":"guide0","score":"5","txt":"Nice to have this designs with good background and the colors within it in a 3D effect manner."}},{"id":"n25","type":"guide","cord":["15","55","256","304"],"x":135.5,"y":179.5,"size":86519,"content":{"subtype":"guide0","score":"4","txt":"\"Smoothie\" connects with the image of a smoothie below it. The colors bring out that idea as well."}},{"id":"n26","type":"guide","cord":["21","24","240","107"],"x":130.5,"y":65.5,"size":28689,"content":{"subtype":"guide0","score":"5","txt":"If it could have shown in background about the fresh fruits pictures that gives more effectively. "}},{"id":"n27","type":"guide","cord":["19","22","238","258"],"x":128.5,"y":140,"size":61320,"content":{"subtype":"guide0","score":"4","txt":"words and image of smoothie both go together to provide the idea of a smoothie"}},{"id":"n28","type":"guide","cord":["30","111","249","390"],"x":139.5,"y":250.5,"size":109719,"content":{"subtype":"guide0","score":"5","txt":"The glasses look like they contain smoothies, they are colorful and welcoming. They look somewhat realistic and delicious. "}},{"id":"n29","type":"guide","cord":["12","12","251","398"],"x":131.5,"y":205,"size":97990,"content":{"subtype":"guide0","score":"4","txt":"Nothing to say as a error. that is good design for the title of FRESH SMOOTHIE"}},{"id":"n30","type":"guide","cord":["7","126","256","393"],"x":131.5,"y":259.5,"size":129231,"content":{"subtype":"guide0","score":"5","txt":"The glasses are together and in the same direction. They have relationships and are closely grouped."}},{"id":"n31","type":"guide","cord":["13","10","252","395"],"x":132.5,"y":202.5,"size":96795,"content":{"subtype":"guide0","score":"5","txt":"Need to do some changes in the design. The letters are not suitable for the image. "}},{"id":"n32","type":"guide","cord":["18","29","244","109"],"x":131,"y":69,"size":31188,"content":{"subtype":"guide0","score":"4","txt":"IT IS LOOKING AS GOOD DESIGN WITH THE TITLE OF FRESH SMOOTHIE, NO OTHER ANY SPECIFIC CHANGES LIKE THE PICTURE SHOWN."}},{"id":"n33","type":"guide","cord":["12","12","255","396"],"x":133.5,"y":204,"size":99144,"content":{"subtype":"guide0","score":"5","txt":"Letters are for suitable for the image. That shows some different in the given design."}},{"id":"n34","type":"guide","cord":["19","23","250","391"],"x":134.5,"y":207,"size":95634,"content":{"subtype":"guide0","score":"6","txt":"Because the words fresh smoothie go with the pictures of fresh smoothies on the bottom of the picture itself."}},{"id":"n35","type":"guide","cord":["23","27","244","104"],"x":133.5,"y":65.5,"size":28951,"content":{"subtype":"guide0","score":"6","txt":"It groups related words. Fresh and smoothie go together so they should be grouped together. "}},{"id":"n36","type":"guide","cord":["17","23","238","111"],"x":127.5,"y":67,"size":29614,"content":{"subtype":"guide0","score":"5","txt":"both text match the required design.here its very neatly done with proper care.the color design is also good."}},{"id":"n37","type":"guide","cord":["21","24","247","118"],"x":134,"y":71,"size":32092,"content":{"subtype":"guide0","score":"4","txt":"good design suitable for the picture shown above.nice color combination.proper spaces are given and vibrant design"}},{"id":"n38","type":"guide","cord":["54","161","257","402"],"x":155.5,"y":281.5,"size":114289,"content":{"subtype":"guide0","score":"4","txt":"The elements have the classification and variation of the group elements which states that it have various flavours in the group. The group has various flavours"}},{"id":"n39","type":"guide","cord":["109","138.5","235","400.5"],"x":172,"y":269.5,"size":67914,"content":{"subtype":"guide0","score":"5","txt":"attraction colors is very impressed me. and important task of highlighted is fresh smoothie it should be such a pack."}},{"id":"n40","type":"guide","cord":["9","138","252","403"],"x":130.5,"y":270.5,"size":131463,"content":{"subtype":"guide0","score":"5","txt":"The design itself gives the idea about a juice product which is smooth, fresh and ready to use"}},{"id":"n41","type":"guide","cord":["19","74","235","100"],"x":127,"y":87,"size":37584,"content":{"subtype":"guide0","score":"3","txt":"It expresses the smoothness and freshness of the product as a drinking juice or sucking item"}},{"id":"n42","type":"guide","cord":["12","13","257","392"],"x":134.5,"y":202.5,"size":99225,"content":{"subtype":"guide0","score":"6","txt":"Clearly shows a picture of fresh smoothies, which are the items in type on the add."}},{"id":"n43","type":"guide","cord":["19","24","244","130"],"x":131.5,"y":77,"size":34650,"content":{"subtype":"guide1","score":"4","txt":"The text aligns at a hard visible line on the right side of the image."}},{"id":"n44","type":"guide","cord":["3","0","261","403"],"x":132,"y":201.5,"size":103974,"content":{"subtype":"guide2","score":"6","txt":"The use of repeating colors, a single font type and texture, as well as repeating shapes (the glasses) really helps to unify the design. "}},{"id":"n45","type":"guide","cord":["0.5","2.2","261","403"],"x":130.75,"y":202.6,"size":105554.6,"content":{"subtype":"guide2","score":"4","txt":"the colors are repeating, the shapes are easy to read, and the spacing is nice."}},{"id":"n46","type":"guide","cord":["12","11","250","115"],"x":131,"y":63,"size":29988,"content":{"subtype":"guide2","score":"1","txt":"The text font does not look good. The colors are not blending well with the overall design."}},{"id":"n47","type":"guide","cord":["3","109","251","397"],"x":127,"y":253,"size":125488,"content":{"subtype":"guide2","score":"6","txt":"the design is very clearly the color but before that image not clearly this time very clear and attractive of the image then colorfully"}},{"id":"n48","type":"guide","cord":["94","38","248","395"],"x":171,"y":216.5,"size":66682,"content":{"subtype":"guide2","score":"4","txt":"this is a kind of individual colors, having same shapes, as well as same fonts.it shows the spatial relationships"}},{"id":"n49","type":"guide","cord":["14","18","247","116"],"x":130.5,"y":67,"size":31222,"content":{"subtype":"guide2","score":"3","txt":"this design very beautifully of the changing the style model important topic is very clear of after the designe "}},{"id":"n50","type":"guide","cord":["29.5","248","151.5","388"],"x":90.5,"y":318,"size":77592,"content":{"subtype":"guide2","score":"2","txt":"The font is hard to read, and the sunburst effect at the bottom looks awkward behind the drink picture."}},{"id":"n51","type":"guide","cord":["0","126","254","394"],"x":127,"y":260,"size":132080,"content":{"subtype":"guide2","score":"5","txt":"The shapes of the glasses and the angles of the straws are repeated. And the background explosion thing behind the drinks matches the border"}},{"id":"n52","type":"guide","cord":["99","112","259","403"],"x":179,"y":257.5,"size":82400,"content":{"subtype":"guide2","score":"4","txt":"CHANGE THE DESIGN IT VERY ATTRACTIVE COLOR SO I HIGHLIGHTED THIS IS VERY COLOR FUL"}},{"id":"n53","type":"guide","cord":["0","0","261","403"],"x":130.5,"y":201.5,"size":105183,"content":{"subtype":"guide2","score":"5","txt":"I chose the repeating color \"yellow\". It is first introduced as the font color then repeats with the design image and border."}},{"id":"n54","type":"guide","cord":["20","19","242","122"],"x":131,"y":70.5,"size":31302,"content":{"subtype":"guide2","score":"4","txt":"The font color is not attractive and should be in a bright color. The overall background color is not fair. So change the background color too."}},{"id":"n55","type":"guide","cord":["0","0","261","113"],"x":130.5,"y":56.5,"size":29493,"content":{"subtype":"guide2","score":"2","txt":"This box contain same colour in the outer colour also. Same colour does not inclde in it."}},{"id":"n56","type":"guide","cord":["3","4","231","289"],"x":117,"y":146.5,"size":66804,"content":{"subtype":"guide2","score":"4","txt":"The yellow color is repeated (border, text, sun shape). The 3 gray straws are repeated. The shape of the glasses is repeated and they are also clustered together so spatially they look nice."}},{"id":"n57","type":"guide","cord":["19","24","243","139"],"x":131,"y":81.5,"size":36512,"content":{"subtype":"guide3","score":"2","txt":"If the color of the letter is dark, it will be very contrast and will be very effective to view."}},{"id":"n58","type":"guide","cord":["56","142","261","401"],"x":158.5,"y":271.5,"size":111315,"content":{"subtype":"guide3","score":"4","txt":"you need to work change the colors of the page, in order to meet the guideliens. "}},{"id":"n59","type":"guide","cord":["6.5","108","250.5","398"],"x":128.5,"y":253,"size":123464,"content":{"subtype":"guide3","score":"5","txt":"Here the elements colors are different, the shape of the glasses are different, even the lines are different, so yes the guideline is met."}},{"id":"n60","type":"guide","cord":["66","150","253","395"],"x":159.5,"y":272.5,"size":101915,"content":{"subtype":"guide3","score":"5","txt":"It shows the elements in different size and color.The size is also different.So i wish to chose it."}},{"id":"n61","type":"guide","cord":["12","22","245","114"],"x":128.5,"y":68,"size":31688,"content":{"subtype":"guide3","score":"0","txt":"if it has add more color brightness looks nice\n\nadd bright colors.. its very impressive...\n\nInstead of yellow color choose some other bright colors "}},{"id":"n62","type":"guide","cord":["169","151","234","401"],"x":201.5,"y":276,"size":35880,"content":{"subtype":"guide3","score":"6","txt":"glass design is beautiful.and different colour is particular good.and strow is design,and black colour,and size is big."}},{"id":"n63","type":"guide","cord":["102","153","261","393"],"x":181.5,"y":273,"size":86814,"content":{"subtype":"guide3","score":"5","txt":"glass is hight,and drinks in the colours full.andglass design is very beautiful.and stra is model design."}},{"id":"n64","type":"guide","cord":["34","129","254","390"],"x":144,"y":259.5,"size":114180,"content":{"subtype":"guide3","score":"4","txt":"Because it shows the different color, same size, different thickness,occpies the different space and as well as the shape is also different."}},{"id":"n65","type":"guide","cord":["27","128","250","399"],"x":138.5,"y":263.5,"size":117521,"content":{"subtype":"guide3","score":"3","txt":"Becuase it indicates that the color,size,line thickness,shape all are different, and also occupies the different space."}},{"id":"n66","type":"guide","cord":["21","112","245","402"],"x":133,"y":257,"size":115136,"content":{"subtype":"guide3","score":"4","txt":"Becuase the elements (color, size, line thickness, shape, space, etc.) are not the same, it is very different in all aspect."}},{"id":"n67","type":"guide","cord":["0","0","261","403"],"x":130.5,"y":201.5,"size":105183,"content":{"subtype":"guide3","score":"4","txt":"The contrasting colors of the smoothies and the background and the border is appealing to the eye."}},{"id":"n68","type":"guide","cord":["2","2","261","403"],"x":131.5,"y":202.5,"size":104895,"content":{"subtype":"guide3","score":"4","txt":"The straws gave the design a uniform look. In addition to the yellowness of the design, the colors chosen matched the others well."}},{"id":"n69","type":"guide","cord":["0","396","261","403"],"x":130.5,"y":399.5,"size":208539,"content":{"subtype":"guide3","score":"1","txt":"the outline is black on two sides but the other two sides are missing the outline\n"}},{"id":"n70","type":"guide","cord":["19","20.5","241","392.5"],"x":130,"y":206.5,"size":91686,"content":{"subtype":"guide3","score":"6","txt":"color and design is very interesting it is attractive one. it follow all the guidelines."}},{"id":"n71","type":"guide","cord":["13","14.5","261","403"],"x":137,"y":208.75,"size":103540,"content":{"subtype":"guide3","score":"5","txt":"this elements follow all the guidelines. it is attractively designed and pictures has meaning full.\nthe boarder is attractive."}},{"id":"n72","type":"guide","cord":["1","2","260","12"],"x":130.5,"y":7,"size":3626,"content":{"subtype":"guide3","score":"5","txt":"Thickness in not unique and it is varied compared with other elements in this drawing"}},{"id":"n73","type":"guide","cord":["3","0","258","12"],"x":130.5,"y":6,"size":3060,"content":{"subtype":"guide3","score":"6","txt":"The thickness of the element selected in the above drawing varies with the rest of the elements in this drawing."}},{"id":"n74","type":"guide","cord":["94.5","162","240.5","382"],"x":167.5,"y":272,"size":79424,"content":{"subtype":"guide3","score":"2","txt":"this is totally different in color because other colors in the design not belong to this color"}},{"id":"n75","type":"guide","cord":["14.7143","23.4286","238.714","112.429"],"x":126.71415,"y":67.9288,"size":30432.06164272,"content":{"subtype":"guide3","score":"4","txt":"it must be in dark color to attract people easily and describes what the picture shows"}},{"id":"n76","type":"guide","cord":["19.7143","23.2857","234.714","109.286"],"x":127.21415,"y":66.28585,"size":28502.87572849,"content":{"subtype":"guide3","score":"4","txt":"it must be in dark color and clearly explains how the picture really means about the image"}},{"id":"n77","type":"guide","cord":["20","127","254","403"],"x":137,"y":265,"size":124020,"content":{"subtype":"guide3","score":"5","txt":"Its contains three juice classes so I think these may meet design guidelines. I think so"}},{"id":"n78","type":"guide","cord":["22","18","249","115"],"x":135.5,"y":66.5,"size":30191,"content":{"subtype":"guide3","score":"5","txt":"this is creamy juice.very yummy.fruit smoothie is very taste.add milk with smoothie.fresh taste.fresh fruits in fresh smoothie."}},{"id":"n79","type":"guide","cord":["25","114.5","259","394.5"],"x":142,"y":254.5,"size":119106,"content":{"subtype":"guide3","score":"6","txt":"this glasses in smoothie.fresh fruit smoothie.very tasty and chillness.3 flavors of smoothie.with straw to the glasses."}},{"id":"n80","type":"guide","cord":["11","15","259","395"],"x":135,"y":205,"size":101680,"content":{"subtype":"guide3","score":"2","txt":"This images not color combination then three cup dark color used ex : red .yellow . green and tittle words dark color shade used"}},{"id":"n81","type":"guide","cord":["19","25","142","382"],"x":80.5,"y":203.5,"size":50061,"content":{"subtype":"guide3","score":"6","txt":"Font color graphics(stars) color are same.Please give different colors for each of them.Also juice color is same as font color."}},{"id":"n82","type":"guide","cord":["22","11","243","115"],"x":132.5,"y":63,"size":27846,"content":{"subtype":"guide2","score":"5","txt":"Because the color is repeated yellow color even the side also contains yellow color and the fresh smoothie is also yellow color"}},{"id":"n83","type":"guide","cord":["0","0","261","388"],"x":130.5,"y":194,"size":101268,"content":{"subtype":"guide2","score":"5","txt":"The yellow of the font color matches the border and the star pattern below. A black font would match the color of the straws and also fit the guideline."}},{"id":"n84","type":"guide","cord":["23","25","246","109"],"x":134.5,"y":67,"size":29882,"content":{"subtype":"guide2","score":"5","txt":"The font lest the person know what is being sold and how to expect it."}},{"id":"n85","type":"guide","cord":["0","3","260","403"],"x":130,"y":203,"size":105560,"content":{"subtype":"guide2","score":"4","txt":"This part is more attractive than the other parts. I think this explains the whole thing about the picture"}},{"id":"n86","type":"guide","cord":["0","3","260","403"],"x":130,"y":203,"size":105560,"content":{"subtype":"guide2","score":"4","txt":"This part is more attractive than the other parts. I think this explains the whole thing about the picture"}},{"id":"n87","type":"guide","cord":["13","126","261","398"],"x":137,"y":262,"size":129952,"content":{"subtype":"guide2","score":"4","txt":"This part is more colorful than the other parts .It has all the necessary colors to attract the viewers"}},{"id":"n88","type":"guide","cord":["27","130","255","395"],"x":141,"y":262.5,"size":119700,"content":{"subtype":"guide2","score":"4","txt":"Because Repeating colors, shapes, textures, fonts, spatial relationships, etc. can often help unify the entire design."}},{"id":"n89","type":"guide","cord":["25","252","96","388"],"x":60.5,"y":320,"size":45440,"content":{"subtype":"guide2","score":"2","txt":"This shape clashes with the shapes of the smoothies. IF it wasn't there, the design would be cleaner."}},{"id":"n90","type":"guide","cord":["15","19","241","106"],"x":128,"y":62.5,"size":28250,"content":{"subtype":"guide2","score":"5","txt":"The title and the background explosion both work with the border by using the same colors."}},{"id":"n91","type":"guide","cord":["18","16","240","117"],"x":129,"y":66.5,"size":29526,"content":{"subtype":"guide2","score":"2","txt":"This font is hard to read, it really does not tie in with the image."}},{"id":"n92","type":"guide","cord":["90","159.5","219","373"],"x":154.5,"y":266.25,"size":68692.5,"content":{"subtype":"guide2","score":"5","txt":"This part shows the repeated shapes and colors.The repeated color was show in the border and text font."}},{"id":"n93","type":"guide","cord":["10","133","253","395"],"x":131.5,"y":264,"size":128304,"content":{"subtype":"guide3","score":"5","txt":"THIS THREE COLOR I LIKE VERY MUCH AND ITS VERY MODERATELY JUICER THE GLASS MODEL IS VER DIFFERENT"}},{"id":"n94","type":"guide","cord":["19","121","249","401"],"x":134,"y":261,"size":120060,"content":{"subtype":"guide3","score":"4","txt":"Because If the elements (color, size, line thickness, shape, space, etc.) are not the same, then make them very different."}},{"id":"n95","type":"guide","cord":["50","126","241","390"],"x":145.5,"y":258,"size":98556,"content":{"subtype":"guide3","score":"4","txt":"it is contrasting to the background design and hence makes the design attractive.The design looks better this way"}},{"id":"n96","type":"guide","cord":["0","261","136","403"],"x":68,"y":332,"size":90304,"content":{"subtype":"guide3","score":"3","txt":"The selected image is not look like a star burst. But it is suitable for this picture."}},{"id":"n97","type":"guide","cord":["87","156","249","383"],"x":168,"y":269.5,"size":87318,"content":{"subtype":"guide3","score":"6","txt":"three colors for three different drinks and it highlight the advertisement clearly and very suitable for this design"}},{"id":"n98","type":"guide","cord":["22.5","25","252.5","403"],"x":137.5,"y":214,"size":98440,"content":{"subtype":"guide3","score":"6","txt":"it is very nice to see and it meet's the each and every guideline.In my view it is very nice"}},{"id":"n99","type":"guide","cord":["26","20","248","403"],"x":137,"y":211.5,"size":93906,"content":{"subtype":"guide3","score":"5","txt":"in my view this design meet's the guidelines and it is very nice to see i am fully satisfied."}},{"id":"n100","type":"guide","cord":["4","5","259","400"],"x":131.5,"y":202.5,"size":103275,"content":{"subtype":"guide3","score":"5","txt":"the colors used here is very pleasant and overall look of the poster is very simple and appealing"}},{"id":"n101","type":"guide","cord":["84.5","222","167.5","372"],"x":126,"y":297,"size":49302,"content":{"subtype":"guide3","score":"6","txt":"two colors are same . first glass and design color is same but you change the color it gives attraction."}},{"id":"n102","type":"guide","cord":["131","176","250","291"],"x":190.5,"y":233.5,"size":55573,"content":{"subtype":"guide2","score":"5","txt":"it is like in this design.i like this website in this ads. i like it design"}},{"id":"n103","type":"guide","cord":["30","135","256","398"],"x":143,"y":266.5,"size":120458,"content":{"subtype":"guide2","score":"4","txt":"Because Repeating colors, shapes, textures, fonts, spatial relationships, etc. can often help unify the entire design."}},{"id":"n104","type":"guide","cord":["12","21","235","110"],"x":123.5,"y":65.5,"size":29213,"content":{"subtype":"guide2","score":"1","txt":"Fonts not very legible and has the same color as the background which does not make it stand out"}},{"id":"n105","type":"guide","cord":["19","19","246","124"],"x":132.5,"y":71.5,"size":32461,"content":{"subtype":"guide2","score":"2","txt":"the font should be some what dark and color should change and font also make that bold"}},{"id":"n106","type":"guide","cord":["121","183","244","347"],"x":182.5,"y":265,"size":65190,"content":{"subtype":"guide2","score":"5","txt":"IT MATCHES AND IS RELATED TO THE FIGURE AND GIVES A GOD MESSAGE TO KNOW AND UNDERSTAND ABOUT IT..COLORS ARE WONDERFUL WITH GOOD SHAPES SO."}},{"id":"n107","type":"guide","cord":["11","14","247","392"],"x":129,"y":203,"size":95816,"content":{"subtype":"guide2","score":"5","txt":"It has varied colors that makes its visually attractive and gives it a different look altogether. "}},{"id":"n108","type":"guide","cord":["32","82","255","393"],"x":143.5,"y":237.5,"size":105925,"content":{"subtype":"guide2","score":"4","txt":"this design attracted me to some extent and this follows the expectation criteria.so i say that this meets the expectation criteria"}},{"id":"n109","type":"guide","cord":["11","124","249","403"],"x":130,"y":263.5,"size":125426,"content":{"subtype":"guide2","score":"5","txt":"after the image very clear and explain the main item image this very attractive of after changing the design"}},{"id":"n110","type":"guide","cord":["19","29","248","105"],"x":133.5,"y":67,"size":30686,"content":{"subtype":"guide2","score":"5","txt":"Yellow Fresh smoothie. Repeats border and splash color. off sets entire design. Looks popping as 3-d or shadowed."}},{"id":"n111","type":"guide","cord":["21","23","246","386"],"x":133.5,"y":204.5,"size":92025,"content":{"subtype":"guide2","score":"5","txt":"IT IS LIKE TO SEE THE ATTRACTED COLORS. CHILDREN'S ARE GIVE THE FIRST PREFERENCE TO COLORS. IT WILL ATTRACT FOR CHILDREN ESPECIALLY."}},{"id":"n112","type":"guide","cord":["13","11","252","155"],"x":132.5,"y":83,"size":39674,"content":{"subtype":"guide2","score":"5","txt":"I like the font style and color of the text and background color is very nice."}},{"id":"n113","type":"guide","cord":["15","16","239","111"],"x":127,"y":63.5,"size":28448,"content":{"subtype":"guide3","score":"2","txt":"Yellow fonts are not appealing. Red glass is the only object in the picture perfectly matching with color scheme."}},{"id":"n114","type":"guide","cord":["0","3","261","403"],"x":130.5,"y":203,"size":105966,"content":{"subtype":"guide3","score":"3","txt":"CHANGE FONT SIZE AND COLOUR,THE BACKROUND COLOUR ALSO DID'NT FULFILL THE PICTURE MESSAGE THE FLAVOURS COLOUR IS GOOD"}},{"id":"n115","type":"guide","cord":["92","221","251","376"],"x":171.5,"y":298.5,"size":94923,"content":{"subtype":"guide3","score":"2","txt":"they are not the same and they are not very different. that's about all i can think of."}},{"id":"n116","type":"guide","cord":["19","121","234","355"],"x":126.5,"y":238,"size":102340,"content":{"subtype":"guide3","score":"5","txt":"it is very tasty odour i like very much it is very superior to others it is very like to taste"}},{"id":"n117","type":"guide","cord":["13","18","243","120"],"x":128,"y":69,"size":31740,"content":{"subtype":"guide3","score":"2","txt":"the text and the background are similar and this makes the text hard to read."}},{"id":"n118","type":"guide","cord":["22","24","239","106"],"x":130.5,"y":65,"size":28210,"content":{"subtype":"guide3","score":"0","txt":"While the drop shadow has a lot of contrast the actual lettering completely blends in with the background."}},{"id":"n119","type":"guide","cord":["0","0","261","403"],"x":130.5,"y":201.5,"size":105183,"content":{"subtype":"guide3","score":"6","txt":"this graphic design is very well, background color and glasses are reflect good sense. Font in yellow is also so nice"}},{"id":"n120","type":"guide","cord":["11","13","251","127"],"x":131,"y":70,"size":33600,"content":{"subtype":"guide3","score":"5","txt":"equal spacing for each character and words and appeared as a 3D style was so attractive"}},{"id":"n121","type":"guide","cord":["7.5","167","174.5","403"],"x":91,"y":285,"size":95190,"content":{"subtype":"guide3","score":"2","txt":"change design in catchy way. Its look like some dull mood. create innovation to catch customer"}},{"id":"n122","type":"guide","cord":["26","123","253","403"],"x":139.5,"y":263,"size":119402,"content":{"subtype":"guide3","score":"3","txt":"Because If the elements (color, size, line thickness, shape, space, etc.) are not the same, then make them very different."}},{"id":"n123","type":"guide","cord":["4","6","255","400"],"x":129.5,"y":203,"size":101906,"content":{"subtype":"guide3","score":"4","txt":"the border is highlighted with black on one side and on other side it remained plain. the inner draw looks good with not any disturbances."}},{"id":"n124","type":"goal","cord":["13","131","243","395"],"x":128,"y":263,"size":120980,"content":{"subtype":"goal0","score":"5","txt":"This part of the design has the power to attract people due its color combination and looks."}},{"id":"n125","type":"goal","cord":["9","11","251","395"],"x":130,"y":203,"size":98252,"content":{"subtype":"goal0","score":"4","txt":"Background and Caption is good. Good design."}},{"id":"n126","type":"goal","cord":["48","81","240","297"],"x":144,"y":189,"size":72576,"content":{"subtype":"goal0","score":"3","txt":"yes because it looks more natural and explains the clear context and meaning of fresh smoothie juice to taste"}},{"id":"n127","type":"goal","cord":["8","6","258","391"],"x":133,"y":198.5,"size":99250,"content":{"subtype":"goal0","score":"4","txt":"Nice design and keep the children for this advertisement."}},{"id":"n128","type":"goal","cord":["27","37","242","403"],"x":134.5,"y":220,"size":94600,"content":{"subtype":"goal0","score":"4","txt":"purely natural and wonderfully created with cool and temptative designs for a fresh dessert all the way"}},{"id":"n129","type":"goal","cord":["9","15","255","403"],"x":132,"y":209,"size":102828,"content":{"subtype":"goal0","score":"5","txt":"Nice design as well as good background, keep it up.thanks."}},{"id":"n130","type":"goal","cord":["15","14","249","393"],"x":132,"y":203.5,"size":95238,"content":{"subtype":"goal0","score":"4","txt":"THAT PART OF THE DESIGN IS MORE ATTRACTIVE AND USED TO ATTRACT THE EYES OF CUSTOMERS"}},{"id":"n131","type":"goal","cord":["15","32","255","228"],"x":135,"y":130,"size":62400,"content":{"subtype":"goal0","score":"5","txt":"i want the wordings to be highlighted because the visual might sometime get misinterpreted but atleast the wording will underline the pure value of it"}},{"id":"n132","type":"goal","cord":["19","22","237","117"],"x":128,"y":69.5,"size":30302,"content":{"subtype":"goal1","score":"1","txt":"The words are not interesting or attention grabbing, not to mention a little rough on the eyes"}},{"id":"n133","type":"goal","cord":["28","132","261","403"],"x":144.5,"y":267.5,"size":124655,"content":{"subtype":"goal0","score":"5","txt":"As the design is about dessert and the above selected box describes the category pretty much well and buy seeing at it anyone can easily come to know about what it is.."}},{"id":"n134","type":"goal","cord":["31","18","243","338"],"x":137,"y":178,"size":75472,"content":{"subtype":"goal0","score":"6","txt":"It is so simple and looks pretty good. Its so cool and awesome."}},{"id":"n135","type":"goal","cord":["106","164","233","360"],"x":169.5,"y":262,"size":66548,"content":{"subtype":"goal1","score":"4","txt":"i like very much the flavour must be very great the taste must be very flavour"}},{"id":"n136","type":"goal","cord":["133","191","256","403"],"x":194.5,"y":297,"size":73062,"content":{"subtype":"goal1","score":"2","txt":"Basically these colours dont appeal to me and it has to be wide variety of splashy and trendy colors to start off with ideally"}},{"id":"n137","type":"goal","cord":["2.5","6","261","403"],"x":131.75,"y":204.5,"size":105726.5,"content":{"subtype":"goal1","score":"5","txt":"The bright colors are very inviting. They add a bit of smoothness and warmness to the poster. It makes the drinks on the poster look more cold and refreshing."}},{"id":"n138","type":"goal","cord":["18","21","252","256"],"x":135,"y":138.5,"size":64818,"content":{"subtype":"goal1","score":"4","txt":"this part may make people excited about trying out this new service. thats why i am selecting this part of the figure. "}},{"id":"n139","type":"goal","cord":["17.5","26","248.5","109"],"x":133,"y":67.5,"size":31185,"content":{"subtype":"goal1","score":"5","txt":"because it tells exactly what the person or persons wants to get across in this ad"}},{"id":"n140","type":"goal","cord":["16","14","238","397"],"x":127,"y":205.5,"size":91242,"content":{"subtype":"goal1","score":"5","txt":"BASED ON THE INFORMATION PROVIDED IT MEETS ALL THE REQUIREMENTS"}},{"id":"n141","type":"goal","cord":["40","118","256","403"],"x":148,"y":260.5,"size":112536,"content":{"subtype":"goal1","score":"4","txt":"because it indicates different size,color,as well as occupies different space as compared to one another."}},{"id":"n142","type":"goal","cord":["21","128","260","403"],"x":140.5,"y":265.5,"size":126909,"content":{"subtype":"goal1","score":"3","txt":"because it indicates the differnt color, size and occupies the different shape as compared to one another."}},{"id":"n143","type":"goal","cord":["41","129","261","403"],"x":151,"y":266,"size":117040,"content":{"subtype":"goal1","score":"5","txt":"a big cold drink is always yummy and when its colored it means it tastes evevn yummier."}},{"id":"n144","type":"goal","cord":["97","149","261","403"],"x":179,"y":276,"size":90528,"content":{"subtype":"goal1","score":"5","txt":"this colour is very nice and beautiful. This is an apple juice. I like very much."}},{"id":"n145","type":"goal","cord":["13","127","261","403"],"x":137,"y":265,"size":131440,"content":{"subtype":"goal1","score":"2","txt":"It is just not a very interesting design. It seems cheap and unrefined."}},{"id":"n146","type":"goal","cord":["10","110","256","394"],"x":133,"y":252,"size":123984,"content":{"subtype":"goal1","score":"5","txt":"This part of the design shows multi-colored smoothies. It shows people what this product is and it makes them think about it. Thinking about it leads them to wanting to buy it and enjoy it. "}},{"id":"n147","type":"goal","cord":["12","117","260","403"],"x":136,"y":260,"size":128960,"content":{"subtype":"goal0","score":"6","txt":"The design is colorful and created so that the visual aspect of it is appealing to the eye."}},{"id":"n148","type":"goal","cord":["11","143","251","393"],"x":131,"y":268,"size":128640,"content":{"subtype":"goal0","score":"4","txt":"the design depicts the the glass and its contents which shows the theme of the design that it sells desserts"}},{"id":"n149","type":"goal","cord":["20.5","18","243.5","113"],"x":132,"y":65.5,"size":29213,"content":{"subtype":"goal0","score":"5","txt":"The text has a very fresh look to it with the color choice and the font itself. It has an island feel to it."}},{"id":"n150","type":"goal","cord":["75","214","188","395"],"x":131.5,"y":304.5,"size":68817,"content":{"subtype":"goal0","score":"3","txt":"THIS IS MANGO JUICE. ITS VERY TASTY AND DELICIOUS. AND ITS FLAVOR VERY GOOD"}},{"id":"n151","type":"goal","cord":["30","121","261","403"],"x":145.5,"y":262,"size":121044,"content":{"subtype":"goal1","score":"5","txt":"It makes me moderately excited about trying smoothies. The bright colors imply a variety of yummy flavors."}},{"id":"n152","type":"goal","cord":["51","136","250","386"],"x":150.5,"y":261,"size":103878,"content":{"subtype":"goal0","score":"4","txt":"This section is look nice and keeping standard, I think i attract peoples "}},{"id":"n153","type":"goal","cord":["17","128","247","249"],"x":132,"y":188.5,"size":86710,"content":{"subtype":"goal0","score":"4","txt":"Juices and straws give a refreshing sight to eyes. It fits the description and also with the overall picture"}},{"id":"n154","type":"goal","cord":["20","26","241","111"],"x":130.5,"y":68.5,"size":30277,"content":{"subtype":"goal0","score":"4","txt":"It detail whats your offering. FRESH SMOOTHIE. The picture of the drinks dont really sell the product at all cause their isnt an actual photo."}},{"id":"n155","type":"goal","cord":["0","0","261","403"],"x":130.5,"y":201.5,"size":105183,"content":{"subtype":"goal0","score":"4","txt":"3 glasses with juice.I think it feels like very colorful and fresh.so it is a nice design."}},{"id":"n156","type":"goal","cord":["1","0","261","403"],"x":131,"y":201.5,"size":104780,"content":{"subtype":"goal0","score":"6","txt":"i design this image really clearly but before this design not clear the image but after very clear and attractiveness of this design"}},{"id":"n157","type":"goal","cord":["18.5","121","256.5","399"],"x":137.5,"y":260,"size":123760,"content":{"subtype":"goal1","score":"5","txt":"The visual is good for advertisement but it should increase by some additional effects and also add some quotes."}},{"id":"n158","type":"goal","cord":["20","25","249","109"],"x":134.5,"y":67,"size":30686,"content":{"subtype":"goal1","score":"4","txt":"i love the font and that the words are on the very top of the ad. Its the first thing that caught my eye."}},{"id":"n159","type":"goal","cord":["12","12","249","394"],"x":130.5,"y":203,"size":96222,"content":{"subtype":"goal1","score":"6","txt":"Because i can strongly say it meets all the requirements to complete the work as give by the instructions"}},{"id":"n160","type":"goal","cord":["14","18","246","392"],"x":130,"y":205,"size":95120,"content":{"subtype":"goal0","score":"6","txt":"The art attracts people to know about the poster.It is made simply with only two words."}},{"id":"n161","type":"goal","cord":["22","112","256","403"],"x":139,"y":257.5,"size":120510,"content":{"subtype":"goal0","score":"4","txt":"light behind smoothie, yellow, green, pink. these colors exhibit fun, as well as the light jagged background behind the smoothies. this attracts attention an conveys happiness."}},{"id":"n162","type":"goal","cord":["7","11","253","131"],"x":130,"y":71,"size":34932,"content":{"subtype":"goal0","score":"5","txt":"after the design of image very clear and explain the main topic of the image"}},{"id":"n163","type":"goal","cord":["5","4","261","401"],"x":133,"y":202.5,"size":103680,"content":{"subtype":"goal0","score":"4","txt":"it is very attractive and beautiful design.The color given for this design is very wonderful."}},{"id":"n164","type":"goal","cord":["16","128","254","391"],"x":135,"y":259.5,"size":123522,"content":{"subtype":"goal0","score":"4","txt":"This part of the design indicates that there is something to drink (the writing above is hard to read so its not clear what type of drink)."}},{"id":"n165","type":"goal","cord":["20","123","239","403"],"x":129.5,"y":263,"size":115194,"content":{"subtype":"goal0","score":"5","txt":"The colors are bright. The images are simple. The yellow flash in the background grabs my attention. There is good contrast with the background."}},{"id":"n166","type":"goal","cord":["12","247","259","391"],"x":135.5,"y":319,"size":157586,"content":{"subtype":"goal0","score":"6","txt":"Becaise it shows the power of the sun and the many colors of smoothies you sell."}},{"id":"n167","type":"goal","cord":["24","108","257","394"],"x":140.5,"y":251,"size":116966,"content":{"subtype":"goal0","score":"5","txt":"Graphics are very attractiveness to the subject and Glasses are giving very beautiful look. I like it very much and the banner is giving great impact in viewers mind"}},{"id":"n168","type":"goal","cord":["14","130","158","389"],"x":86,"y":259.5,"size":74736,"content":{"subtype":"goal0","score":"4","txt":"eye-catching and dynamic. it shows color and movement, the shapes pop. the color palette is a bit dull or mismatched but otherwise good."}},{"id":"n169","type":"goal","cord":["38","131","261","403"],"x":149.5,"y":267,"size":119082,"content":{"subtype":"goal0","score":"5","txt":"It has pictures, fun colors and draws attention away from the rest of the sign"}},{"id":"n170","type":"goal","cord":["23","29","236","107"],"x":129.5,"y":68,"size":28968,"content":{"subtype":"goal0","score":"6","txt":"this part of the design accurately depicts the product. it is both colorful and eye catching."}},{"id":"n171","type":"goal","cord":["0","0","261","402"],"x":130.5,"y":201,"size":104922,"content":{"subtype":"goal0","score":"4","txt":"the colours in glass it shows thier flavours and inscription gives a thirsty feel while reading"}},{"id":"n172","type":"goal","cord":["14","18","246","392"],"x":130,"y":205,"size":95120,"content":{"subtype":"goal0","score":"6","txt":"The art attracts people to know about the poster.It is made simply with only two words."}},{"id":"n173","type":"goal","cord":["17","16","253","384"],"x":135,"y":200,"size":94400,"content":{"subtype":"goal0","score":"6","txt":"nice look..\nnice colors choose that diagram..\nlook like a juice .. whole part looks good to see \n"}},{"id":"n174","type":"goal","cord":["16","25","237","107"],"x":126.5,"y":66,"size":29172,"content":{"subtype":"goal0","score":"3","txt":"THIS WORD MATCH IN OUR LIFE. BECAUSE EVERY MOMENTS THIS WORD FOLLEOW IN OUR LIFE. WE FEEL FRESH SMOOTHY"}},{"id":"n175","type":"goal","cord":["36","124","243","394"],"x":139.5,"y":259,"size":107226,"content":{"subtype":"goal0","score":"4","txt":"Because the size, shape and volume of the element is not same, it makes different among themselves."}},{"id":"n176","type":"goal","cord":["78","154","248","395"],"x":163,"y":274.5,"size":93330,"content":{"subtype":"goal0","score":"4","txt":"The selected image is fresh and smoothie cool drink.\nThis image only main part of the poster."}},{"id":"n177","type":"goal","cord":["23","19","250","390"],"x":136.5,"y":204.5,"size":92843,"content":{"subtype":"goal0","score":"6","txt":"the design and its writings are perfectly matching and it attain the goal what the designer think\n"}},{"id":"n178","type":"goal","cord":["21.5","18","239.5","116"],"x":130.5,"y":67,"size":29212,"content":{"subtype":"goal0","score":"2","txt":"I believe that this part does not meet the original specification goal (specifically, \"attracting as much attention as possible\") by being hard to read and easy to miss"}},{"id":"n179","type":"goal","cord":["86","150","249","395"],"x":167.5,"y":272.5,"size":88835,"content":{"subtype":"goal0","score":"5","txt":"attractive and different colors gets the attention. The bg color looks not that good and the text is too not so good. but the glasses are fine :)"}},{"id":"n180","type":"goal","cord":["14","105","245","403"],"x":129.5,"y":254,"size":117348,"content":{"subtype":"goal1","score":"5","txt":"Its very attractive and simple. Its very relevant to the product also. A design for a smoothie need not be any complicated"}},{"id":"n181","type":"goal","cord":["16","114","255","400"],"x":135.5,"y":257,"size":122846,"content":{"subtype":"goal1","score":"6","txt":"By looking the colours of the drinking arouse the interest of the readers and the caption FRESH SMOOTHIE is also interesting to see.Hence, it meets the design goal."}},{"id":"n182","type":"goal","cord":["64","170","260","400"],"x":162,"y":285,"size":111720,"content":{"subtype":"goal1","score":"5","txt":"The various colour and the sequence of the smoothie appeal good and it is very impressive for the people"}},{"id":"n183","type":"goal","cord":["7","83","250","395"],"x":128.5,"y":239,"size":116154,"content":{"subtype":"goal1","score":"6","txt":"drink in the design looks awesome by the way it designed and background effect gives more attraction"}},{"id":"n184","type":"goal","cord":["7","83","250","395"],"x":128.5,"y":239,"size":116154,"content":{"subtype":"goal1","score":"6","txt":"drink in the design looks awesome by the way it designed and background effect gives more attraction"}},{"id":"n185","type":"goal","cord":["8","158","98","251"],"x":53,"y":204.5,"size":36810,"content":{"subtype":"goal1","score":"4","txt":"The design has been made in a such way that it is perfect to have a full drink with straw"}},{"id":"n186","type":"goal","cord":["8","158","98","251"],"x":53,"y":204.5,"size":36810,"content":{"subtype":"goal1","score":"4","txt":"The design has been made in a such way that it is perfect to have a full drink with straw"}},{"id":"n187","type":"goal","cord":["38","137","261","397"],"x":149.5,"y":267,"size":119082,"content":{"subtype":"goal1","score":"6","txt":"it is colourful and catching , feels like i have to drink it immediately. it is expressive also"}},{"id":"n188","type":"goal","cord":["38","131","244","403"],"x":141,"y":267,"size":110004,"content":{"subtype":"goal1","score":"4","txt":"Because the size, shape and volume of the elements are not same, they are different among themselves."}},{"id":"n189","type":"goal","cord":["20","11","238","105"],"x":129,"y":58,"size":25288,"content":{"subtype":"goal1","score":"4","txt":"name is good i like it, this shows new meaning mentioned as fresh comparing with others its new in my view ."}},{"id":"n190","type":"goal","cord":["84","138","252","393"],"x":168,"y":265.5,"size":89208,"content":{"subtype":"goal1","score":"4","txt":"pink as it is refreshing and soothing at the same time.It also looks very cool and hip"}},{"id":"n191","type":"goal","cord":["21","125","254","391"],"x":137.5,"y":258,"size":120228,"content":{"subtype":"goal1","score":"6","txt":"it shows fresh and three different colorful drinks poured into glasses which is very much relevant to the words fresh smoothie"}},{"id":"n192","type":"goal","cord":["20","105","253","391"],"x":136.5,"y":248,"size":115568,"content":{"subtype":"goal1","score":"6","txt":"drink looks classy and something special and the design in it will attract people of all ages"}},{"id":"n193","type":"goal","cord":["4","23","238","357"],"x":121,"y":190,"size":88920,"content":{"subtype":"goal1","score":"6","txt":"it only contain relevant background and looking beautiful in small in size nice colours combinations"}},{"id":"n194","type":"goal","cord":["0","1","261","403"],"x":130.5,"y":202,"size":105444,"content":{"subtype":"goal1","score":"4","txt":"The simplicity as well as the vibrant color variation captivated my interests in trying this product."}},{"id":"n195","type":"goal","cord":["26","111","261","403"],"x":143.5,"y":257,"size":120790,"content":{"subtype":"goal1","score":"5","txt":"The color selection is very good and shape of the glasses are also very nice"}},{"id":"n196","type":"goal","cord":["42","120","261","396"],"x":151.5,"y":258,"size":113004,"content":{"subtype":"goal1","score":"4","txt":"this looks goods and it satisfies the the requirements of the requester.so i selected that it slightly satisfies it"}},{"id":"n197","type":"goal","cord":["20","24","200","64"],"x":110,"y":44,"size":15840,"content":{"subtype":"goal1","score":"5","txt":"The most important part of the product is clearly stated at the top of the image."}},{"id":"n198","type":"goal","cord":["14","112","245","388"],"x":129.5,"y":250,"size":115500,"content":{"subtype":"goal1","score":"6","txt":"it looks something different and unique by the way it has been designed and created by the experts "}},{"id":"n199","type":"goal","cord":["26.5","135","261","403"],"x":143.75,"y":269,"size":126161,"content":{"subtype":"goal1","score":"5","txt":"good colour and correct picture indication about the product so i chosen the option moderaltely agree. back ground colour is not so attractive"}},{"id":"n200","type":"goal","cord":["16","139","250","387"],"x":133,"y":263,"size":123084,"content":{"subtype":"goal1","score":"5","txt":"The design that indicate some fruit drinks. The color, glass and straw style meets the design goal."}},{"id":"n201","type":"goal","cord":["25.5","130","250.5","315"],"x":138,"y":222.5,"size":100125,"content":{"subtype":"goal0","score":"5","txt":"It represents a tall tropical drink with a long straw and a variety of colors."}},{"id":"n202","type":"goal","cord":["5","91.5","261","403"],"x":133,"y":247.25,"size":126592,"content":{"subtype":"goal0","score":"5","txt":"This painting is nice, and good for seeing. And natural. Fresh smoothie for color you change also than it also like good. "}},{"id":"n203","type":"goal","cord":["17","128","258","403"],"x":137.5,"y":265.5,"size":127971,"content":{"subtype":"goal0","score":"6","txt":"I drew a box around the smoothies and they meet the design goal because they represent a type of dessert. "}},{"id":"n204","type":"goal","cord":["22.5","62","240.5","110"],"x":131.5,"y":86,"size":37496,"content":{"subtype":"goal0","score":"2","txt":"It only refers to smoothies. I would not be able to know if there are any other desserts at this place."}},{"id":"n205","type":"goal","cord":["26","116","254","393"],"x":140,"y":254.5,"size":116052,"content":{"subtype":"goal0","score":"5","txt":"Is colorfull desing, seems fresh and look like good sweet and delicious drinks. Visualy impacted"}},{"id":"n206","type":"goal","cord":["18","120","261","403"],"x":139.5,"y":261.5,"size":127089,"content":{"subtype":"goal0","score":"6","txt":"It looks fresh, clean, tasty, enjoyable. Its a new generation of a smoothie. The colors also make it really nice."}},{"id":"n207","type":"goal","cord":["36","122.5","260","403"],"x":148,"y":262.75,"size":117712,"content":{"subtype":"goal0","score":"5","txt":"Cups of different flavored smoothies. These elements meets the goal as they suggest that these beverages can be purchased at the specific location and they are available in many different flavors."}},{"id":"n208","type":"goal","cord":["17","115","248","394"],"x":132.5,"y":254.5,"size":117579,"content":{"subtype":"goal0","score":"5","txt":"the glasses of smoothie. They are bright and colorful, and provide an exiting visual image of smoothies.The plesent colors meet the intent"}},{"id":"n209","type":"goal","cord":["42","109","232","398"],"x":137,"y":253.5,"size":96330,"content":{"subtype":"goal0","score":"5","txt":"it is very useful is very tasty odour sweetful i like very muchit is very colourful"}},{"id":"n210","type":"goal","cord":["2","8","250","123"],"x":126,"y":65.5,"size":32488,"content":{"subtype":"goal1","score":"4","txt":"IT IS VERY USEFUL COLOR IS CHANGE. IT IS VERY USEFUL AND LINK ADVERTISING COMPANY."}},{"id":"n211","type":"goal","cord":["2","8","250","123"],"x":126,"y":65.5,"size":32488,"content":{"subtype":"goal1","score":"4","txt":"IT IS VERY USEFUL COLOR IS CHANGE. IT IS VERY USEFUL AND LINK ADVERTISING COMPANY."}},{"id":"n212","type":"goal","cord":["29","123","255","394"],"x":142,"y":258.5,"size":116842,"content":{"subtype":"goal1","score":"5","txt":"This part of design executes the nature of the drink.it also indicates the smoothness of the cool drink\n"}},{"id":"n213","type":"goal","cord":["12","11","252","392"],"x":132,"y":201.5,"size":96720,"content":{"subtype":"goal1","score":"5","txt":"fresh and cool juices to drink with tasty flavors in hot summer or anytime, anywhere "}},{"id":"n214","type":"goal","cord":["11","11","251","391"],"x":131,"y":201,"size":96480,"content":{"subtype":"goal1","score":"6","txt":"it is looking very smoothie to drink Pink,Green,light brown flavored drink with cool ice cubes in it."}},{"id":"n215","type":"goal","cord":["30","135","261","403"],"x":145.5,"y":269,"size":124278,"content":{"subtype":"goal1","score":"4","txt":"Because the size, shape and volume of the element are not same, it makes different among themselves."}},{"id":"n216","type":"goal","cord":["16","124","257","397"],"x":136.5,"y":260.5,"size":125561,"content":{"subtype":"goal1","score":"5","txt":"* colored smoothie drinks\n* they look colorful and fresh and enticing, makes me thirsty and want to drink these cold refreshing smoothies."}},{"id":"n217","type":"goal","cord":["23","144","246","385"],"x":134.5,"y":264.5,"size":117967,"content":{"subtype":"goal1","score":"5","txt":"such a soft suroudings and the pink colored drinks tempted our thirstiness the yellow sparcles yes it works......"}},{"id":"n218","type":"goal","cord":["28","49.5","74","78.5"],"x":51,"y":64,"size":5888,"content":{"subtype":"goal0","score":"3","txt":"1111111111111111111111Explain why these elements in this part of the design do not meet the design goal (at least 15 words):\n1111111111111111111111cwedecef"}},{"id":"n219","type":"goal","cord":["77.6428","174.714","241.643","299.714"],"x":159.6429,"y":237.214,"size":77806.2868856,"content":{"subtype":"goal0","score":"1","txt":"Describe the elements in the part of design you just highlighted, such as smoothie, pink, and drinking.\nExplain why these"}},{"id":"n220","type":"imp","cord":["134","205","224","356"],"x":179,"y":280.5,"size":50490,"content":{"subtype":"apple juice","score":"6","txt":"because its very strengthen for our body including blood circulations is very good most woman liken that thus juice"}},{"id":"n221","type":"imp","cord":["37","124","244","383"],"x":140.5,"y":253.5,"size":104949,"content":{"subtype":"smoothie","score":"9","txt":"It looks like there are three pieces or items that resemble three different types of smoothies with straws."}},{"id":"n222","type":"imp","cord":["12","123","250","391"],"x":131,"y":257,"size":122332,"content":{"subtype":"smoothie","score":"9","txt":"There are three colorful smoothies which made me to choose the word 'Smoothie'. It matches the design."}},{"id":"n223","type":"imp","cord":["23","119","249","395"],"x":136,"y":257,"size":116164,"content":{"subtype":"retro","score":"7","txt":"looks like a poster from decades past, like the fifties or something of that nature"}},{"id":"n224","type":"imp","cord":["15","112","256","400"],"x":135.5,"y":256,"size":123392,"content":{"subtype":"juice","score":"11","txt":"It basically represents three glasses full of juices with straw in it. It has different colors so it can represent any drinks."}},{"id":"n225","type":"imp","cord":["26","229","182","395"],"x":104,"y":312,"size":97344,"content":{"subtype":"energy drink","score":"7","txt":"because the sparkling effect suggest me that this is some kind of energy drink which gives energizes body "}},{"id":"n226","type":"imp","cord":["13","99","261","403"],"x":137,"y":251,"size":124496,"content":{"subtype":" fruity","score":"8","txt":"this i assume fruit juice and very health drinks also ...\nthis fresh drinks high energy drink "}},{"id":"n227","type":"imp","cord":["20","57","250","110"],"x":135,"y":83.5,"size":38410,"content":{"subtype":"smoothie","score":"9","txt":"It is written smoothie that is the reason why U choose it. But also because of the glasses."}},{"id":"n228","type":"imp","cord":["20","26","150","66"],"x":85,"y":46,"size":11960,"content":{"subtype":"fresh","score":"11","txt":"Fresh explains it all, If you buy a smoothie you always want a fresh one."}},{"id":"n229","type":"imp","cord":["55","145","259","398"],"x":157,"y":271.5,"size":110772,"content":{"subtype":"fresh","score":"11","txt":"Well because it looks fresh and ready to drink, like it has just been made for you."}},{"id":"n230","type":"imp","cord":["18","26","240","117"],"x":129,"y":71.5,"size":31746,"content":{"subtype":"delicious","score":"5","txt":"Fresh smoothies always make me think of fruits ll smashed up and tasting like berries"}},{"id":"n231","type":"imp","cord":["14","237","158","397"],"x":86,"y":317,"size":91296,"content":{"subtype":"sunny","score":"3","txt":"It looks like the rays of the sun, because of the shape and the color used."}},{"id":"n232","type":"imp","cord":["12","110","252","396"],"x":132,"y":253,"size":121440,"content":{"subtype":"juice","score":"11","txt":"it shows a glass tumbler with juice inside with a straw. Like this there are three glass tumblers with juice inside with a straw each"}},{"id":"n233","type":"imp","cord":["5","8","261","403"],"x":133,"y":205.5,"size":105216,"content":{"subtype":"tropical","score":"4","txt":"The colors remind me a of a tropical island. The drinks are perfect to represent a tropical place."}},{"id":"n234","type":"imp","cord":["19","92","242","400"],"x":130.5,"y":246,"size":109716,"content":{"subtype":" colorful","score":"14","txt":"Because this part has many different colors and shapes and so my eye was automatically drawn here."}},{"id":"n235","type":"imp","cord":["0","0","261","113"],"x":130.5,"y":56.5,"size":29493,"content":{"subtype":"old fashioned","score":"2","txt":"this is for test. Describe this part of design you just highlighted and explain why your impression relates to this part (at least 15 words)"}},{"id":"n236","type":"imp","cord":["90","190","247","381"],"x":168.5,"y":285.5,"size":89647,"content":{"subtype":"juice","score":"11","txt":"it is traditional glass for juices and the color of the drink in the design some what relevant to juices"}},{"id":"n237","type":"imp","cord":["104","158","253","394"],"x":178.5,"y":276,"size":82248,"content":{"subtype":"drink","score":"5","txt":"Fresh drink is a very good drink to all. Children likes soft drinks than food. Strawberry taste likes all."}},{"id":"n238","type":"imp","cord":["16","116","250","394"],"x":133,"y":255,"size":119340,"content":{"subtype":"drink","score":"5","txt":"It seems to flavored drinks. Three flavors namely chikkoo, strawberry and mint. 3 glasses with straws in it proves it to be drinks."}},{"id":"n239","type":"imp","cord":["23","134","253","393"],"x":138,"y":263.5,"size":121210,"content":{"subtype":"delicious","score":"5","txt":"The three drinks look like they would taste wonderful. The person viewing this image can almost see themselves sipping on one of these drinks at the beach or at a restaurant."}},{"id":"n240","type":"imp","cord":["7","8","259","403"],"x":133,"y":205.5,"size":103572,"content":{"subtype":" colorful","score":"14","txt":"becoz the image fully colourful and on seeeing it the mind gets freshness .This kind of image will induce people to watch it again"}},{"id":"n241","type":"imp","cord":["20","128","261","396"],"x":140.5,"y":262,"size":126284,"content":{"subtype":"drink","score":"5","txt":"the design has three juice glasses with straws which indicates that it is a drink. "}},{"id":"n242","type":"imp","cord":["12","106","256","403"],"x":134,"y":254.5,"size":124196,"content":{"subtype":" colorful","score":"14","txt":"This area contains many different colors that both complement each other and catch your attention."}},{"id":"n243","type":"imp","cord":["0","0","261","403"],"x":130.5,"y":201.5,"size":105183,"content":{"subtype":"retro","score":"7","txt":"the retro font, star burst, and glasses all look like vintage visit America travel posters"}},{"id":"n244","type":"imp","cord":["28","126","258","396"],"x":143,"y":261,"size":120060,"content":{"subtype":" colorful","score":"14","txt":"the drinks in the glasses are shown in different attractive colors. so my impression was colorful"}},{"id":"n245","type":"imp","cord":["24","214","157","388"],"x":90.5,"y":301,"size":80066,"content":{"subtype":"fresh","score":"11","txt":"I like it because it springs to life, is brightly colored, and appears dynamic and full of life."}},{"id":"n246","type":"imp","cord":["20","21","154","69"],"x":87,"y":45,"size":12060,"content":{"subtype":" fruity","score":"8","txt":"I believe freshness means that you will get fruit from it since fruits are fresh"}},{"id":"n247","type":"imp","cord":["17","11","249","391"],"x":133,"y":201,"size":93264,"content":{"subtype":" tasty","score":"6","txt":"The word tasty briefly refers to the design and it meets all the requirements as the logo is very attractive and appealing."}},{"id":"n248","type":"imp","cord":["117","285","179","399"],"x":148,"y":342,"size":42408,"content":{"subtype":" fruity","score":"8","txt":"It just reminds me of orange juice. The colors are just the colors that a fruit would have. Besides, smoothies are almost always made of fruit anyway."}},{"id":"n249","type":"imp","cord":["17","114","261","399"],"x":139,"y":256.5,"size":125172,"content":{"subtype":" fruity","score":"8","txt":"when i am stared at this visual design i look at only these drinks and in my mind the name fruity exist because i like fruity very much it look like fruity thankyou for giving the task"}},{"id":"n250","type":"imp","cord":["18","125","252","391"],"x":135,"y":258,"size":120744,"content":{"subtype":" colorful","score":"14","txt":"its look very colourfull and looks beauty its contains more colors and different colors and the shape is also nice drawing is good"}},{"id":"n251","type":"imp","cord":["18","16","149","64"],"x":83.5,"y":40,"size":10480,"content":{"subtype":"fresh","score":"11","txt":"I thought that this drink is freshly prepared. So, I mention that it is fresh."}},{"id":"n252","type":"imp","cord":["12","10","252","397"],"x":132,"y":203.5,"size":97680,"content":{"subtype":" colorful","score":"14","txt":"good combination.Thank you.In this very colorful of the glass & straws.They are ver happy and the cofortable."}},{"id":"n253","type":"imp","cord":["58","29","256","394"],"x":157,"y":211.5,"size":83754,"content":{"subtype":"retro","score":"7","txt":"Vary Good Dissipation In case Atonal world In Pitcher vary Impotent Vary natural "}},{"id":"n254","type":"imp","cord":["44","168","242","403"],"x":143,"y":285.5,"size":113058,"content":{"subtype":"tropical","score":"4","txt":"This is very simple to taste it. We can enjoy every bit of taste here."}},{"id":"n255","type":"imp","cord":["63","215","166","387"],"x":114.5,"y":301,"size":62006,"content":{"subtype":" chocolate ","score":"2","txt":"because i like chocolate more so i always preferred for that and also everyone like chocolate because of its taste"}},{"id":"n256","type":"imp","cord":["15","118","252","395"],"x":133.5,"y":256.5,"size":121581,"content":{"subtype":"retro","score":"7","txt":"The design and colors are similar to posters my Grandmother had in her house that I saw every day from the 1940 - 50 era"}},{"id":"n257","type":"imp","cord":["22","25","244","129"],"x":133,"y":77,"size":34188,"content":{"subtype":"retro","score":"7","txt":"The typeface used in this caption looks quite dated, thus I describe it as being retro."}},{"id":"n258","type":"imp","cord":["14","119","257","398"],"x":135.5,"y":258.5,"size":125631,"content":{"subtype":"energy drink","score":"7","txt":"Pleas change the colour , letter to design in attractive and print to package in attractive letter and strap to colour change"}},{"id":"n259","type":"imp","cord":["91","170","251","403"],"x":171,"y":286.5,"size":91680,"content":{"subtype":" fruity","score":"8","txt":"it is very tasty and i like very much it is more beautiful and the taste must be like odour"}},{"id":"n260","type":"imp","cord":["24","21","254","390"],"x":139,"y":205.5,"size":94530,"content":{"subtype":"apple juice","score":"6","txt":"Good for health add to recently apple shaped in to the apple should be expaired ."}},{"id":"n261","type":"imp","cord":["67","336","106","358"],"x":86.5,"y":347,"size":27066,"content":{"subtype":" tasty","score":"6","txt":"tasty\nvery tasty fresh and smoothy nice drink apple njuice is a energitic drink i like the drink"}},{"id":"n262","type":"imp","cord":["14","67","247","114"],"x":130.5,"y":90.5,"size":42173,"content":{"subtype":"smoothie","score":"9","txt":"I think this drink very smoothier than any other drink. This drink is also a fresh one."}},{"id":"n263","type":"imp","cord":["77","156","249","394"],"x":163,"y":275,"size":94600,"content":{"subtype":"juice","score":"11","txt":"The coloured liquids in glasses -> normally associate juices. Watermelon my favorite is reddish is colour"}},{"id":"n264","type":"imp","cord":["11","125","261","403"],"x":136,"y":264,"size":132000,"content":{"subtype":"juice","score":"11","txt":"There are 3 brightly colored glasses with straws in them. They remind me of fruit juice or a smoothie such as strawberry, peach, or apple or wheat grass."}},{"id":"n265","type":"imp","cord":["11","13","249","398"],"x":130,"y":205.5,"size":97818,"content":{"subtype":"retro","score":"7","txt":"The whole design looks retro because it looks similar to art deco with the shapes and colors."}},{"id":"n266","type":"imp","cord":["24","123","247","391"],"x":135.5,"y":257,"size":114622,"content":{"subtype":"juice","score":"11","txt":"The picture shows three glasses of juice of different flavours. One is coloured green, other is red and the third one is in orange color."}},{"id":"n267","type":"imp","cord":["18","14","147","66"],"x":82.5,"y":40,"size":10320,"content":{"subtype":"fresh","score":"11","txt":"This part of the design obviously tells us that this drink is a fresh smoothie"}},{"id":"n268","type":"imp","cord":["72","135","239","360"],"x":155.5,"y":247.5,"size":82665,"content":{"subtype":" colorful","score":"14","txt":"This is the portion of the picture I was visually drawn to when I first looked at it. I immediately noticed how many different colors there were in this particular area. That's why I thought of the word \"colorful\"."}},{"id":"n269","type":"imp","cord":["29","127","245","397"],"x":137,"y":262,"size":113184,"content":{"subtype":"retro","score":"7","txt":"drinks, hot pink, lime green.\nIt looks like an ad you might have found in the eighties especially the yellow \"flash\" around the drinks. The font doesn't seem especially retro though."}},{"id":"n270","type":"imp","cord":["34","117","259","372"],"x":146.5,"y":244.5,"size":110025,"content":{"subtype":"energy drink","score":"7","txt":"all three colours itself are giving energy and activeness so its energy drink nice colours"}},{"id":"n271","type":"imp","cord":["18","123","261","392"],"x":139.5,"y":257.5,"size":125145,"content":{"subtype":"retro","score":"7","txt":"Smoothies tilted with simple design. \nI choose retro because the design is simple, with less detail and reminds me of some old style posters."}},{"id":"n272","type":"imp","cord":["16","69","243","389"],"x":129.5,"y":229,"size":103966,"content":{"subtype":"smoothie","score":"9","txt":"I saw three different smoothies with straws. The smoothies appeared to be fruit flavored. I liked the clean design elements which were used."}},{"id":"n273","type":"ele","cord":["23","247","158","399"],"x":90.5,"y":323,"size":87210,"content":{"subtype":"shape","score":"1","txt":"Star burst"}},{"id":"n274","type":"ele","cord":["9","6","256","396"],"x":132.5,"y":201,"size":99294,"content":{"subtype":"shape","score":"2","txt":" rectangle"}},{"id":"n275","type":"ele","cord":["96","169","243","382"],"x":169.5,"y":275.5,"size":80997,"content":{"subtype":"shape","score":"2","txt":" hourglass"}},{"id":"n276","type":"ele","cord":["33","258","162","401"],"x":97.5,"y":329.5,"size":85011,"content":{"subtype":"shape","score":"1","txt":" sun"}},{"id":"n277","type":"ele","cord":["33","135","47","148"],"x":40,"y":141.5,"size":3962,"content":{"subtype":"shape","score":"7","txt":"circle"}},{"id":"n278","type":"ele","cord":["87","165","261","386"],"x":174,"y":275.5,"size":95874,"content":{"subtype":"shape","score":"1","txt":" cone"}},{"id":"n279","type":"ele","cord":["30","108","237","280"],"x":133.5,"y":194,"size":80316,"content":{"subtype":"activity","score":"2","txt":"sipping"}},{"id":"n280","type":"ele","cord":["8","274","105","387"],"x":56.5,"y":330.5,"size":64117,"content":{"subtype":"activity","score":"3","txt":"sunbathing"}},{"id":"n281","type":"ele","cord":["81","146","239","388"],"x":160,"y":267,"size":84372,"content":{"subtype":"object","score":"10","txt":"glass"}},{"id":"n282","type":"ele","cord":["20","23","241","109"],"x":130.5,"y":66,"size":29172,"content":{"subtype":"object","score":"3","txt":"words"}},{"id":"n283","type":"ele","cord":["72","149","250","393"],"x":161,"y":271,"size":96476,"content":{"subtype":"object","score":"2","txt":"beverages"}},{"id":"n284","type":"ele","cord":["84","156","254","382"],"x":169,"y":269,"size":91460,"content":{"subtype":"object","score":"8","txt":"smoothie"}},{"id":"n285","type":"ele","cord":["71","144","248","391"],"x":159.5,"y":267.5,"size":94695,"content":{"subtype":"object","score":"4","txt":"drink"}},{"id":"n286","type":"ele","cord":["5","175","105","242"],"x":55,"y":208.5,"size":41700,"content":{"subtype":"object","score":"2","txt":"straw"}},{"id":"n287","type":"ele","cord":["16","234","162","403"],"x":89,"y":318.5,"size":93002,"content":{"subtype":"object","score":"2","txt":"sun"}},{"id":"n288","type":"ele","cord":["7","10","244","204"],"x":125.5,"y":107,"size":50718,"content":{"subtype":"color","score":"6","txt":"blue"}},{"id":"n289","type":"ele","cord":["147","213","193","246"],"x":170,"y":229.5,"size":21114,"content":{"subtype":"color","score":"5","txt":"pink"}},{"id":"n290","type":"ele","cord":["81","319","112","366"],"x":96.5,"y":342.5,"size":21235,"content":{"subtype":"color","score":"1","txt":"Yellow"}},{"id":"n291","type":"ele","cord":["28","219","62","260"],"x":45,"y":239.5,"size":16286,"content":{"subtype":"color","score":"6","txt":"blue"}},{"id":"n292","type":"ele","cord":["80","300","133","385"],"x":106.5,"y":342.5,"size":36305,"content":{"subtype":"color","score":"10","txt":"orange"}},{"id":"n293","type":"ele","cord":["125","171","145","187"],"x":135,"y":179,"size":7160,"content":{"subtype":"color","score":"3","txt":"white"}},{"id":"n294","type":"ele","cord":["116","265","138","296"],"x":127,"y":280.5,"size":12342,"content":{"subtype":"color","score":"8","txt":"brown"}},{"id":"n295","type":"ele","cord":["212","202","231","261"],"x":221.5,"y":231.5,"size":8797,"content":{"subtype":"color","score":"6","txt":"green"}},{"id":"n296","type":"ele","cord":["145","206","188","240"],"x":166.5,"y":223,"size":19178,"content":{"subtype":"color","score":"4","txt":"red"}},{"id":"n297","type":"ele","cord":["124","192","239","371"],"x":181.5,"y":281.5,"size":64745,"content":{"subtype":"color","score":"4","txt":"red"}},{"id":"n298","type":"ele","cord":["22","64","241","120"],"x":131.5,"y":92,"size":40296,"content":{"subtype":"object","score":"8","txt":"smoothie"}},{"id":"n299","type":"ele","cord":["93","153","244","387"],"x":168.5,"y":270,"size":81540,"content":{"subtype":"object","score":"10","txt":"glass"}},{"id":"n300","type":"ele","cord":["137","168","238","378"],"x":187.5,"y":273,"size":55146,"content":{"subtype":"color","score":"5","txt":"pink"}},{"id":"n301","type":"ele","cord":["28","130","115","180"],"x":71.5,"y":155,"size":26970,"content":{"subtype":"object","score":"2","txt":"straw"}},{"id":"n302","type":"ele","cord":["100","181","240","384"],"x":170,"y":282.5,"size":79100,"content":{"subtype":"color","score":"5","txt":"pink"}},{"id":"n303","type":"ele","cord":["92","148","252","403"],"x":172,"y":275.5,"size":88160,"content":{"subtype":"object","score":"10","txt":"glass"}},{"id":"n304","type":"ele","cord":["12","62","242","112"],"x":127,"y":87,"size":40020,"content":{"subtype":"object","score":"8","txt":"smoothie"}},{"id":"n305","type":"ele","cord":["13","13","251","392"],"x":132,"y":202.5,"size":96390,"content":{"subtype":"shape","score":"2","txt":" rectangle"}},{"id":"n306","type":"ele","cord":["20","64","247","248"],"x":133.5,"y":156,"size":70824,"content":{"subtype":"activity","score":"5","txt":" drinking a smoothie"}},{"id":"n307","type":"ele","cord":["25","23","238","112"],"x":131.5,"y":67.5,"size":28755,"content":{"subtype":"object","score":"3","txt":"words"}},{"id":"n308","type":"ele","cord":["101","157","255","388"],"x":178,"y":272.5,"size":83930,"content":{"subtype":"color","score":"4","txt":"red"}},{"id":"n309","type":"ele","cord":["21","67","245","105"],"x":133,"y":86,"size":38528,"content":{"subtype":"object","score":"8","txt":"smoothie"}},{"id":"n310","type":"ele","cord":["16","60","242","114"],"x":129,"y":87,"size":39324,"content":{"subtype":"object","score":"8","txt":"smoothie"}},{"id":"n311","type":"ele","cord":["19","64","241","109"],"x":130,"y":86.5,"size":38406,"content":{"subtype":"object","score":"8","txt":"smoothie"}},{"id":"n312","type":"ele","cord":["43","137","252","394"],"x":147.5,"y":265.5,"size":110979,"content":{"subtype":"object","score":"2","txt":"beverages"}},{"id":"n313","type":"ele","cord":["106","191","242","379"],"x":174,"y":285,"size":77520,"content":{"subtype":"color","score":"5","txt":"pink"}},{"id":"n314","type":"ele","cord":["18","17","241","114"],"x":129.5,"y":65.5,"size":29213,"content":{"subtype":"object","score":"3","txt":"words"}},{"id":"n315","type":"ele","cord":["14","218","261","403"],"x":137.5,"y":310.5,"size":153387,"content":{"subtype":"object","score":"2","txt":"sun"}},{"id":"n316","type":"ele","cord":["81","170","255","391"],"x":168,"y":280.5,"size":97614,"content":{"subtype":"object","score":"8","txt":"smoothie"}},{"id":"n317","type":"ele","cord":["18","118","254","389"],"x":136,"y":253.5,"size":119652,"content":{"subtype":"activity","score":"5","txt":" drinking a smoothie"}},{"id":"n318","type":"ele","cord":["53","139","255","394"],"x":154,"y":266.5,"size":107666,"content":{"subtype":"object","score":"4","txt":"drink"}},{"id":"n319","type":"ele","cord":["196","129","261","394"],"x":228.5,"y":261.5,"size":33995,"content":{"subtype":"color","score":"6","txt":"green"}},{"id":"n320","type":"ele","cord":["18","130","255","393"],"x":136.5,"y":261.5,"size":123951,"content":{"subtype":"activity","score":"3","txt":"sunbathing"}},{"id":"n321","type":"ele","cord":["19","68","237","104"],"x":128,"y":86,"size":37496,"content":{"subtype":"object","score":"8","txt":"smoothie"}},{"id":"n322","type":"ele","cord":["31","129","253","397"],"x":142,"y":263,"size":116772,"content":{"subtype":"object","score":"4","txt":"drink"}},{"id":"n323","type":"ele","cord":["92","162","249","394"],"x":170.5,"y":278,"size":87292,"content":{"subtype":"object","score":"4","txt":"drink"}},{"id":"n324","type":"ele","cord":["4","130","261","394"],"x":132.5,"y":262,"size":134668,"content":{"subtype":"activity","score":"5","txt":" drinking a smoothie"}},{"id":"n325","type":"ele","cord":["28","6","238","385"],"x":133,"y":195.5,"size":82110,"content":{"subtype":"activity","score":"3","txt":"sunbathing"}},{"id":"n326","type":"ele","cord":["22","22","148","64"],"x":85,"y":43,"size":10836,"content":{"subtype":"activity","score":"2","txt":"fresh"}}],"range":{"guide":["0","6"],"goal":["1","6"],"imp":["2","14"],"ele":["1","10"]},"isshown":{"eleorg":true,"notice":true,"imp":true,"goal":true,"criteria":true},"legend":{ "goal":{"title":["goal 1","goal 2"],"content":["content1","content2"]}, "guide":{"title":["guideline 1","guideline 2","guideline 3","guideline 4"], "content":["content 1","content 2","content 3","content 4"]}}};
+	
+	var isShownTabs = json_all.isshown;
+	//isShownTabs = {"eleorg":true,"notice":true,"imp":true,"goal":true,"criteria":true};
+	
+      $(function() {
+       	    
+        	if (isShownTabs["eleorg"])
+        	{
+        		addTab("eleorg","Elements");
+            	$("div#tabs-eleorg").append("<div id='elementorg' class = 'elementorg'> </div>");
+        	}
+
+        	if (isShownTabs["notice"])
+        	{
+              	addTab("notice","First Notice");
+        		$("div#tabs-notice").append("\
+                	<div class='elementvis' align='left' style='height: 400px;'> \
+                		<table align='left'> \
+                			<tbody id='elementTableID'>\
+                			</tbody>\
+                		</table>\
+                		<div  style='float: left; padding-left:19px' id='eleLegend'></div>\
+                	</div>");   
+        	}
+        	
+        	if (isShownTabs["imp"])
+        	{
+            	addTab("imp","Impressions");
+            	
+        		$("div#tabs-imp").append("\
+                	<div id='wordcloudContainer'></div>\
+                	<div class='explaintxt' id='explain_imp' style ='max-height: 400px; overflow-y:auto;'></div>");  
+        	}
+
+        	if (isShownTabs["goal"])
+        	{
+            	addTab("goal","Goals");            	
+        		$("div#tabs-goal").append("\
+        			<div align='left'> \
+    			    	<div id='stackbarLegend_goal'></div>\
+    			    	<div id='stackbar_goal'></div>\
+    			    	<div class='explaintxt' id='explain_goal' style ='max-height: 400px; overflow-y:auto;'></div>\
+    			    </div>");  
+            }
+
+        	if (isShownTabs["criteria"])
+        	{
+            	addTab("criteria","Guidelines");
+        		$("div#tabs-criteria").append("\
+    				<div align='left'>\
+						<div id='stackbarLegend_criteria'></div>\
+						<div id='stackbar_criteria'></div>\
+						<div class='explaintxt' id='explain_criteria' style ='max-height: 400px; overflow-y:auto;'></div>\
+					</div>");  
+        	}
+			
+        	//$( "#tabs" ).tabs();
+        	$('#myTab a').click(function(e) {
+			    e.preventDefault();
+			    $(this).tab('show');
+			})
+			$('#myTab a:first').tab('show');
+        	//current_tab = $("#tabs ul>li a").eq($( "#tabs" ).tabs( "option", "active")).attr('href');
+        	current_tab = $("ul#myTab li.active").find('a').attr('href');
+        	if(current_tab == "#tabs-eleorg")
+		    	{ isHeatmapvisible = "false";
+		    	}else{isHeatmapvisible = "true";}
+
+          	$("#tabs").click(
+        		    function(event) {
+        		    	//if (current_tab != $("#tabs ul>li a").eq($( "#tabs" ).tabs( "option", "active")).attr('href'))
+        		    	if (current_tab != $("ul#myTab li.active").find('a').attr('href'))
+        		    	{
+             		    	
+             		    	//current_tab = $("#tabs ul>li a").eq($( "#tabs" ).tabs( "option", "active")).attr('href');
+             		    	current_tab = $("ul#myTab li.active").find('a').attr('href');
+
+							// $("#tabs ul>li a").eq($tabIndex).attr('href');
+             		    	//don't show visual pointers when clike the first tab "elements"
+             		    	if(current_tab == "#tabs-eleorg")
+             		    	{ isHeatmapvisible = "false";
+             		    	}else{isHeatmapvisible = "true";}
+            		    	
+        		    		 if ( isHeatmapvisible == "true")
+            		    	 {
+                		    	 object_heatnetwork.showOneTypeNodes(json_feedbackTypes[current_tab],true);
+
+                		    	 $panel_img.slideUp(0,function(){
+                		        	$panel_img.removeClass('hide').slideDown('fast');
+                		         });
+            		    	 }else{
+            		    		 object_heatnetwork.hide();
+            		             $panel_img.slideUp('fast',function(){
+            		             	$panel_img.addClass('hide').slideDown(0);
+            		             });
+                     		 }    
+           		    	  
+                		 }
+        		    	 console.log("current tab: "+json_feedbackTypes[current_tab]);
+        		    	    		    	        		    		    	 
+        		    }
+        		);      
+    		
+        	});
+
+    //need data
+    var path_design = "<%= @design.picture.url(:thumb) %>";
+    var img_width;
+    var img_height;
+    
+    var img = new Image();
+    img.src = path_design;
+        
+
+ 	$(document).ready(function() {
+        	
+   	   img.onload = function() {
+
+	   var $button = $('#myButton'),
+       $panel_text   = $('#tabs');
+
+
+	   $('input[name=radio-text-visual]:radio', '#radios-text-visual').click(function () {   
+		   //Hook the click event for selected elements
+			isHeatmapvisible =  $('input[name=radio-text-visual]:checked', '#radios-text-visual').val()
+
+			     if ( isHeatmapvisible =="true") {
+
+			 		//var activeIndex = $( "#tabs" ).tabs( "option", "active");
+					//$( "#tabs-img" ).tabs( "option", "active", current_tab );   
+					
+			   	  //object_heatnetwork.show();
+			   	  object_heatnetwork.showOneTypeNodes(json_feedbackTypes[current_tab],true);
+			   	  //d3.select('.extent').attr("visibility", "visible");
+			      //d3.select('#test').attr("visibility", "visible");
+			         
+			       //$panel_text.slideUp('fast',function(){
+			       // $panel_text.addClass('hide')
+			       //       .slideDown(0);
+			       //});
+			
+			       $panel_img.slideUp(0,function(){
+			           $panel_img.removeClass('hide')
+			                .slideDown('fast');
+			         });
+			         
+			     } else {
+			      //var activeIndex = $( "#tabs-img" ).tabs( "option", "active");
+				  //$( "#tabs" ).tabs( "option", "active", current_tab ); 
+			
+			   	  object_heatnetwork.hide();
+			   	  
+			
+			       //$panel_text.slideUp(0,function(){
+			       //  $panel_text.removeClass('hide')
+			       //       .slideDown('fast');
+			       //});
+			
+			       $panel_img.slideUp('fast',function(){
+			           $panel_img.addClass('hide')
+			                .slideDown(0);
+			         });
+			     }
+					
+	   });
+
+
+        	img_width = this.width;
+          	img_height = this.height;
+
+
+            console.log("image size:"+img_width + 'x' + img_height);
+            //alert(img_width + 'x' + img_height);
+            
+
+            d3.select("#viz").style("width", img_width+"px");
+            d3.select("#viz").style("height", img_height+"px");
+            var imgSVG = d3.select("#viz")
+            .append("svg")
+            .attr("width", img_width)
+            .attr("height", img_height);  
+        
+            imgSVG.append("image")
+    	    .attr("xlink:href", path_design)
+    	    .attr("id", "imageID")
+    	    .attr("width", img_width)
+    	    .attr("height", img_height)
+    	    ;
+
+
+        
+        var iWordsContent = [];		
+		var iWordsVotes = [];
+
+		var lables_goal = [];
+		var tooltips_goal = [];
+		var arrs_ratings_goal = [];
+		if (isShownTabs["goal"])
+		{
+			lables_goal = json_all.legend.goal.title;
+			tooltips_goal = json_all.legend.goal.content;
+			var num_goal = lables_goal.length;
+			//var lables_goal = ["goal 1","goal 2"];
+			//var tooltips_goal = ["When you look at the website, you can easily understand that this website can help you send kudos messages to your friends to make them and yourself happy.","When you look at the website, it will make you feel good and positive."];	
+			for (var i = 0; i < num_goal ; ++i)
+		    {   var mx = [].repeat(0, 7);
+		        arrs_ratings_goal[i]  = mx;}
+		}
+
+		var lables_criteria = [];
+		var tooltips_criteria = [];
+		var arrs_ratings_criteria = [];
+		if (isShownTabs["criteria"])
+		{
+			var lables_criteria = json_all.legend.guide.title;
+			var tooltips_criteria = json_all.legend.guide.content;
+			var num_criteria = lables_criteria.length;
+			var arrs_ratings_criteria = [];
+			for (var i = 0; i < num_criteria ; ++i)
+		    {   var mx = [].repeat(0, 7);
+		        arrs_ratings_criteria[i]  = mx;}
+				//lables_criteria = ["proximity","alignment","repetition","constrast"];
+		}
+
+		var jsonArray_elements = [];
+		var arr_cords_elements = {};
+		var elementsHashTmp = {};
+		//jsonArray_elements = {"id":"3355_2","type":"shape","typevote":0,"element":"rectangle","allvote":"9"}
+        // arr_cords_elements = {"3355_2":[["62","181","355","230"],["463","218","548","263"],["465","224","548","259"],["61","187","353","231"],["62","187","347","336"]],"3355_1":[["388","299","471","369"],["385","296","472","371"],["389","297","469","374"],["292","179","354","225"],["391","296","466","377"]],"3366_1":[["73","191","350","224"],["64","184","351","228"],["401","303","463","373"],["3","16","899","86"]],"3380_1":[["394","399","461","460"],["389","392","462","468"],["391","391","472","469"]],"3366_2":[["67","373","348","404"],["65","373","349","408"],["65","372","354","411"]],"3342_1":[["463","220","551","263"],["467","225","546","254"],["461","221","548","260"],["467","225","547","259"]],"3380_3":[["390","292","471","380"],["390","293","467","370"],["384","305","473","371"]],"3380_2":[["290","177","351","235"],["152","0","274","109"]],"3380_4":[["401","494","453","537"],["382","489","469","537"]],"3378_1":[["398","404","473","466"],["384","393","470","471"]],"3385_2":[["51","10","373","89"],["57","17","380","84"]],"3388_1":[["161","15","255","88"]],"3365_3":[["263","225","348","308"]],"3341_2":[["625","33","696","76"]],"3342_2":[["130","110","235","141"]],"3345_1":[["282","250","341","309"]],"3347_1":[["52","19","385","145"]],"3347_2":[["386","218","719","268"]],"3379_2":[["552","227","612","254"]],"3378_2":[["419","328","441","348"]],"3352_1":[["390","409","481","479"]],"3369_2":[["396","498","461","537"]],"3341_1":[["161","5","254","96"]]};
+        
+		var i_ele = 0, i_imp = 0, i_goal = 0, i_guide = 0;
+		json_all.nodes.forEach(function(d) {
+
+				switch (d.type)
+				{
+				case "ele":
+					if(!(d.content.subtype in json_allColor[d.type]))
+					{ json_allColor[d.type][d.content.subtype] = i_ele; i_ele ++;}
+
+					//get the data for the right panel "ele"
+					if(!(d.content.txt in elementsHashTmp) )
+					{
+						elementsHashTmp[d.content.txt] = "e_"+d.id;
+						//'typevote:json_allColor[d.type][d.content.subtype]' makes typevote to be consistent with json_allColor
+						jsonArray_elements.push({id:"e_"+d.id, type:d.content.subtype, typevote:json_allColor[d.type][d.content.subtype], element:d.content.txt, allvote:d.content.score  });		
+						
+						//the following line is used to control the table from heatnetwork
+						hash_eleSubtypetxt_IDinTable.put(d.content.subtype+"_"+d.content.txt,"e_"+d.id);
+						//hash_eleSubtypetxt_IDinTable.put(jsonArray_elements[i].type+"_"+jsonArray_elements[i].element, jsonArray_elements[i].id);						
+					}
+					if(!(elementsHashTmp[d.content.txt] in arr_cords_elements))
+					{ arr_cords_elements[elementsHashTmp[d.content.txt]] = [];}
+					arr_cords_elements[elementsHashTmp[d.content.txt]].push(d.cord);
+    
+			  	break;
+				case "imp": 
+					if(!(d.content.subtype in json_allColor[d.type]))
+					{ json_allColor[d.type][d.content.subtype] = i_imp; i_imp ++;} 
+
+					//get the data for the wordcloud
+					if (iWordsContent.indexOf(d.content.subtype) == -1) {
+						iWordsContent.push(d.content.subtype);//imp words
+						iWordsVotes.push(d.content.score);//imp words vote
+						hash_ImpContent_IDinCloud.put(d.content.subtype, "w_"+d.id); //hash_ImpContent_IDinCloud.put(iWords[i], "w"+ids[i]);//id has to include a letter				
+					}
+
+				break;
+				case "goal":
+					if (isShownTabs["goal"])
+					{
+						if(!(d.content.subtype in json_allColor[d.type]))
+						{ 
+							 json_allColor[d.type][d.content.subtype] = d.content.subtype.slice(4);
+								
+							//json_allColor[d.type][d.content.subtype] = i_goal; i_goal ++;
+						}
+						arrs_ratings_goal[d.content.subtype.slice(4)][d.content.score] ++;
+					}
+					
+				break;
+				case "guide":
+					if (isShownTabs["criteria"])
+					{
+						if(!(d.content.subtype in json_allColor[d.type]))
+						{ 
+							 json_allColor[d.type][d.content.subtype] = d.content.subtype.slice(5);
+							 //json_allColor[d.type][d.content.subtype] = i_guide; i_guide ++;
+						}
+						arrs_ratings_criteria[d.content.subtype.slice(5)][d.content.score] ++;
+					}
+
+			  	break;
+				}
+					
+				
+			});
+        console.log(json_allColor);
+        //+++++++++++++++++++++word cloud beign++++++++++++++++++++++++
+        if (isShownTabs["imp"])
+        {	
+	        fillColorImp =d3.scale.linear().domain([json_all.range.imp[1],json_all.range.imp[0]]).range(["#000000","#033649"]);
+	        //fillColorImp =d3.scale.linear().domain([json_all.range.imp[1],json_all.range.imp[0]]).range(["#2ca02c","#98df8a"]);	
+	        
+			//var iWords = ["pastel colors", "fruity" ,"clean", "energy drink", "new", "juice", "tasty","fresh", "colorful"];
+			//var iWordsVotes = [1,1,2,2,3,3,4,4,5,7];
+			//var cordsforImps = '{"w_0":[[0,0,51,104]],"w_1":[[0,0,51,104],[29,34,80,123],[50,50,180,223],[0,0,51,104],[70,70,180,223]],"w_2":[[29,34,80,123],[50,50,180,223]],"w_3":[[29,34,80,123],[50,50,180,223]],"w_4":[[0,0,51,104],[29,34,80,123],[50,50,180,223]],"w_5":[[0,0,51,104],[29,34,80,123],[50,50,180,223]],"w_6":[[0,0,51,104],[29,34,80,123],[50,50,180,223]],"w_7":[[0,0,51,104],[29,34,80,123],[50,50,180,223]],"w_8":[[0,0,51,104],[29,34,80,123],[50,50,180,223]],"w_9":[[0,0,51,104],[29,34,80,123],[50,50,180,223]]}';
+	        //var fill =d3.scale.linear().domain([0,iWords.length-1]).range(["#0B486B","#A8DBA8"]);
+	        //var mapsize =d3.scale.linear().domain([1,7]).range([20,60]);
+			
+	        //var mapsize =d3.scale.linear().domain([0,impressionWords.length-1]).range(["#0B486B","#A8DBA8"]);
+	        var tab_wordcloudImps = wordcloud ("#wordcloudContainer", iWordsContent, hash_ImpContent_IDinCloud, iWordsVotes, img_width, img_height, object_heatnetwork);
+	      //var tab_wordcloudImps = wordcloud ("#wordcloudContainer", iWords, hash_ImpContent_IDinCloud, iWordsVotes, img_width, img_height, arrCordsforImps, object_heatnetwork);
+	    	
+        }
+
+  
+       	//+++++++++++++++++++++word cloud end  ++++++++++++++++++++++++
+       	//$('#elementcontainer').masonry({
+		//  itemSelector: '.element',
+		//  columnWidth: 120
+		//});
+
+		//var pets = '{"goal_0_0":[{"name":"jack"},{"name":"john"},{"name":"joe"}]}';
+		//var arr = JSON.parse(pets);
+		//alert(arr.goal_0_0[0].name);
+	
+	 	//var cords=[[0,0,51,104],[29,34,80,123],[50,50,180,223]];
+	 	//var currentheatmap = heatmap(imgSVG, img_width, img_height, cords);
+	 
+	 	//setTimeout(function() { $('.heatmapline').remove(); }, 1000);
+	 	//setTimeout(function() {heatmap(imgSVG, img_width, img_height, cords); }, 2000);
+	    if (isShownTabs["goal"])
+	    {
+	    		var containID_goal = "#stackbar_goal"
+	    		var	containID_Legend_goal = "#stackbarLegend_goal"
+	    		var mode = 	"mode_goal";//requried
+	    		//var arrs_ratings_goal = [[0,0,1,2,7,6,4],[0,0,0,1,5,8,6]];//requried anbang to make fig
+		
+	    		var xlables_goal = ["-3","","","0","","","+3"];
+	    		
+	    		//var xlables_goal = ["____unsupported"," ","  ","   ","    ","     ","supported"];
+			
+	    		//lables_goal = ["chinese style","on table"];
+	    		//lables_goal = ["research activities","non-research activities","personal brand"];
+	    		//lables_goal = ["warm feeling","showcase good work"];
+	    		 
+	    		//lables_goal = ["try new drink","grab attention"];
+	    		//lables_goal = ["documentary film festival","movie poster"];
+	    		//lables_goal = ["notice Shakespeare portrait","medieval feeling"];
+	    		//lables_goal = ["kudo message","feel positive"];
+	    		//lables_goal = ["quick overview","easily compare"];
+	    		
+	    		tab_stackbar_goal = stackedbars(containID_goal,containID_Legend_goal, mode, arrs_ratings_goal, lables_goal, tooltips_goal, xlables_goal, "#overlay", img_width, img_height);		
+	    }
+
+
+
+	    if (isShownTabs["criteria"])
+		{
+			var containID_criteria = "#stackbar_criteria"
+			var	containID_Legend_criteria = "#stackbarLegend_criteria"
+			var mode2 = 	"mode_criteria";
+	
+			var xlables_criteria = ["-3","","","0","","","+3"];
+			//var tooltips_criteria = ["criteria 1 proximity", "criteria 2 alignment", "criteria 3 repetition", "criteria 4 contrast"];
+			
+		    tab_stackbar_criteria = stackedbars(containID_criteria,containID_Legend_criteria,mode2, arrs_ratings_criteria, lables_criteria, tooltips_criteria, xlables_criteria, "#overlay", img_width, img_height);
+				
+		}
+	
+	    
+	    if (isShownTabs["eleorg"]){
+			var tab_elementorg = elementorg("#elementorg", jsonArray_elements, arr_cords_elements, img_width, img_height);	
+		}
+		
+		if (isShownTabs["notice"]){
+			var containID_Legend_ele = "#eleLegend";
+			tab_element = elements("#elementTableID",containID_Legend_ele, jsonArray_elements, arr_cords_elements, img_width, img_height);	
+		}
+					
+
+
+	
+
+		/*
+		var json_all = {"nodes":[{"id":"id0","x":160,"y":270,"cord":[130,170,190,370],"size":20000,"type":"guide","content":{"subtype":"guide1","score":5,"txt":"hello1 guide1"}},
+                              		{"id":"id1","x":80,"y":80,"cord":[60,20,100,140],"size":60000,"type":"guide","content":{"subtype":"guide2","score":4,"txt":"hello2 guide2"}},
+                                    {"id":"id2","x":100,"y":180,"cord":[50,100,150,260],"size":10000,"type":"goal","content":{"subtype":"goal1","score":6,"txt":"hello3"}},
+                                    {"id":"id3","x":30,"y":130,"cord":[20,100,40,160],"size":90000,"type":"imp","content":{"subtype":"cool","score":11,"txt":"hello4"}},
+                                    {"id":"id4","x":90,"y":130,"cord":[50,100,130,160],"size":100000,"type":"ele","content":{"subtype":"shape","score":11,"txt":"element name"}}
+                              ], "range":{"guide":[0,6],"goal":[0,6],"imp":[1,16],"ele":[1,22]}
+
+        };     	    
+		*/
+     object_heatnetwork = heatnetwork(imgSVG, img_width, img_height, json_feedbackTypes[current_tab], json_all, optFilters, hash_ImpContent_IDinCloud);
+	 if(isHeatmapvisible == "true")
+	 { 	
+		 object_heatnetwork.showOneTypeNodes(json_feedbackTypes[current_tab],true);
+     	 $panel_img.slideUp(0,function(){
+         	$panel_img.removeClass('hide').slideDown('fast');
+        });}
+     else{
+          object_heatnetwork.hide();
+          $panel_img.slideUp('fast',function(){
+          	$panel_img.addClass('hide').slideDown(0);
+          });
+      }
+
+	 if (isShownTabs["imp"])   
+     tab_wordcloudImps.updateObject_heatnetwork(object_heatnetwork);
+	
+  }
+});
+
+
+       
+//});//end for read json
+
+
+
+function assignColor(subtype){
+	 var colorTmp = json_allColor[json_feedbackTypes[current_tab]][subtype];
+		var color = d3.scale.category10();
+		 
+		if(colorTmp >= arr_allColor.length)
+		{return color(colorTmp);}
+		else{return arr_allColor[colorTmp];}
+	 }
+
+function assignColorImp(score){
+	 
+	 return fillColorImp(score);
+	 
+	 }
+
+function addTab(id, title)
+{
+	 $("div#tabs ul").append(
+	            "<li><a href='#tabs-" + id + "'>" + title + "</a></li>"
+	        );
+	if($('#tabs >ul >li').size() ==1)
+	{
+		//$("div#tabs").append(
+			$("#myTabContent").append(
+	            "<div class='tab-pane active' id='tabs-" + id + "'>"  + "</div>"
+	        );
+	}else
+	{
+			$("#myTabContent").append(
+	            "<div class='tab-pane' id='tabs-" + id + "'>"  + "</div>"
+	        );
+	}       
+
+
+}
+
+Array.prototype.repeat= function(what, L){
+ 	 while(L) this[--L]= what;
+ 	 return this;
+ 	}
+ 	
+Array.max = function( array ){
+     return Math.max.apply( Math, array );
+ };
+  		 
+</script>
