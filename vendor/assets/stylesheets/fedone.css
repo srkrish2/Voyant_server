@@ -23,11 +23,11 @@
 
 
 .impword {
-	font-weight: normal;
+	/*font-weight: normal;*/
 }
 
 .impword:hover {
-	font-weight: bold;
+	/*font-weight: bold;*/
 }
 
 #container {

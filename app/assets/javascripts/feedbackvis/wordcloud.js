@@ -73,8 +73,8 @@
         .style("font-family", "Impact")
         .style("fill", function(d, i) { 
 	        console.log("i:"+i+"_text:"+d.text); return assignColorImp(d.vote); })
-	    .style("stroke-width",0)
-	        
+	    
+        
         .attr("text-anchor", "middle")
         .attr("transform", function(d) {
           return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
@@ -84,7 +84,9 @@
         .attr("class", "impword")
         .text(function(d) { return d.text; })
 	    .on("mouseover", function(d){
-	    	this.style.fontWeight = "bold";
+	    	//this.style.fontWeight = "bold";
+	    	this.style.strokeWidth = "1.2px";
+	    	d3.select(this).style("stroke","black");   
 			//console.log(this.id);
 			//console.log(d.text);
 			//console.log(hash_IDinCloud_ImpContent.get(this.id));
@@ -105,7 +107,10 @@
 		 			 	
     	})
         .on("mouseout", function(d){
-	    	this.style.fontWeight = "normal";
+	    	//this.style.fontWeight = "normal";
+	    	this.style.strokeWidth = "0px";
+	    	d3.select(this).style("stroke","");
+	    	
         	if (this.id != lastclicked)
         	{
         		for(var i = optFilters.imp.subtype.length-1; i >= 0; i--){  
@@ -152,7 +157,9 @@
 	    		//document.getElementById(this.id).style.textShadow="5px 5px 1px #ff0000";
 	    		//document.getElementById(this.id).style.backgroundColor="#f3f3f3"; 
     			//document.getElementById(this.id).style.color="#ff0000";
-    			 d3.select(this).style("stroke","#F6B149");// anbnag make fig
+    			
+    			 //d3.select(this).style("stroke","#F6B149");// anbnag make fig
+    			
     			 //d3.select(this).style("stroke-width",1);
     			 d3.select(this).style("fill","#F6B149" );
     			 
