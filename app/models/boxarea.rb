@@ -22,4 +22,11 @@ class Boxarea < ActiveRecord::Base
   belongs_to :turker
   belongs_to :feedback, :polymorphic => true
   # Validations
+  validates :turker_id, :presence => {:message => "Turker ID is required"}
+  validates :feedback_id, :presence => {:message => "Feedback ID is required"}
+  validates :feedback_type, :presence => {:message => "Feedback Type is required"}
+  validates :top_left_x, :presence => {:message => "Top left x is required"}
+  validates :top_left_y, :presence => {:message => "Top left y is required"}
+  validates :bottom_right_x, :presence => {:message => "Bottom right x is required"}
+  validates :bottom_right_y, :presence => {:message => "Bottom right y is required"}
 end
