@@ -84,9 +84,12 @@
         .attr("class", "impword")
         .text(function(d) { return d.text; })
 	    .on("mouseover", function(d){
-	    	this.style.strokeWidth = "1.2px";
-	    	d3.select(this).style("stroke","black");   
-			
+	    	if (this.id != lastclicked)
+		    {
+		       this.style.strokeWidth = "1.2px";
+	    	   d3.select(this).style("stroke","black");  
+		    }
+		    	
 			// if(optFilters.imp.subtype.indexOf(hash_IDinCloud_ImpContent.get(this.id)) == -1)
 			// optFilters.imp.subtype.push(hash_IDinCloud_ImpContent.get(this.id));
 		
