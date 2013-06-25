@@ -17,11 +17,6 @@
 //= require best_in_place
 //= require_tree .
 
-$(document).ready(function() {
-  /* Activating Best In Place */
-  jQuery(".best_in_place").best_in_place();
-});
-
 function warning(message){
   n = noty({
     timeout: false,
@@ -55,3 +50,33 @@ function information(message){
     }
   });
 }
+
+function error(message){
+  n = noty({
+    timeout: false,
+    text: message,
+    layout: "topRight",
+    type: "error",
+    closeWith: ['click','hover'],
+    callback: {
+      afterShow: function(){
+        setTimeout(function(){
+          n.close();
+        },4000);
+      }
+    }
+  });
+}
+$(document).ready(function() {
+  /* Activating Best In Place */
+  jQuery(".best_in_place").best_in_place();
+  $(document).ajaxError(function(event, jqxhr, settings, exception){
+    message = JSON.parse(jqxhr.responseText)
+    $.each(message.error, function(attribute, messages){
+      $.each(messages, function(index, message){
+        error(message);
+      });
+    });
+  });
+});
+
