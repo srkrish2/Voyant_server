@@ -19,7 +19,7 @@ class ElementFeedbacksController < ApplicationController
   def batch_create
     ElementFeedback.transaction do
       respond_to do |format|
-        #begin
+        begin
           params[:feedbacks].each do |feedback|
             configuration = @design.element_configurations.find(params[:configuration_id])
             element_feedback = ElementFeedback.where(:design_id => @design.id, :configuration_id => configuration.id, :name => feedback[:name].singularize).first
@@ -35,13 +35,10 @@ class ElementFeedbacksController < ApplicationController
             boxarea.save!
 
           end
-          flash[:notice] = 'ElementFeedback was successfully created.'
-          format.html { redirect_to(@element_feedback) }
           format.json  { render :json => @element_feedback, :status => :created, :location => @element_feedback }
-        #rescue
-          #format.html { render :action => "new" }
-          #format.json  { render :json => {:model_error =>@element_feedback.errors}, :status => :unprocessable_entity }
-        #end
+        rescue
+          format.json  { render :json => {:error => "Can not save the data"}, :status => :unprocessable_entity }
+        end
       end
     end
 
