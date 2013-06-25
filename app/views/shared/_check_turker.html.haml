@@ -1,0 +1,37 @@
+.row.text-center.step-for-worker-id
+  %form.form-inline#check-turker-form(action="#{find_turkers_path}" method="post" data-remote="true")
+    %input.input-medium#worker_id(type="text" placeholder="Worker ID" name="worker_id")
+    %button.btn.btn-primary(type="submit") Next
+.row.span6.offset2.step-create-turker.hide
+  :ruby
+    @turker = Turker.new
+  = simple_form_for @turker, :html => {:class => "form-horizontal", :id => "new-turker-form"}, :remote => true do |f|
+    %p.text-info.text-center Please Tell Something About You :)
+    = f.input :worker_id, :as => :hidden
+    = f.input :age, :collection => 1..150, :selected => 20
+    = f.input :gender, :collection => 0..1, :label_method => lambda {|v| User::GenderNames[v]}
+    = f.input :country, :collection => User::CountryNames, :selected => User::CountryNames[0]
+    = f.input :design_experience, :collection => 0..2, :label_method => lambda {|v| User::DesignExperienceNames[v]}
+    .form-actions
+      = f.button :submit, "Next", :class => "btn btn-primary"
+:coffee
+  $ =>
+    window.current_worker_id = null
+
+    $("#check-turker-form").bind "ajax:success", (event,data, status, xhr) =>
+      window.current_worker_id = $("#worker_id").val()
+      if data.exist
+        $(".step-for-worker-id").hide()
+        $("#step-feedback").show()
+      else
+        $("#turker_worker_id").val(window.current_worker_id)
+        $(".step-for-worker-id").hide()
+        $(".step-create-turker").show()
+
+    $("#check-turker-form").bind "ajax:error", (event, jqxhr, settings, exception) =>
+      message = JSON.parse(jqxhr.responseText)
+      warning message.error
+
+    $("#new-turker-form").bind "ajax:success", (event, data, status, xhr) =>
+      $("#new-turker-form").hide()
+      $("#step-feedback").show()

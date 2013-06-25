@@ -1,0 +1,2 @@
+module FirstNoticeFeedbacksHelper
+end

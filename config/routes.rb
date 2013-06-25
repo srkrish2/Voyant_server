@@ -14,6 +14,9 @@ Crowddesign::Application.routes.draw do
         post :batch_create
       end
     end
+
+    resources :first_notice_feedbacks do
+    end
   end
 
   resources :turkers do

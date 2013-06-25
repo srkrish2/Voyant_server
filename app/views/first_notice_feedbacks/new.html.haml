@@ -1,0 +1,78 @@
+.span10.offset1
+  = render 'shared/check_turker'
+
+  #step-feedback.hide
+    .row
+      .span6.offset2
+        .step1
+          %p Look at the design and the word cloud carefully.
+          %p 
+            Select the word from the list below that best describes the  
+            %strong.text-warning= "first #{@configuration.name.singularize}"
+            you see in the design.
+        .step2.hide
+          %p
+            Draw a box on the following design to indicate:
+            %strong.text-warning#element-feedback-name
+    .row.text-center
+      .span10
+        %image.img-polaroid#picture{src: @design.picture.url}
+    .row.step1
+      .span8.offset1
+        %hr
+        .btn-group#element-feedbacks-select(data-toggle="buttons-radio")
+          - @element_feedbacks.each do |element_feedback|
+            %button.btn(type="button" value="#{element_feedback.id}")= element_feedback.name
+    .row
+      .span10
+        %hr
+        %a.btn.btn-primary#process-btn Next
+= render 'shared/feedback_result'
+
+:coffee
+  $ =>
+    #$("#element-feedbacks-select .btn:first-child").addClass("active")
+    current_selection = make_image_selectable_with_button("#picture", "#process_btn")
+    
+    selected_element_feedback_id = null
+    selected_element_name = null
+
+    step1 = () ->
+      selected_element_feedback_id = $("#element-feedbacks-select .btn.active").val()
+      selected_element_name = $("#element-feedbacks-select .btn.active").html()
+      if selected_element_feedback_id
+        $("#process-btn").html("Submit")
+        $("#element-feedback-name").html(selected_element_name)
+        current_selection.setOptions {enable: true}
+        $(".step1").hide()
+        $(".step2").show()
+        return true
+      else
+        warning("Please choose one of the word in the list")
+        return false
+    
+    step2 = () ->
+      data = {worker_id: window.current_worker_id, element_feedback_id: selected_element_feedback_id, x1: current_selection.getSelection().x1, y1: current_selection.getSelection().y1, x2: current_selection.getSelection().x2, y2: current_selection.getSelection().y2}
+      current_selection.cancelSelection()
+      $.ajax {
+        type: "post",
+        url: "#{design_first_notice_feedbacks_path(@design)}",
+        data: JSON.stringify(data)
+        dataType: "json",
+        contentType: 'application/json',
+        beforeSend: () =>
+          $("#process-btn").addClass("disabled")
+        success: (data) =>
+          $("#step-feedback").hide()
+          $("#step-feedback-result").show()
+        complete: () =>
+          $("#process-btn").removeClass("disabled")
+      }
+      return true
+
+    current_step = 1
+    steps = [step1, step2]
+
+    $("#process-btn").click =>
+      return if $("#process-btn").hasClass("disabled")
+      current_step = @process_steps(current_step, steps)

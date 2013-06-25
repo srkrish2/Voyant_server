@@ -1,20 +1,6 @@
 .span10.offset1
-  .row.text-center.step-for-worker-id
-    %form.form-inline#check-turker-form(action="#{find_turkers_path}" method="post" data-remote="true")
-      %input.input-medium#worker_id(type="text" placeholder="Worker ID" name="worker_id")
-      %button.btn.btn-primary(type="submit") Next
-  .row.span6.offset2.step-create-turker.hide
-    :ruby
-      @turker = Turker.new
-    = simple_form_for @turker, :html => {:class => "form-horizontal", :id => "new-turker-form"}, :remote => true do |f|
-      %p.text-info.text-center Please Tell Something About You :)
-      = f.input :worker_id, :as => :hidden
-      = f.input :age, :collection => 1..150, :selected => 20
-      = f.input :gender, :collection => 0..1, :label_method => lambda {|v| User::GenderNames[v]}
-      = f.input :country, :collection => User::CountryNames, :selected => User::CountryNames[0]
-      = f.input :design_experience, :collection => 0..2, :label_method => lambda {|v| User::DesignExperienceNames[v]}
-      .form-actions
-        = f.button :submit, "Next", :class => "btn btn-primary"
+  = render 'shared/check_turker'
+
   #step-feedback.hide
     .row
       .span6.offset2
@@ -43,53 +29,16 @@
         %input.input-block-level.step1#elements
         %hr
         %a.btn.btn-primary#process-btn Next
-#step-feedback-result.hide
-  .row
-    .container
-      .span12
-        .hero-unit
-          %h1 Thank you for your participation!
+= render 'shared/feedback_result'
 
 :coffee
   $ =>
-    current_worker_id = null
-
-    $("#check-turker-form").bind "ajax:success", (event,data, status, xhr) =>
-      current_worker_id = $("#worker_id").val()
-      if data.exist
-        $(".step-for-worker-id").hide()
-        $("#step-feedback").show()
-      else
-        $("#turker_worker_id").val(current_worker_id)
-        $(".step-for-worker-id").hide()
-        $(".step-create-turker").show()
-
-    $("#check-turker-form").bind "ajax:error", (event, jqxhr, settings, exception) =>
-      message = JSON.parse(jqxhr.responseText)
-      warning message.error
-
-    $("#new-turker-form").bind "ajax:success", (event, data, status, xhr) =>
-      $("#new-turker-form").hide()
-      $("#step-feedback").show()
-
     current_element = 1
     current_step = 1
     steps = []
     element_data = []
     elements = []
-    current_selection = $("#picture").imgAreaSelect {
-      instance: true,
-      handles: true,
-      disable: true,
-      onSelectStart: (img, selection) => console.log("start"),
-      onSelectEnd: (img, selection) => 
-        if selection.x1 isnt selection.x2 and selection.y1 isnt selection.y2
-          #console.log("x1:" + selection.x1 + " y1:" + selection.y1 + " x2:" + selection.x2 + " y2:" + selection.y2 )
-          $("#process-btn").removeClass("disabled")
-        else
-          console.log("cancel")
-          $("#process-btn").addClass("disabled")
-    }
+    current_selection = make_image_selectable_with_button("#picture", "#process-btn")
 
     step1 = () ->
       elements_str = $("#elements").val()
@@ -132,7 +81,7 @@
       $.ajax {
         type: "Post",
         url: "#{batch_create_design_element_feedbacks_path(@design)}",
-        data: JSON.stringify({worker_id: current_worker_id,configuration_id: "#{@configuration.id}", feedbacks: element_data}),
+        data: JSON.stringify({worker_id: window.current_worker_id,configuration_id: "#{@configuration.id}", feedbacks: element_data}),
         dataType: "json",
         contentType: 'application/json',
         success: (data) =>
@@ -141,13 +90,7 @@
       }
 
     steps = [step1, step2]
-    process_steps = (current_step, steps) ->
-      if steps[current_step - 1] and steps[current_step - 1]()
-        #if current_step + 1 >= steps.length
-          #$("#process-btn").html("Submit")
-        return current_step + 1
-      else
-        return current_step
 
     $("#process-btn").click =>
-      current_step = process_steps(current_step, steps)
+      return if $("#process-btn").hasClass("disabled")
+      current_step = @process_steps(current_step, steps)

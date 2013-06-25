@@ -11,7 +11,10 @@
 
 class FirstNoticeFeedback < ActiveRecord::Base
   # Associations
-  has_many :boxareas, :as => :feedback, :dependent => :destroy
+  has_one :boxarea, :as => :feedback, :dependent => :destroy
   belongs_to :element_feedback
   belongs_to :design
+  # Validations
+  validates :design_id, :presence => {:message => "Design ID is required"}
+  validates :element_feedback_id, :presence => {:message => "Element Feedback ID is required"}
 end

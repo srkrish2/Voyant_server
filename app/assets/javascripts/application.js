@@ -12,8 +12,8 @@
 //
 //= require jquery
 //= require jquery_ujs
-//= require bootstrap
 //= require jquery.ui.all
+//= require bootstrap
 //= require best_in_place
 //= require d3
 //= require jshashtable
@@ -70,6 +70,23 @@ function error(message){
     }
   });
 }
+
+function make_image_selectable_with_button(element_str, button_str){
+  current_selection = $(element_str).imgAreaSelect({
+    instance: true,
+    handles: true,
+    disable: true,
+    onSelectEnd: function(img, selection){
+      if ((selection.x1 != selection.x2) && (selection.y1 != selection.y2)){
+        $(button_str).removeClass("disabled")
+      }else{
+        $(button_str).addClass("disabled")
+      }
+    }
+  });
+  return current_selection
+}
+
 $(document).ready(function() {
   /* Activating Best In Place */
   jQuery(".best_in_place").best_in_place();
@@ -81,6 +98,10 @@ $(document).ready(function() {
           error(message);
         });
       });
+    }
+
+    if (message.error){
+      error(message.error);
     }
   });
 });
