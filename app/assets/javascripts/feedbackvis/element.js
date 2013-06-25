@@ -290,15 +290,15 @@
 		
 	})
 	.on("mouseover", function(d){
-	   	object_heatnetwork.hide();
-		d3.select(this).style("font-weight","bold");
-		$('#heatmapID').remove();
-		var currentheatmap = heatmap("#overlay", img_width, img_height, cords[this.id]);	
+	   	//object_heatnetwork.hide();
+		//d3.select(this).style("font-weight","bold");
+		//$('#heatmapID').remove();
+		//var currentheatmap = heatmap("#overlay", img_width, img_height, cords[this.id]);	
 	})
 	.on("mouseout", function(d){
-		d3.select(this).style("font-weight","normal");
-		$('#heatmapID').remove();
-	   	object_heatnetwork.showOneTypeNodes(json_feedbackTypes[current_tab],true);
+		//d3.select(this).style("font-weight","normal");
+		//$('#heatmapID').remove();
+	   	//object_heatnetwork.showOneTypeNodes(json_feedbackTypes[current_tab],true);
 	})
 	;
 

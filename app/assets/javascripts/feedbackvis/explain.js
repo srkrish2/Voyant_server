@@ -22,11 +22,19 @@
     for (var i = 0; i < jsonArray.length; i++) {
     	var id = jsonArray[i].id;
     	//console.log("add event begin:");
-		$('#'+id).mouseover(function(e) {
+		$('#'+id)
+		.mouseup(function(e) {
+			console.log("isup:"+e.which);
+	      })	
+	      .mousedown(function(e) {
+			console.log("isdown:"+e.which);
+	      })
+		.mouseover(function(e) {
+			console.log("1111111:"+e.which);
 			
-			
-			if (e.which == 0)//if left buttons is not clicked
-		   	{
+			//if (e.which == 0)//if left buttons is not clicked
+		   	//{ 
+		   		$('#heatmapID').remove();
 				object_heatnetwork.hide();
 	
 				var temp = new Array();
@@ -37,15 +45,16 @@
 		    	console.log(this.id);
 		    	console.log(temp);
 		    	
-			 	heatmap("#overlay", img_width, img_height,cords );
-		   	}
+			 	heatmap("#overlay", img_width, img_height,cords);
+		   //	}
 			
-		}).mouseout(function(e){
-			if (e.which == 0)//if left buttons is not clicked
-		   	{
+		})	
+	.mouseout(function(e){
+			//if (e.which == 0)//if left buttons is not clicked
+		   //	{
 				$('#heatmapID').remove();
 			   	object_heatnetwork.showOneTypeNodes(json_feedbackTypes[current_tab],false);
-			}
+			//}
 
 		});
     	

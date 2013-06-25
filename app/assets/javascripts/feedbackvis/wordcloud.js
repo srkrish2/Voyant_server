@@ -169,21 +169,18 @@
 			    	 object_heatnetwork.showOneTypeNodes(json_feedbackTypes[current_tab],true);
 			    	 
 		    	 }else{
-		    		 var tmpID =  this.id.slice(1);
-						var idArr = tmpID.split("_");
-			    		//console.log(this.id);		 	
-					 	$('#explain_imp').empty();
-					 	$.ajax({
-							type: "GET",
-							url: "get_comments.php",
-							data: { twid: idArr[0], tiid: idArr[1]}
-						}).done(function( result ) {
-							//alert(result);
-							var jsonArrayOneImpTmp = $.parseJSON(result);
-							var jsonArrayOneImp = jsonArrayOneImpTmp;
-							//alert(jsonArrayOneImp);
-							//one impression word: w_0
-							//json = JSON.parse( myjson );
+		    	 	 console.log("error: isHeatmapvisible is"+isHeatmapvisible);
+		    		 // var tmpID =  this.id.slice(1);
+						// var idArr = tmpID.split("_");
+					 	// $('#explain_imp').empty();
+					 	// $.ajax({
+							// type: "GET",
+							// url: "get_comments.php",
+							// data: { twid: idArr[0], tiid: idArr[1]}
+						// }).done(function( result ) {
+							// var jsonArrayOneImpTmp = $.parseJSON(result);
+							// var jsonArrayOneImp = jsonArrayOneImpTmp;
+
 							/*
 							var jsonArrayOneImp = [
 									 {'id': 'w_0_0',
@@ -197,13 +194,9 @@
 							] ;
 							*/
 					 	
-							var crurrentexplains = explain("#explain_imp",jsonArrayOneImp, img_width, img_height);
 							//var crurrentexplains = explain("#explain_imp",jsonArrayOneImp, img_width, img_height);
 
-							    
-							
-							//object_heatnetwork
-						});
+						//});
 		    		 
 		    	 }
 	    		
