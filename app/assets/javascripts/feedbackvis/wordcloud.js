@@ -84,55 +84,40 @@
         .attr("class", "impword")
         .text(function(d) { return d.text; })
 	    .on("mouseover", function(d){
-	    	//this.style.fontWeight = "bold";
 	    	this.style.strokeWidth = "1.2px";
 	    	d3.select(this).style("stroke","black");   
-			//console.log(this.id);
-			//console.log(d.text);
-			//console.log(hash_IDinCloud_ImpContent.get(this.id));
-
 			
-			if(optFilters.imp.subtype.indexOf(hash_IDinCloud_ImpContent.get(this.id)) == -1)
-			optFilters.imp.subtype.push(hash_IDinCloud_ImpContent.get(this.id));
-			
-			 if ( isHeatmapvisible == "true")
-	    	 {
-		    	 object_heatnetwork.showOneTypeNodes(json_feedbackTypes[current_tab],false);
-	    	 }else
-	    	{
-	 			//$('#heatmapID').remove();
-	 		 	//var currentheatmap = heatmap("#overlay", img_width, img_height, arrCordsforImps[this.id.slice(1)]);
-	    	}
-
-		 			 	
+			// if(optFilters.imp.subtype.indexOf(hash_IDinCloud_ImpContent.get(this.id)) == -1)
+			// optFilters.imp.subtype.push(hash_IDinCloud_ImpContent.get(this.id));
+		
+			// if ( isHeatmapvisible == "true")
+		    // object_heatnetwork.showOneTypeNodes(json_feedbackTypes[current_tab],false);			 	
     	})
         .on("mouseout", function(d){
-	    	//this.style.fontWeight = "normal";
 	    	this.style.strokeWidth = "0px";
 	    	d3.select(this).style("stroke","");
 	    	
-        	if (this.id != lastclicked)
-        	{
-        		for(var i = optFilters.imp.subtype.length-1; i >= 0; i--){  
-            	    if(optFilters.imp.subtype[i] == hash_IDinCloud_ImpContent.get(this.id)){      
-            	    	
-            	    	optFilters.imp.subtype.splice(i,1);                 
-            	    }
-            	}
-        	}
-        	if ( isHeatmapvisible == "true")
-	    	 {
-		    	 object_heatnetwork.showOneTypeNodes(json_feedbackTypes[current_tab],false);
-	    	 }else
-	    	{
-	 			$('#heatmapID').remove();
-	    	}
-        	//this.style.textShadow = "none";
+        	// if (this.id != lastclicked)
+        	// {
+        		// for(var i = optFilters.imp.subtype.length-1; i >= 0; i--){  
+            	    // if(optFilters.imp.subtype[i] == hash_IDinCloud_ImpContent.get(this.id)){      
+         	    	
+            	    	// optFilters.imp.subtype.splice(i,1);                 
+            	    // }
+            	// }
+        	// }
+        	
+        	// if( isHeatmapvisible == "true")
+			// object_heatnetwork.showOneTypeNodes(json_feedbackTypes[current_tab],false);
+	    	 
     	})
     	.on("click", function(d){
 
     		if (this.id != lastclicked)
 		 	{
+		 		if(optFilters.imp.subtype.indexOf(hash_IDinCloud_ImpContent.get(this.id)) == -1)
+			    optFilters.imp.subtype.push(hash_IDinCloud_ImpContent.get(this.id));
+			
     			if(lastclicked !="")
     			{
     				
