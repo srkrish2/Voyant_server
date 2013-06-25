@@ -1,41 +1,94 @@
 .span10.offset1
-  .row
-    .span6.offset2
-      .step1
-        %p
-          Look at the design carefully.
-      .step2.hide
-        %p
-          Draw a box on the following design to indicate: 
-          %strong.text-warning#element_name
-        %p You can easily move and resize the drawn box. If your drawn box is not related to the element you described, your result could be rejected.
-  .row.text-center
-    .span10
-      %image#picture{src: @design.picture.url}
-  .row
-    .span6.offset2
-      .step1
-        %p
-          Name at least two 
-          %strong.text-warning= @configuration.name.pluralize
-          you see in the design. Use a comma(,)to separate the #{@configuration.name.pluralize}.
-        %p.text-warning
-          If a #{@configuration.name} is not in the desgin, your result could be rejected.
-  .row
-    .span10
-      %input.input-block-level.step1#elements
-      %hr
-      %a.btn.btn-primary#process-btn Next
-%form{:action => design_element_feedbacks_path(@design), :method => "post"}
+  .row.text-center.step-for-worker-id
+    %form.form-inline#check-turker-form(action="#{find_turkers_path}" method="post" data-remote="true")
+      %input.input-medium#worker_id(type="text" placeholder="Worker ID" name="worker_id")
+      %button.btn.btn-primary(type="submit") Next
+  .row.span6.offset2.step-create-turker.hide
+    :ruby
+      @turker = Turker.new
+    = simple_form_for @turker, :html => {:class => "form-horizontal", :id => "new-turker-form"}, :remote => true do |f|
+      %p.text-info.text-center Please Tell Something About You :)
+      = f.input :worker_id, :as => :hidden
+      = f.input :age, :collection => 1..150, :selected => 20
+      = f.input :gender, :collection => 0..1, :label_method => lambda {|v| User::GenderNames[v]}
+      = f.input :country, :collection => User::CountryNames, :selected => User::CountryNames[0]
+      = f.input :design_experience, :collection => 0..2, :label_method => lambda {|v| User::DesignExperienceNames[v]}
+      .form-actions
+        = f.button :submit, "Next", :class => "btn btn-primary"
+  #step-feedback.hide
+    .row
+      .span6.offset2
+        .step1
+          %p
+            Look at the design carefully.
+        .step2.hide
+          %p
+            Draw a box on the following design to indicate: 
+            %strong.text-warning#element_name
+          %p You can easily move and resize the drawn box. If your drawn box is not related to the element you described, your result could be rejected.
+    .row.text-center
+      .span10
+        %image.img-polaroid#picture{src: @design.picture.url}
+    .row
+      .span6.offset2
+        .step1
+          %p
+            Name at least two 
+            %strong.text-warning= @configuration.name.pluralize
+            you see in the design. Use a comma(,)to separate the #{@configuration.name.pluralize}.
+          %p.text-warning
+            If a #{@configuration.name} is not in the desgin, your result could be rejected.
+    .row
+      .span10
+        %input.input-block-level.step1#elements
+        %hr
+        %a.btn.btn-primary#process-btn Next
+  #step-feedback-result.hide
+    .row
+      .container
+        .hero-unit
+          %h1 Thank you for your participation!
 
 :coffee
   $ =>
+    current_worker_id = null
+
+    $("#check-turker-form").bind "ajax:success", (event,data, status, xhr) =>
+      current_worker_id = $("#worker_id").val()
+      if data.exist
+        $(".step-for-worker-id").hide()
+        $("#step-feedback").show()
+      else
+        $("#turker_worker_id").val(current_worker_id)
+        $(".step-for-worker-id").hide()
+        $(".step-create-turker").show()
+
+    $("#check-turker-form").bind "ajax:error", (event, jqxhr, settings, exception) =>
+      message = JSON.parse(jqxhr.responseText)
+      warning message.error
+
+    $("#new-turker-form").bind "ajax:success", (event, data, status, xhr) =>
+      $("#new-turker-form").hide()
+      $("#step-feedback").show()
+
     current_element = 1
     current_step = 1
     steps = []
     element_data = []
     elements = []
-    current_selection = null
+    current_selection = $("#picture").imgAreaSelect {
+      instance: true,
+      handles: true,
+      disable: true,
+      onSelectStart: (img, selection) => console.log("start"),
+      onSelectEnd: (img, selection) => 
+        if selection.x1 isnt selection.x2 and selection.y1 isnt selection.y2
+          #console.log("x1:" + selection.x1 + " y1:" + selection.y1 + " x2:" + selection.x2 + " y2:" + selection.y2 )
+          $("#process-btn").removeClass("disabled")
+        else
+          console.log("cancel")
+          $("#process-btn").addClass("disabled")
+    }
 
     step1 = () ->
       elements_str = $("#elements").val()
@@ -47,24 +100,15 @@
         else
           $(".step1").hide()
           $(".step2").show()
-          num = elements.length
+          num = elements.length - 1
           steps.push(step2) while num -= 1
+          steps.push(step3)
           console.log steps.length
           $("#process-btn").addClass("disabled")
           current_element = 1
           $("#element_name").html(elements[current_element - 1])
-          current_selection = $("#picture").imgAreaSelect {
-            instance: true,
-            handles: true,
-            onSelectStart: (img, selection) => console.log("start"),
-            onSelectEnd: (img, selection) => 
-              if selection.x1 isnt selection.x2 and selection.y1 isnt selection.y2
-                console.log("x1:" + selection.x1 + " y1:" + selection.y1 + " x2:" + selection.x2 + " y2:" + selection.y2 )
-                $("#process-btn").removeClass("disabled")
-              else
-                console.log("cancel")
-                $("#process-btn").addClass("disabled")
-          }
+          $("#process-btn").html("Submit") if current_element is elements.length
+          current_selection.setOptions {enable: true}
           return true
       else
         warning("Please name at least two #{@configuration.name.pluralize}.")
@@ -73,19 +117,31 @@
     step2 = () ->
       #process draw box
       element_data.push {name: elements[current_element-1], x1: current_selection.getSelection().x1, y1: current_selection.getSelection().y1, x2: current_selection.getSelection().x2, y2: current_selection.getSelection().y2}
-      console.log(element_data[0])
+      console.log(element_data[current_element - 1])
       current_selection.cancelSelection()
       $("#process-btn").addClass("disabled")
 
       current_element += 1
       $("#element_name").html(elements[current_element - 1])
+      $("#process-btn").html("Submit") if current_element is elements.length
       return true
+
+    step3 = () ->
+      step2()
+      $.ajax {
+        type: "Post",
+        url: "#{batch_create_design_element_feedbacks_path(@design)}",
+        data: JSON.stringify({worker_id: current_worker_id,configuration_id: "#{@configuration.id}", feedbacks: element_data}),
+        dataType: "json",
+        contentType: 'application/json',
+        success: (data) =>
+          $("#step-feedback").hide()
+          $("#step-feedback-result").show()
+      }
 
     steps = [step1, step2]
     process_steps = (current_step, steps) ->
-      if steps.length <= current_step
-        return steps.length
-      if steps[current_step - 1]()
+      if steps[current_step - 1] and steps[current_step - 1]()
         #if current_step + 1 >= steps.length
           #$("#process-btn").html("Submit")
         return current_step + 1

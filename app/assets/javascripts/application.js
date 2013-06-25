@@ -72,11 +72,13 @@ $(document).ready(function() {
   jQuery(".best_in_place").best_in_place();
   $(document).ajaxError(function(event, jqxhr, settings, exception){
     message = JSON.parse(jqxhr.responseText)
-    $.each(message.error, function(attribute, messages){
-      $.each(messages, function(index, message){
-        error(message);
+    if (message.model_error) {
+      $.each(message.model_error, function(attribute, messages){
+        $.each(messages, function(index, message){
+          error(message);
+        });
       });
-    });
+    }
   });
 });
 
