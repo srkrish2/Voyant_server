@@ -21,10 +21,11 @@ class ElementFeedbacksController < ApplicationController
       respond_to do |format|
         begin
           params[:feedbacks].each do |feedback|
+            feedback[:name] = feedback[:name].singularize.downcase
             configuration = @design.element_configurations.find(params[:configuration_id])
-            element_feedback = ElementFeedback.where(:design_id => @design.id, :configuration_id => configuration.id, :name => feedback[:name].singularize).first
+            element_feedback = ElementFeedback.where(:design_id => @design.id, :configuration_id => configuration.id, :name => feedback[:name]).first
             if element_feedback.nil?
-              element_feedback = ElementFeedback.new(:name => feedback[:name].singularize)
+              element_feedback = ElementFeedback.new(:name => feedback[:name])
               element_feedback.design = @design
               element_feedback.configuration = configuration
               element_feedback.save!
@@ -35,7 +36,7 @@ class ElementFeedbacksController < ApplicationController
             boxarea.save!
 
           end
-          format.json  { render :json => @element_feedback, :status => :created, :location => @element_feedback }
+          format.json  { render :json => {:message => "Save Successfully"}, :status => :ok}
         rescue
           format.json  { render :json => {:error => "Can not save the data"}, :status => :unprocessable_entity }
         end
