@@ -63,6 +63,7 @@ var tab_stackbar_criteria;//tab_element
 var tab_element;//tab_element
 
 var object_heatnetwork;
+var mouseUpDown = 0;
 
 //need data
 //d3.json("jsonall.json", function(error, json_all) {
@@ -73,6 +74,18 @@ var json_all =
 	//isShownTabs = {"eleorg":true,"notice":true,"imp":true,"goal":true,"criteria":true};
 	
       $(function() {
+      	    
+      	    $('body')
+      	    .mouseup(function(e) {
+      	    	mouseUpDown = mouseUpDown + 1;
+      	    	console.log("isup:"+mouseUpDown);
+				//console.log("mouseUpDown:"+mouseUpDown);
+	     	 })	
+	      	.mousedown(function(e) {
+	      		mouseUpDown = mouseUpDown - 1;
+	      		console.log("isdown:"+mouseUpDown);
+				//console.log("mouseUpDown:"+mouseUpDown);
+	      	});
        	    
         	if (isShownTabs["eleorg"])
         	{

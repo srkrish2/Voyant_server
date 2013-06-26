@@ -102,6 +102,12 @@
 		var g_brush = svg.append("g").attr("class", "brush").call(brush);
 
 		
+		g_brush
+        .on("mousedown", function(){
+        	mouseUpDown = mouseUpDown - 1;
+        	console.log("isBrushdown:"+mouseUpDown);
+        	});
+        
 		self.isBrushEmpty = function() {return brush.empty();}
 		self.getBrushCord = function() {return brush.empty();}
 
@@ -202,12 +208,12 @@
 				return (x0 <= d.x && d.x <= x1 && y0 <= d.y && d.y <= y1)
 			});
 			
+			//remove brush if it is out of bundary
 			if(extent[1][0] >= width || extent[1][1] >= height)
 			{
-				//brush.clear();
-				d3.select(".brush").call(brush.clear());
-				node.classed("selected", false);
-				console.log(brush.clear());
+				//d3.select(".brush").call(brush.clear());
+				//node.classed("selected", false);
+				//console.log("brush.clear()");
 
 			}
 			

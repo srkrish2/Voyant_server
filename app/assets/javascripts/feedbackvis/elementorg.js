@@ -80,11 +80,26 @@
     }
     
     $(function(){
+    	
+    	// var $grid = $(tableID);
+		// var height = $grid.height();
+// 		
+		// if( height > 0 ) { // or some other number
+		    // $grid.height( 450 );
+		// }else{
+			 // $grid.height( 300 );
+		// }
+
+
     	  $(tableID).masonry({
     	    // options
     	    itemSelector : '.eletype',
-    	    columnWidth : 240
+    	    columnWidth : 240,
+    	    animate:false,
+    	    resizeable:false 
     	  });
+    	  
+    	  $(tableID).height(365);
     	});
 
 
