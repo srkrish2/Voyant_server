@@ -31,8 +31,7 @@
 
 :coffee
   $ =>
-    #$("#element-feedbacks-select .btn:first-child").addClass("active")
-    current_selection = make_image_selectable_with_button("#picture", "#process_btn")
+    current_selection = make_image_selectable_with_button("#picture", "#process-btn")
     
     selected_element_feedback_id = null
     selected_element_name = null
@@ -43,6 +42,7 @@
       if selected_element_feedback_id
         $("#process-btn").html("Submit")
         $("#element-feedback-name").html(selected_element_name)
+        $("#process-btn").addClass("disabled")
         current_selection.setOptions {enable: true}
         $(".step1").hide()
         $(".step2").show()
@@ -52,7 +52,7 @@
         return false
     
     step2 = () ->
-      data = {worker_id: window.current_worker_id, element_feedback_id: selected_element_feedback_id, x1: current_selection.getSelection().x1, y1: current_selection.getSelection().y1, x2: current_selection.getSelection().x2, y2: current_selection.getSelection().y2}
+      data = {worker_id: window.current_worker_id, feedbacks: [{x1: current_selection.getSelection().x1, y1: current_selection.getSelection().y1, x2: current_selection.getSelection().x2, y2: current_selection.getSelection().y2}]}
       current_selection.cancelSelection()
       $.ajax {
         type: "post",

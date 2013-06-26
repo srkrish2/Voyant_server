@@ -71,20 +71,43 @@ function error(message){
   });
 }
 
-function make_image_selectable_with_button(element_str, button_str){
+function make_image_selectable_with_button(element_str, button_str,selectHandle, unSelectHandle){
   current_selection = $(element_str).imgAreaSelect({
     instance: true,
     handles: true,
     disable: true,
     onSelectEnd: function(img, selection){
       if ((selection.x1 != selection.x2) && (selection.y1 != selection.y2)){
-        $(button_str).removeClass("disabled")
+        $(button_str).removeClass("disabled");
+        if(selectHandle) selectHandle(img,selection);
       }else{
-        $(button_str).addClass("disabled")
+        $(button_str).addClass("disabled");
+        if(unSelectHandle) unSelectHandle(img,selection);
       }
     }
   });
   return current_selection
+}
+
+
+function split_words_from_str(str){
+  return str.trim().split(/\s+|\n/)
+}
+
+function nearest_elements(current_boxarea, element_boxareas, num) {
+  selection_center_point = {};
+  selection_center_point.x = (current_boxarea.x1 + current_boxarea.x2) * 0.5;
+  selection_center_point.y = (current_boxarea.y1 + current_boxarea.y2) * 0.5;
+  $.each(element_boxareas, function(index, boxarea){
+    center_point = {};
+    center_point.x = (boxarea.x1 + boxarea.x2) * 0.5;
+    center_point.y = (boxarea.y1 + boxarea.y2) * 0.5;
+    boxarea.distance = Math.sqrt(Math.pow(selection_center_point.x - center_point.x, 2) + Math.pow(selection_center_point.y - center_point.y,2));
+  });
+  element_boxareas.sort(function(a,b){
+    return a.distance - b.distance
+  });
+  return element_boxareas.slice(0,num);
 }
 
 $(document).ready(function() {

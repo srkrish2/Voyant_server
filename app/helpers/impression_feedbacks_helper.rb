@@ -1,0 +1,2 @@
+module ImpressionFeedbacksHelper
+end

@@ -1,0 +1,113 @@
+.span10.offset1
+  = render 'shared/check_turker'
+
+  #step-feedback.hide
+    .row
+      .span6.offset2
+        .step1
+          %p Look at the design and the word cloud carefully.
+          %p
+            Please select the word from the list below that best captures your
+            %strong.text-warning first impression
+            when viewing the design.
+        .step2.hide
+          %p
+            Draw a box on the following design to indicate your impression word:
+            %strong.text-warning.impression-feedback-name
+    .row.text-center
+      .span10
+        %image.img-polaroid#picture{src: @design.picture.url}
+    .row.step1
+      .span8.offset1
+        %hr
+        .btn-group#impression-feedbacks-select(data-toggle="buttons-radio")
+          - @impression_feedbacks.each do |impression_feedback|
+            %button.btn(type="button" value="#{impression_feedback.id}")= impression_feedback.name
+    .row
+      .span6.offset2
+        .step2.hide
+          %p#step-description.hide
+            Describe the elements in the part of design you just highlighted, such as  
+            %strong.text-warning#element_names
+            and explain why your impression
+            %strong.text-warning.impression-feedback-name le1 
+            relates to these elements (at least 15 words):
+            %textarea.span6#boxarea-description(rows="3")
+
+    .row
+      .span10
+        %hr
+        %a.btn.btn-primary#process-btn Next
+
+= render 'shared/feedback_result'
+
+:coffee
+  $ =>
+    element_boxareas = #{@boxareas.to_json}
+    selectHandle = (img,selection) =>
+      $("#step-description").show()
+      nearest_boxareas = nearest_elements(selection, element_boxareas, 3)
+      $("#element_names").html nearest_boxareas.map (boxarea)=>
+        return boxarea.name
+      .join(", ")
+
+    unSelectHandle = (img, selection) =>
+      $("#step-description").hide()
+      $("#boxarea-description").val("")
+
+    current_selection = make_image_selectable_with_button("#picture", "#process-btn",selectHandle, unSelectHandle)
+
+    selected_impression_feedback_id = null
+    selected_impression_name = null
+
+    step1 = () ->
+      selected_impression_feedback_id = $("#impression-feedbacks-select .btn.active").val()
+      selected_impression_name = $("#impression-feedbacks-select .btn.active").html()
+      if selected_impression_feedback_id
+        $("#process-btn").html("Submit")
+        $(".impression-feedback-name").html(selected_impression_name)
+        $("#process-btn").addClass("disabled")
+        current_selection.setOptions {enable: true}
+        $(".step1").hide()
+        $(".step2").show()
+        return true
+      else
+        warning("Please choose one of the word in the list")
+        return false
+
+    step2 = () ->
+      description_str = $("#boxarea-description").val().trim()
+      if description_str
+        description_words = split_words_from_str(description_str)
+        if description_words.length < 15
+          warning "Please provide at 15 words to describe your selected part"
+          return false
+        else
+          data = {worker_id: window.current_worker_id, feedbacks: [{name: selected_impression_name, description: description_str, x1: current_selection.getSelection().x1, y1: current_selection.getSelection().y1, x2: current_selection.getSelection().x2, y2: current_selection.getSelection().y2}]}
+          current_selection.cancelSelection()
+          $.ajax {
+            type: "post",
+            url: "#{batch_create_design_impression_feedbacks_path(@design)}",
+            data: JSON.stringify(data)
+            dataType: "json",
+            contentType: 'application/json',
+            beforeSend: () =>
+              $("#process-btn").addClass("disabled")
+            success: (data) =>
+              $("#step-feedback").hide()
+              $("#step-feedback-result").show()
+            complete: () =>
+              $("#process-btn").removeClass("disabled")
+          }
+          return true
+      else
+        warning "Please fill the description of your selected part"
+        return false
+      
+
+    current_step = 1
+    steps = [step1, step2]
+
+    $("#process-btn").click =>
+      return if $("#process-btn").hasClass("disabled")
+      current_step = @process_steps(current_step, steps)

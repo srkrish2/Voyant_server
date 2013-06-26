@@ -10,7 +10,7 @@
 # http://github.com/RailsApps/rails-composer/issues
 #----------------------------------------------------------------------------
 
-public/source_maps/
+public/assets/source_maps/
 
 .project
 

@@ -41,7 +41,7 @@
     current_selection = make_image_selectable_with_button("#picture", "#process-btn")
 
     step1 = () ->
-      elements_str = $("#elements").val()
+      elements_str = $("#elements").val().trim()
       if elements_str
         elements = elements_str.split(",")
         if elements.length < 2
@@ -51,7 +51,7 @@
           $(".step1").hide()
           $(".step2").show()
           num = elements.length - 1
-          steps.push(step2) while num -= 1
+          steps.push(step2) while (num -= 1) > 0
           steps.push(step3)
           console.log steps.length
           $("#process-btn").addClass("disabled")

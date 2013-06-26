@@ -1,0 +1,118 @@
+.span10.offset1
+  = render 'shared/check_turker'
+
+  #step-feedback.hide
+    .row
+      .span6.offset2
+        .step1
+          %p Look at the design carefully.
+        .step2.hide
+          %p 
+            Draw a box on the following design to indicate your impression word:	
+            %strong.text-warning.impression_name
+    .row.text-center
+      .span10
+        %image.img-polaroid#picture{src: @design.picture.url}
+    .row
+      .span6.offset2
+        %p
+        .step1
+          %p What are the first words that come into your mind to capture your impression about the design? Use a comma(,)to the separate the words if you enter more than one.
+          %input.input-block-level.step1#impressions
+        .step2.hide
+          %p#step-description.hide
+            Describe the elements in the part of design you just highlighted, such as
+            %strong.text-warning#element_names 
+            and explain why your impression
+            %strong.text-warning.impression_name le1 
+            relates to these elements (at least 15 words):
+            %textarea.span6#boxarea-description(rows="3")
+    .row
+      .span10
+        %hr
+        %a.btn.btn-primary#process-btn Next
+
+= render 'shared/feedback_result'
+
+:coffee
+  $ =>
+    element_boxareas = #{@boxareas.to_json}
+    element_names = []
+    current_impression = 1
+    current_step = 1
+    steps = []
+    impression_data = []
+    impressions = []
+    selectHandle = (img,selection) =>
+      $("#step-description").show()
+      nearest_boxareas = nearest_elements(selection, element_boxareas, 3)
+      $("#element_names").html nearest_boxareas.map (boxarea)=>
+        return boxarea.name
+      .join(", ")
+
+    unSelectHandle = (img, selection) =>
+      $("#step-description").hide()
+      $("#boxarea-description").val("")
+      
+    current_selection = make_image_selectable_with_button("#picture", "#process-btn",selectHandle, unSelectHandle)
+
+    step1 = () ->
+      impressions_str = $("#impressions").val().trim()
+      if impressions_str
+        impressions = impressions_str.split(",")
+        $(".step1").hide()
+        $(".step2").show()
+        num = impressions.length - 1
+        steps.push(step2) while (num -= 1) > 0
+        steps.push(step3)
+        console.log steps.length
+        $("#process-btn").addClass("disabled")
+        current_impression = 1
+        $(".impression_name").html(impressions[current_impression - 1])
+        $("#process-btn").html("Submit") if current_impression is impressions.length
+        current_selection.setOptions {enable: true}
+        return true
+      else
+        warning("You should provide at least one word about your impression.")
+        return false
+
+    step2 = () ->
+      description_str = $("#boxarea-description").val().trim()
+      if description_str
+        description_words = split_words_from_str(description_str)
+        if description_words.length < 15
+          warning "Please provide at 15 words to describe your selected part"
+          return false
+        else
+          impression_data.push {name: impressions[current_impression-1], description: description_str, x1: current_selection.getSelection().x1, y1: current_selection.getSelection().y1, x2: current_selection.getSelection().x2, y2: current_selection.getSelection().y2}
+          console.log(impression_data[current_impression - 1])
+          current_selection.cancelSelection()
+          $("#boxarea-description").val("")
+          $("#process-btn").addClass("disabled")
+
+          current_impression += 1
+          $(".impression_name").html(impressions[current_impression - 1])
+          $("#process-btn").html("Submit") if current_impression is impressions.length
+          return true
+      else
+        warning "Please fill the description of your selected part"
+        return false
+
+    step3 = () ->
+      step2()
+      $.ajax {
+        type: "post",
+        url: "#{batch_create_design_impression_feedbacks_path(@design)}",
+        data: JSON.stringify({worker_id: window.current_worker_id, feedbacks:impression_data}),
+        dataType: "json",
+        contentType: 'application/json',
+        success: (data) =>
+          $("#step-feedback").hide()
+          $("#step-feedback-result").show()
+      }
+
+    steps = [step1, step2]
+
+    $("#process-btn").click =>
+      return if $("#process-btn").hasClass("disabled")
+      current_step = @process_steps(current_step, steps)
