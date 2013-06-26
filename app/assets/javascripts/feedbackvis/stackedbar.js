@@ -638,7 +638,7 @@ var svg =
       .enter()
       .append("text")
       .attr("class", "legendtext")
-      .attr("rel", "tooltip")
+      .attr("data-toggle", "tooltip")
       //.attr("data-toggle","tooltip")
       .attr("title", function(d,i){return tooltips[i];})
       //.attr("title", function(d,i){return tooltips[i];})
@@ -724,20 +724,17 @@ var svg =
 		  var text = lables[i];
         return text;
       });
-    
+     $('[data-toggle=tooltip]').tooltip({
+    'container': 'body',
+    'placement': 'right'
+});
     
     
 //    $(function() {
 //    	$( document ).tooltip();
 //    	});
     
-$(document).ready(function () {
-               $('[rel=tooltip]').tooltip({
-                  'selector': '',
-                  'placement': 'bottom'
-                });
 
-              });
     
 //      .attr("checked", true)
 //      .on("click", function(d,i){
