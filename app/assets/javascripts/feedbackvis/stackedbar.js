@@ -246,32 +246,16 @@ var svg =
 		}
 		//mode_goal_0_3
 
-	    optFilters_subtypescore_bak = (optFilters[json_mode[mode]].subtypescore).slice(0);//copy the arry
+	    //optFilters_subtypescore_bak = (optFilters[json_mode[mode]].subtypescore).slice(0);//copy the arry
 
-		optFilters[json_mode[mode]].subtypescore = [];
-		optFilters[json_mode[mode]].subtypescore.push(convertTextPanelIDtoOptFiltersID(this.id));
-		if(lastclicked !="")
-		{optFilters[json_mode[mode]].subtypescore.push(convertTextPanelIDtoOptFiltersID(lastclicked));}
-		console.log(optFilters[json_mode[mode]].subtypescore);
+		//optFilters[json_mode[mode]].subtypescore = [];
+		//optFilters[json_mode[mode]].subtypescore.push(convertTextPanelIDtoOptFiltersID(this.id));
+		//if(lastclicked !="")
+		//{optFilters[json_mode[mode]].subtypescore.push(convertTextPanelIDtoOptFiltersID(lastclicked));}
+		//console.log(optFilters[json_mode[mode]].subtypescore);
 		
 	    if ( isHeatmapvisible == "true")
-	    {
-		    	 object_heatnetwork.showOneTypeNodes(json_feedbackTypes[current_tab],false);
-	    }else{
-	    		//$('#heatmapID').remove();
-	 		 	//var currentheatmap = heatmap(headmapImgCanvas, img_width, img_height, cords[d.id.slice(5)]);
-	    }
-		
-		//console.log(this.id);
-		//$('#heatmapID').remove();
-		 
-	 	//var cords=[[0,0,51,104],[29,34,80,123],[50,50,180,223]];
-	 	//var currentheatmap = heatmap(headmapImgCanvas, img_width, img_height, cords[d.id.slice(5)]);
-	 
-	 	
-	 	//setTimeout(function() { $('.heatmapline').remove(); }, 1000);
-	 	//setTimeout(function() {heatmap(imgSVG, img_width, img_height, cords); }, 2000);
-
+		object_heatnetwork.showOneTypeNodes(json_feedbackTypes[current_tab],false);
     	})
     	
     .on("mouseout", function(d){
@@ -279,32 +263,20 @@ var svg =
 		{
 			d3.select(this).style("stroke-width",0);
 		}
-		optFilters[json_mode[mode]].subtypescore = [];
-		optFilters[json_mode[mode]].subtypescore = optFilters_subtypescore_bak.slice(0);
+		//optFilters[json_mode[mode]].subtypescore = [];
+		//optFilters[json_mode[mode]].subtypescore = optFilters_subtypescore_bak.slice(0);
 
-    	
-//    	var idTmp = (this.id).slice(5);
-//    	if (this.id != lastclicked)
-//    	{
-//    		for(var i = optFilters[json_mode[mode]].subtypescore.length-1; i >= 0; i--){  
-//        	    if( optFilters[json_mode[mode]].subtypescore[i] == idTmp){      
-//        	    	
-//        	    	 optFilters[json_mode[mode]].subtypescore.splice(i,1);                 
-//        	    }
-//        	}
-//    	}
-    	if ( isHeatmapvisible == "true")
-    	 {
-	    	 object_heatnetwork.showOneTypeNodes(json_feedbackTypes[current_tab],false);
-    	 }else
-    	{
- 			$('#heatmapID').remove();
-    	}
-    	})
-    	
+    	//if (isHeatmapvisible == "true")
+	    //object_heatnetwork.showOneTypeNodes(json_feedbackTypes[current_tab],false);	
+    	})  	
     .on("click", function(d){
     	if (this.id != lastclicked)
     	{
+    		optFilters_subtypescore_bak = (optFilters[json_mode[mode]].subtypescore).slice(0);//copy the arry
+
+			optFilters[json_mode[mode]].subtypescore = [];
+			optFilters[json_mode[mode]].subtypescore.push(convertTextPanelIDtoOptFiltersID(this.id));
+		
         	var isCtrl = d3.event.ctrlKey;
 
     		if(isCtrl) {
@@ -646,7 +618,7 @@ var svg =
       .append("rect")
 	  //.attr("x", w - 65)
        //.style("padding", "10px")
-      .attr("title", function(d,i){return tooltips[i];})
+      //.attr("title", function(d,i){return tooltips[i];})
       .attr("x", legend_x)
       .attr("y", function(d, i){ return i *  22 -2;})
 	  .attr("width", 11)
@@ -666,7 +638,10 @@ var svg =
       .enter()
       .append("text")
       .attr("class", "legendtext")
+      .attr("data-toggle", "tooltip")
+      //.attr("data-toggle","tooltip")
       .attr("title", function(d,i){return tooltips[i];})
+      //.attr("title", function(d,i){return tooltips[i];})
 	  .attr("x", w - 52)
       .attr("y", function(d, i){ return i *  22 + 9;})
       .attr("id", function(d,i) { 
@@ -749,29 +724,17 @@ var svg =
 		  var text = lables[i];
         return text;
       });
-    
+     $('[data-toggle=tooltip]').tooltip({
+    'container': 'body',
+    'placement': 'right'
+});
     
     
 //    $(function() {
 //    	$( document ).tooltip();
 //    	});
     
-    $(function() {
-    	$( document ).tooltip({
-    	position: {
-    	my: "center bottom-20",
-    	at: "center top",
-    	using: function( position, feedback ) {
-    	$( this ).css( position );
-    	$( "<div>" )
-    	.addClass( "tooltip_arrow" )
-    	.addClass( feedback.vertical )
-    	.addClass( feedback.horizontal )
-    	.appendTo( this );
-    	}
-    	}
-    	});
-    	});
+
     
 //      .attr("checked", true)
 //      .on("click", function(d,i){

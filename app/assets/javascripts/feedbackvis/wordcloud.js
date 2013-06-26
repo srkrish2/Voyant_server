@@ -73,8 +73,8 @@
         .style("font-family", "Impact")
         .style("fill", function(d, i) { 
 	        console.log("i:"+i+"_text:"+d.text); return assignColorImp(d.vote); })
-	    .style("stroke-width",0)
-	        
+	    
+        
         .attr("text-anchor", "middle")
         .attr("transform", function(d) {
           return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
@@ -84,50 +84,43 @@
         .attr("class", "impword")
         .text(function(d) { return d.text; })
 	    .on("mouseover", function(d){
-	    	this.style.fontWeight = "bold";
-			//console.log(this.id);
-			//console.log(d.text);
-			//console.log(hash_IDinCloud_ImpContent.get(this.id));
-
-			
-			if(optFilters.imp.subtype.indexOf(hash_IDinCloud_ImpContent.get(this.id)) == -1)
-			optFilters.imp.subtype.push(hash_IDinCloud_ImpContent.get(this.id));
-			
-			 if ( isHeatmapvisible == "true")
-	    	 {
-		    	 object_heatnetwork.showOneTypeNodes(json_feedbackTypes[current_tab],false);
-	    	 }else
-	    	{
-	 			//$('#heatmapID').remove();
-	 		 	//var currentheatmap = heatmap("#overlay", img_width, img_height, arrCordsforImps[this.id.slice(1)]);
-	    	}
-
-		 			 	
+	    	if (this.id != lastclicked)
+		    {
+		       this.style.strokeWidth = "1.2px";
+	    	   d3.select(this).style("stroke","black");  
+		    }
+		    	
+			// if(optFilters.imp.subtype.indexOf(hash_IDinCloud_ImpContent.get(this.id)) == -1)
+			// optFilters.imp.subtype.push(hash_IDinCloud_ImpContent.get(this.id));
+		
+			// if ( isHeatmapvisible == "true")
+		    // object_heatnetwork.showOneTypeNodes(json_feedbackTypes[current_tab],false);			 	
     	})
         .on("mouseout", function(d){
-	    	this.style.fontWeight = "normal";
-        	if (this.id != lastclicked)
-        	{
-        		for(var i = optFilters.imp.subtype.length-1; i >= 0; i--){  
-            	    if(optFilters.imp.subtype[i] == hash_IDinCloud_ImpContent.get(this.id)){      
-            	    	
-            	    	optFilters.imp.subtype.splice(i,1);                 
-            	    }
-            	}
-        	}
-        	if ( isHeatmapvisible == "true")
-	    	 {
-		    	 object_heatnetwork.showOneTypeNodes(json_feedbackTypes[current_tab],false);
-	    	 }else
-	    	{
-	 			$('#heatmapID').remove();
-	    	}
-        	//this.style.textShadow = "none";
+	    	this.style.strokeWidth = "0px";
+	    	d3.select(this).style("stroke","");
+	    	
+        	// if (this.id != lastclicked)
+        	// {
+        		// for(var i = optFilters.imp.subtype.length-1; i >= 0; i--){  
+            	    // if(optFilters.imp.subtype[i] == hash_IDinCloud_ImpContent.get(this.id)){      
+         	    	
+            	    	// optFilters.imp.subtype.splice(i,1);                 
+            	    // }
+            	// }
+        	// }
+        	
+        	// if( isHeatmapvisible == "true")
+			// object_heatnetwork.showOneTypeNodes(json_feedbackTypes[current_tab],false);
+	    	 
     	})
     	.on("click", function(d){
 
     		if (this.id != lastclicked)
 		 	{
+		 		if(optFilters.imp.subtype.indexOf(hash_IDinCloud_ImpContent.get(this.id)) == -1)
+			    optFilters.imp.subtype.push(hash_IDinCloud_ImpContent.get(this.id));
+			
     			if(lastclicked !="")
     			{
     				
@@ -152,7 +145,9 @@
 	    		//document.getElementById(this.id).style.textShadow="5px 5px 1px #ff0000";
 	    		//document.getElementById(this.id).style.backgroundColor="#f3f3f3"; 
     			//document.getElementById(this.id).style.color="#ff0000";
-    			 d3.select(this).style("stroke","#F6B149");// anbnag make fig
+    			
+    			 //d3.select(this).style("stroke","#F6B149");// anbnag make fig
+    			
     			 //d3.select(this).style("stroke-width",1);
     			 d3.select(this).style("fill","#F6B149" );
     			 
@@ -169,21 +164,18 @@
 			    	 object_heatnetwork.showOneTypeNodes(json_feedbackTypes[current_tab],true);
 			    	 
 		    	 }else{
-		    		 var tmpID =  this.id.slice(1);
-						var idArr = tmpID.split("_");
-			    		//console.log(this.id);		 	
-					 	$('#explain_imp').empty();
-					 	$.ajax({
-							type: "GET",
-							url: "get_comments.php",
-							data: { twid: idArr[0], tiid: idArr[1]}
-						}).done(function( result ) {
-							//alert(result);
-							var jsonArrayOneImpTmp = $.parseJSON(result);
-							var jsonArrayOneImp = jsonArrayOneImpTmp;
-							//alert(jsonArrayOneImp);
-							//one impression word: w_0
-							//json = JSON.parse( myjson );
+		    	 	 console.log("error: isHeatmapvisible is"+isHeatmapvisible);
+		    		 // var tmpID =  this.id.slice(1);
+						// var idArr = tmpID.split("_");
+					 	// $('#explain_imp').empty();
+					 	// $.ajax({
+							// type: "GET",
+							// url: "get_comments.php",
+							// data: { twid: idArr[0], tiid: idArr[1]}
+						// }).done(function( result ) {
+							// var jsonArrayOneImpTmp = $.parseJSON(result);
+							// var jsonArrayOneImp = jsonArrayOneImpTmp;
+
 							/*
 							var jsonArrayOneImp = [
 									 {'id': 'w_0_0',
@@ -197,13 +189,9 @@
 							] ;
 							*/
 					 	
-							var crurrentexplains = explain("#explain_imp",jsonArrayOneImp, img_width, img_height);
 							//var crurrentexplains = explain("#explain_imp",jsonArrayOneImp, img_width, img_height);
 
-							    
-							
-							//object_heatnetwork
-						});
+						//});
 		    		 
 		    	 }
 	    		

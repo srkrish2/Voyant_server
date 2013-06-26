@@ -1,7 +1,9 @@
 (function(d3) {
-  window.heatmap = function(divID, width, height, cords) {
+  window.heatmap = function(divID, width, height, cords, canvasID) {
   //parallel = function(model, colors, svgW, svgH) {
   //window.parallel = function(model, colors) {
+  	canvasID = typeof canvasID !== 'undefined' ? canvasID : 'heatmapID';
+
     var self = {};
     
     //var width = 261;
@@ -130,7 +132,7 @@
      .attr("left", posImg.left);     
                                                                     
   d3.select(divID).append("canvas")   
-  		.attr("id", "heatmapID")    
+  		.attr("id", canvasID)    
       .attr("width", dx)                                            
       .attr("height", dy)                                           
       .style("width", width + "px")                                 

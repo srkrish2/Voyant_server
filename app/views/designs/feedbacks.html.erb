@@ -63,6 +63,7 @@ var tab_stackbar_criteria;//tab_element
 var tab_element;//tab_element
 
 var object_heatnetwork;
+var mouseUpDown = 0;
 
 //need data
 //d3.json("jsonall.json", function(error, json_all) {
@@ -73,6 +74,18 @@ var json_all =
 	//isShownTabs = {"eleorg":true,"notice":true,"imp":true,"goal":true,"criteria":true};
 	
       $(function() {
+      	    
+      	    $('body')
+      	    .mouseup(function(e) {
+      	    	mouseUpDown = mouseUpDown + 1;
+      	    	console.log("isup:"+mouseUpDown);
+				//console.log("mouseUpDown:"+mouseUpDown);
+	     	 })	
+	      	.mousedown(function(e) {
+	      		mouseUpDown = mouseUpDown - 1;
+	      		console.log("isdown:"+mouseUpDown);
+				//console.log("mouseUpDown:"+mouseUpDown);
+	      	});
        	    
         	if (isShownTabs["eleorg"])
         	{
@@ -99,7 +112,7 @@ var json_all =
             	
         		$("div#tabs-imp").append("\
                 	<div id='wordcloudContainer'></div>\
-                	<div class='explaintxt' id='explain_imp' style ='max-height: 400px; overflow-y:auto;'></div>");  
+                	<div class='explaintxt' align = 'center' id='explain_imp' style ='max-height: 400px; overflow-y:auto;'></div>");  
         	}
 
         	if (isShownTabs["goal"])
@@ -109,7 +122,7 @@ var json_all =
         			<div align='left'> \
     			    	<div id='stackbarLegend_goal'></div>\
     			    	<div id='stackbar_goal'></div>\
-    			    	<div class='explaintxt' id='explain_goal' style ='max-height: 400px; overflow-y:auto;'></div>\
+    			    	<div class='explaintxt' align = 'center' id='explain_goal' style ='max-height: 400px; overflow-y:auto;'></div>\
     			    </div>");  
             }
 
@@ -120,7 +133,7 @@ var json_all =
     				<div align='left'>\
 						<div id='stackbarLegend_criteria'></div>\
 						<div id='stackbar_criteria'></div>\
-						<div class='explaintxt' id='explain_criteria' style ='max-height: 400px; overflow-y:auto;'></div>\
+						<div class='explaintxt' align = 'center' id='explain_criteria' style ='max-height: 400px; overflow-y:auto;'></div>\
 					</div>");  
         	}
 			
@@ -153,16 +166,20 @@ var json_all =
             		    	
         		    		 if ( isHeatmapvisible == "true")
             		    	 {
+            		    	 	 $('#heatmapID_eleorg').slideUp('fast',function(){ $('#heatmapID_eleorg').addClass('hide').slideDown(0); });
+            		    	 	 
                 		    	 object_heatnetwork.showOneTypeNodes(json_feedbackTypes[current_tab],true);
-
                 		    	 $panel_img.slideUp(0,function(){
-                		        	$panel_img.removeClass('hide').slideDown('fast');
+                		         $panel_img.removeClass('hide').slideDown('fast');
                 		         });
             		    	 }else{
             		    		 object_heatnetwork.hide();
             		             $panel_img.slideUp('fast',function(){
-            		             	$panel_img.addClass('hide').slideDown(0);
+            		             $panel_img.addClass('hide').slideDown(0);
             		             });
+            		             
+            		             if(current_tab == "#tabs-eleorg") 
+            		             $('#heatmapID_eleorg').slideUp(0,function(){ $('#heatmapID_eleorg').removeClass('hide').slideDown('fast'); });
                      		 }    
            		    	  
                 		 }
@@ -195,14 +212,14 @@ var json_all =
 			isHeatmapvisible =  $('input[name=radio-text-visual]:checked', '#radios-text-visual').val()
 
 			     if ( isHeatmapvisible =="true") {
-
+			        $('#heatmapID_eleorg').slideUp('fast',function(){ $('#heatmapID_eleorg').addClass('hide').slideDown(0); });
 			 		//var activeIndex = $( "#tabs" ).tabs( "option", "active");
 					//$( "#tabs-img" ).tabs( "option", "active", current_tab );   
 					
-			   	  //object_heatnetwork.show();
-			   	  object_heatnetwork.showOneTypeNodes(json_feedbackTypes[current_tab],true);
-			   	  //d3.select('.extent').attr("visibility", "visible");
-			      //d3.select('#test').attr("visibility", "visible");
+			   	    //object_heatnetwork.show();
+			   	   object_heatnetwork.showOneTypeNodes(json_feedbackTypes[current_tab],true);
+			   	   //d3.select('.extent').attr("visibility", "visible");
+			       //d3.select('#test').attr("visibility", "visible");
 			         
 			       //$panel_text.slideUp('fast',function(){
 			       // $panel_text.addClass('hide')
@@ -230,6 +247,9 @@ var json_all =
 			           $panel_img.addClass('hide')
 			                .slideDown(0);
 			         });
+			         
+			      if(current_tab == "#tabs-eleorg")   
+			      $('#heatmapID_eleorg').slideUp(0,function(){ $('#heatmapID_eleorg').removeClass('hide').slideDown('fast'); });
 			     }
 					
 	   });
@@ -464,7 +484,10 @@ var json_all =
 		*/
      object_heatnetwork = heatnetwork(imgSVG, img_width, img_height, json_feedbackTypes[current_tab], json_all, optFilters, hash_ImpContent_IDinCloud);
 	 if(isHeatmapvisible == "true")
-	 { 	
+	 { 	 
+	 	
+	 	 $('#heatmapID_eleorg').slideUp('fast',function(){ $('#heatmapID_eleorg').addClass('hide').slideDown(0); });
+		 
 		 object_heatnetwork.showOneTypeNodes(json_feedbackTypes[current_tab],true);
      	 $panel_img.slideUp(0,function(){
          	$panel_img.removeClass('hide').slideDown('fast');
@@ -474,6 +497,10 @@ var json_all =
           $panel_img.slideUp('fast',function(){
           	$panel_img.addClass('hide').slideDown(0);
           });
+          
+          if(current_tab == "#tabs-eleorg")
+          $('#heatmapID_eleorg').slideUp(0,function(){ $('#heatmapID_eleorg').removeClass('hide').slideDown('fast'); });
+
       }
 
 	 if (isShownTabs["imp"])   

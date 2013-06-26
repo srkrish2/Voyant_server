@@ -1,8 +1,8 @@
-%a.btn-primary.btn(href="#new-design-modal" role="button" data-toggle="modal") New Design
+%a.btn-primary.btn(href="#new-design-modal" role="button" data-toggle="modal") Add Design
 .modal.hide.fade#new-design-modal(tabindex="-1" role="dialog" aria-labelledby="new-design-modal-label" aria-hidden="true")
   .modal-header
     %button.close(data-dismiss="modal" aria-hidden="true" type="button") &times;
-    %h3#new-design-modal-label New Design
+    %h3#new-design-modal-label Add Design
   .modal-body
     = simple_form_for @design, html: {class: "form-horizontal", id: "new-design-form"} do |f|
       = f.input :name, inline_label: "dde"

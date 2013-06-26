@@ -3,6 +3,21 @@
 	 
     var self = {};
     var jsonArr_labelsNkeys = [];
+    var lastclicked = "";
+    
+    d3.select(tableID)
+        .on("click", function(){
+		var target = d3.event.target.tagName;
+		console.log("click:"+target);
+		if (target != "TEXT" && lastclicked !="")
+		{	
+			d3.select("#"+lastclicked).style("color","black" );
+			d3.select("#"+lastclicked).style("font-weight","normal");
+			$('#heatmapID_eleorg').remove();
+			
+			lastclicked = "";
+		}
+    });
     for (var i =0; i <= count(json_allColor.ele); i++)
     {
         for (var key in json_allColor.ele) {
@@ -24,26 +39,40 @@
            	 
            	d3.select('#eletype'+jsonArr_labelsNkeys[i].key)
            	.append("div")
-           	.attr("class","eleorg-content")
+           	.attr("class","legendtext")
+           	.attr("align","left")
            	.append("text")
          	.text(jsonArray[j].element)
          	.attr("id","org"+jsonArray[j].id)
-         	.on("mouseover", function(d){
-			   	//object_heatnetwork.hide();
-				d3.select(this).style("color","#F6B149" );
-				d3.select(this).style("font-weight","bold");
-				$('#heatmapID').remove();
-				var currentheatmap = heatmap("#overlay", img_width, img_height, cords[this.id.slice(3)]);	
+         	.on("click", function(){
+         		if (lastclicked != this.id)
+         		{
+         			if(lastclicked != "")
+         			{
+         				d3.select("#"+lastclicked).style("color","black" );
+						d3.select("#"+lastclicked).style("font-weight","normal");
+         			}
+			
+         			d3.select(this).style("color","#F6B149" );
+					d3.select(this).style("font-weight","bold");
+					$('#heatmapID_eleorg').remove();
+					var currentheatmap = heatmap("#overlay", img_width, img_height, cords[this.id.slice(3)], 'heatmapID_eleorg');
+					
+					lastclicked = this.id		
+					console.log(this.id);
+         		}
+         	})
+            .on("mouseover", function(d){
+				//d3.select(this).style("color","#F6B149" );
+				//d3.select(this).style("font-weight","bold");
+				//$('#heatmapID').remove();
+				//var currentheatmap = heatmap("#overlay", img_width, img_height, cords[this.id.slice(3)]);	
 			})
 			.on("mouseout", function(d){
-				d3.select(this).style("color","black" );
-				d3.select(this).style("font-weight","normal");
+				//d3.select(this).style("color","black" );
+				//d3.select(this).style("font-weight","normal");
 
-				$('#heatmapID').remove();
-			   	//object_heatnetwork.showOneTypeNodes(json_feedbackTypes[current_tab],true);
-		
-		
-				
+				//$('#heatmapID').remove();
 			});
            	
         	}
@@ -51,11 +80,26 @@
     }
     
     $(function(){
+    	
+    	// var $grid = $(tableID);
+		// var height = $grid.height();
+// 		
+		// if( height > 0 ) { // or some other number
+		    // $grid.height( 450 );
+		// }else{
+			 // $grid.height( 300 );
+		// }
+
+
     	  $(tableID).masonry({
     	    // options
     	    itemSelector : '.eletype',
-    	    columnWidth : 240
+    	    columnWidth : 240,
+    	    animate:false,
+    	    resizeable:false 
     	  });
+    	  
+    	  $(tableID).height(365);
     	});
 
 
