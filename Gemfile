@@ -42,3 +42,5 @@ gem "annotate", "~> 2.5.0", :group => :development
 gem "jquery-ui-rails", "~> 4.0.3"
 gem "paperclip", "~> 3.4.2"
 gem "best_in_place", "~> 2.1.0"
+
+gem "coffee-rails-source-maps", "~> 1.3.6", :group => :development
