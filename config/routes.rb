@@ -1,6 +1,6 @@
 Crowddesign::Application.routes.draw do
   authenticated :user do
-    root :to => 'home#index'
+    root :to => 'designs#index'
   end
   root :to => "home#index"
   devise_for :users
@@ -23,6 +23,10 @@ Crowddesign::Application.routes.draw do
         post :batch_create
         get :vote
       end
+    end
+
+    resources :goal_feedbacks do
+
     end
   end
 
