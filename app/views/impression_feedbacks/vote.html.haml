@@ -46,10 +46,7 @@
     element_boxareas = #{@boxareas.to_json}
     selectHandle = (img,selection) =>
       $("#step-description").show()
-      nearest_boxareas = nearest_elements(selection, element_boxareas, 3)
-      $("#element_names").html nearest_boxareas.map (boxarea)=>
-        return boxarea.name
-      .join(", ")
+      $("#element_names").html nearest_elements_names(selection, element_boxareas, 3).join(", ")
 
     unSelectHandle = (img, selection) =>
       $("#step-description").hide()

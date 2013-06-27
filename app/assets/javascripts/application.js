@@ -94,7 +94,7 @@ function split_words_from_str(str){
   return str.trim().split(/\s+|\n/)
 }
 
-function nearest_elements(current_boxarea, element_boxareas, num) {
+function nearest_elements_names(current_boxarea, element_boxareas, num) {
   selection_center_point = {};
   selection_center_point.x = (current_boxarea.x1 + current_boxarea.x2) * 0.5;
   selection_center_point.y = (current_boxarea.y1 + current_boxarea.y2) * 0.5;
@@ -107,7 +107,10 @@ function nearest_elements(current_boxarea, element_boxareas, num) {
   element_boxareas.sort(function(a,b){
     return a.distance - b.distance
   });
-  return element_boxareas.slice(0,num);
+  element_boxareas_names = element_boxareas.map(function(boxarea){
+    return boxarea.name;
+  });
+  return _.uniq(element_boxareas_names).slice(0,num);
 }
 
 $(document).ready(function() {
