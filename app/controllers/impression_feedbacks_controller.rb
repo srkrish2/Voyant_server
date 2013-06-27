@@ -1,4 +1,7 @@
+require 'controllers/feedbacks_controller_methods'
+
 class ImpressionFeedbacksController < ApplicationController
+  include FeedbacksControllerMethods
   load_resource :design
   load_resource :impression_feedback, :through => :design, :expecpt => :batch_create
 
@@ -42,15 +45,5 @@ class ImpressionFeedbacksController < ApplicationController
   def vote
     get_element_boxareas
     @impression_feedbacks = @design.impression_feedbacks
-  end
-
-
-  protected
-  def get_element_boxareas
-    @boxareas = []
-    element_feedbacks = @design.element_feedbacks
-    element_feedbacks.each do |feedback|
-      feedback.boxareas.each {|boxarea| @boxareas << {name: feedback.name, x1: boxarea.top_left_x, y1: boxarea.top_left_y, x2: boxarea.bottom_right_x, y2:boxarea.bottom_right_y}}
-    end
   end
 end

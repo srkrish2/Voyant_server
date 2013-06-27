@@ -12,9 +12,12 @@
 
 class GoalFeedback < ActiveRecord::Base
   # Accessible
-  #attr_accessible :rating
+  attr_accessible :rating
   # Associations
-  has_many :boxareas, :as => :feedback, :dependent => :destroy
+  has_one :boxarea, :as => :feedback, :dependent => :destroy
   belongs_to :design
   belongs_to :configuration, :class_name => "GoalConfiguration"
+  #validations
+  validates :design_id, :presence => {:message => "Design is required"}
+  validates :configuration_id, :presence => {:message => "Configuration ID is required"}
 end

@@ -1,0 +1,118 @@
+.span10.offset1
+  = render 'shared/check_turker'
+  
+  #step-feedback.hide
+    .row
+      .span6.offset2
+        .step1
+          %p
+            Review the deisgn and its design goal carefully.
+        .step2
+          %p
+            Draw a box on the design to indicate which part of the design 
+            %strong.text-warning#meet-action
+            the design goal.
+        %p
+          %strong Goal:
+          = @configuration.title
+    .row.text-center
+      .span10
+        %image.img-polaroid#picture{src: @design.picture.url}
+    .row
+      .span6.offset2
+        .step1
+          %hr
+          %p
+            %strong Statement:
+            The design meets its design goal.
+          %p
+            %strong To what extent do you agree or disagree with the above statement:
+          %table.table
+            %tr
+              %td(style="width: 14%; text-align: center") strongly disagree
+              %td(style="width: 14%; text-align: center") moderately disagree
+              %td(style="width: 14%; text-align: center") slightly disagree
+              %td(style="width: 14%; text-align: center") neutral
+              %td(style="width: 14%; text-align: center") slightly agree
+              %td(style="width: 14%; text-align: center") moderately agree
+              %td(style="width: 14%; text-align: center") strongly agree
+            %tr
+              - (-3..3).each do |i|
+                %td(style="text-align: center")
+                  %input.goal_feedback_rating(style="text-align: center" type="radio" name="rating" value="#{i}")
+        .step2.hide
+          %p#step-description.hide
+            Describe the elements in the part of design you just highlighted, such as
+            %strong.text-warning#element_names 
+            and explain why these elements in this part of the design do not meet the design goal (at least 15 words):
+            %textarea.span6#boxarea-description(rows="3")
+    .row
+      .span10
+        %hr
+        %a.btn.btn-primary#process-btn Next
+
+= render 'shared/feedback_result'
+
+:coffee
+    element_boxareas = #{@boxareas.to_json}
+    selectHandle = (img,selection) =>
+      $("#step-description").show()
+      $("#element_names").html nearest_elements_names(selection, element_boxareas, 3).join(", ")
+    unSelectHandle = (img, selection) =>
+      $("#step-description").hide()
+      $("#boxarea-description").val("")
+      
+    current_selection = make_image_selectable_with_button("#picture", "#process-btn",selectHandle, unSelectHandle)
+
+    #$(".goal_feedback_rating:checked").val()
+    steps = []
+    rating = null
+
+    step1 = () ->
+      rating = $(".goal_feedback_rating:checked").val()
+      if rating
+        if rating > 0
+          $("#meet-action").html("meets")
+        else
+          $("#meet-action").html("doesn't meet")
+        $(".step1").hide()
+        $(".step2").show()
+        $("#process-btn").addClass("disabled")
+        current_selection.setOptions {enable: true}
+
+        return true
+      else
+        warning "Please choose your rating"
+        return false
+
+    step2 = () ->
+      description_str = $("#boxarea-description").val().trim()
+      if description_str
+        description_words = split_words_from_str(description_str)
+        if description_words.length < 15
+          warning "Please provide at 15 words to describe your selected part"
+          return false
+        else
+          current_selection.cancelSelection()
+          $.ajax {
+            type: "post",
+            url: "#{design_goal_feedbacks_path(@design)}",
+            data: JSON.stringify({worker_id: window.current_worker_id, configuration_id: "#{@configuration.id}", description: description_str,rating: rating, x1: current_selection.getSelection().x1, y1: current_selection.getSelection().y1, x2: current_selection.getSelection().x2, y2: current_selection.getSelection().y2}),
+            dataType: "json",
+            contentType: 'application/json',
+            success: (data) =>
+              $("#step-feedback").hide()
+              $("#step-feedback-result").show()
+          }
+
+          return true
+      else
+        warning "Please fill the description of your selected part"
+        return false
+    
+    current_step = 1
+    steps = [step1, step2]
+
+    $("#process-btn").click =>
+      return if $("#process-btn").hasClass("disabled")
+      current_step = @process_steps(current_step, steps)
