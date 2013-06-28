@@ -62,7 +62,8 @@
     //---------------opacity mapping start---------------
     var opacityMapping = d3.scale.linear()
         .domain([0, arraySortedMatrix[arraySortedMatrix.length -1]])
-        .range([0.8,0]);
+        .range([0,0.5]);
+        //.range([0.8,0]);
     var arraryOpacity =  new Array();
 
     for (var i = 0; i < arraySortedMatrix.length ; ++i)

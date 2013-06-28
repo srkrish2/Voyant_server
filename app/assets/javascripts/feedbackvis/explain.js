@@ -29,12 +29,8 @@
 	      // .mousedown(function(e) {
 			// console.log("isdown:"+e.which);
 	      // })
-		.mouseover(function(e) {
-			console.log("1111111:"+e.which);
-			
-			if (mouseUpDown == 0)//if left buttons is not clicked
-		   	{ 
-		   		if($('#heatmapID').length != 0)
+	    .on("click", function(d){
+	    	if($('#heatmapID').length != 0)
 		   		$('#heatmapID').remove();
 		   		
 				object_heatnetwork.hide();
@@ -48,7 +44,27 @@
 		    	console.log(temp);
 		    	
 			 	heatmap("#overlay", img_width, img_height,cords);
-		   	}
+		})
+		.mouseover(function(e) {
+			console.log("1111111:"+e.which);
+			
+			// if (mouseUpDown == 0)//if left buttons is not clicked
+		   	// { 
+		   		// if($('#heatmapID').length != 0)
+		   		// $('#heatmapID').remove();
+// 		   		
+				// object_heatnetwork.hide();
+// 	
+				// var temp = new Array();
+				// var str = $('#'+this.id).data('cord');
+				// temp = str.split(",");
+		    	// var cords = new Array();
+		    	// cords[0] =temp;
+		    	// console.log(this.id);
+		    	// console.log(temp);
+// 		    	
+			 	// heatmap("#overlay", img_width, img_height,cords);
+		   	// }
 			
 		})	
 	.mouseout(function(e){
