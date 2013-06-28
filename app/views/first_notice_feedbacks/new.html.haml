@@ -52,7 +52,7 @@
         return false
     
     step2 = () ->
-      data = {worker_id: window.current_worker_id, feedbacks: [{x1: current_selection.getSelection().x1, y1: current_selection.getSelection().y1, x2: current_selection.getSelection().x2, y2: current_selection.getSelection().y2}]}
+      data = {worker_id: window.current_worker_id, element_feedback_id: selected_element_feedback_id, x1: current_selection.getSelection().x1, y1: current_selection.getSelection().y1, x2: current_selection.getSelection().x2, y2: current_selection.getSelection().y2}
       current_selection.cancelSelection()
       $.ajax {
         type: "post",
