@@ -2,29 +2,50 @@
   = render 'shared/check_turker'
   
   #step-feedback.hide
+    #example
+      .row
+        .span10
+          %p Read the design guideline carefully. Compare negative and positive examples of this guideline.
+          %p
+            %strong Guideline:
+            = GuidelineFeedback::ExampleText[@configuration_index] if @configuration_index
+      .row.text-center
+        .span10
+          %hr
+          %p
+            %strong Negative example:
+            = GuidelineFeedback::ExampleNegativeExplanation[@configuration_index] if @configuration_index
+          %image(src="#{image_path("guideline_examples/#{GuidelineFeedback::ExampleNegativeImage[@configuration_index]}")}")
+      .row.text-center
+        .span10
+          %hr
+          %p
+            %strong Postive example:
+            = GuidelineFeedback::ExamplePositiveExplanation[@configuration_index] if @configuration_index
+          %image(src="#{image_path("guideline_examples/#{GuidelineFeedback::ExamplePositiveImage[@configuration_index]}")}")
     .row
       .span6.offset2
-        .step1
+        .step1.hide
           %p
-            Review the deisgn and its design goal carefully.
+            Evaluate the design by the following guideline carefully.
         .step2.hide
           %p
-            Draw a box on the design to indicate which part of the design 
-            %strong.text-warning#meet-action
-            the design goal.
-        %p
-          %strong Goal:
+            Draw a box on the design to indicate which part of the design
+            %strong.text-warning#support-action supports
+            your rating of the guideline.
+        %p#guideline.hide
+          %strong Guideline:
           = @configuration.description
-    .row.text-center
+    .row.text-center#picture.hide
       .span10
         %image.img-polaroid#picture{src: @design.picture.url}
     .row
       .span6.offset2
-        .step1
+        .step1.hide
           %hr
           %p
             %strong Statement:
-            The design meets its design goal.
+            The design meets this guideline.
           %p
             %strong To what extent do you agree or disagree with the above statement:
           %table.table
@@ -39,12 +60,12 @@
             %tr
               - (-3..3).each do |i|
                 %td(style="text-align: center")
-                  %input.goal_feedback_rating(style="text-align: center" type="radio" name="rating" value="#{i}")
+                  %input.guideline_feedback_rating(style="text-align: center" type="radio" name="rating" value="#{i}")
         .step2.hide
           %p#step-description.hide
             Describe the elements in the part of design you just highlighted, such as
             %strong.text-warning#element_names 
-            and explain why these elements in this part of the design do not meet the design goal (at least 15 words):
+            and explain why these elements in this part of the design do not meet the guideline (at least 15 words):
             %textarea.span6#boxarea-description(rows="3")
     .row
       .span10
@@ -64,17 +85,20 @@
       
     current_selection = make_image_selectable_with_button("#picture", "#process-btn",selectHandle, unSelectHandle)
 
-    #$(".goal_feedback_rating:checked").val()
+    #$(".guideline_feedback_rating:checked").val()
     steps = []
     rating = null
 
+    step0 = () ->
+      $("#example").hide()
+      $(".step1").show()
+      $("#picture").show()
+      $("#guideline").show()
+      return true
+
     step1 = () ->
-      rating = $(".goal_feedback_rating:checked").val()
+      rating = $(".guideline_feedback_rating:checked").val()
       if rating
-        if rating > 0
-          $("#meet-action").html("meets")
-        else
-          $("#meet-action").html("doesn't meet")
         $(".step1").hide()
         $(".step2").show()
         $("#process-btn").addClass("disabled")
@@ -96,7 +120,7 @@
           current_selection.cancelSelection()
           $.ajax {
             type: "post",
-            url: "#{design_goal_feedbacks_path(@design)}",
+            url: "#{design_guideline_feedbacks_path(@design)}",
             data: JSON.stringify({worker_id: window.current_worker_id, configuration_id: "#{@configuration.id}", description: description_str,rating: rating, x1: current_selection.getSelection().x1, y1: current_selection.getSelection().y1, x2: current_selection.getSelection().x2, y2: current_selection.getSelection().y2}),
             dataType: "json",
             contentType: 'application/json',
@@ -111,8 +135,13 @@
         return false
     
     current_step = 1
-    steps = [step1, step2]
+    steps = [step0, step1, step2]
 
     $("#process-btn").click =>
       return if $("#process-btn").hasClass("disabled")
       current_step = @process_steps(current_step, steps)
+
+- if @configuration_index.nil?
+  :coffee
+    $("#process-btn").trigger("click")
+

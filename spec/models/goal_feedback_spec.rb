@@ -30,7 +30,7 @@ describe GoalFeedback do
   describe "associations" do
     it "should have many boxareas" do
       goal_feedback = GoalFeedback.new
-      expect{goal_feedback.boxareas}.not_to raise_error
+      expect{goal_feedback.boxarea}.not_to raise_error
     end
   end
 end

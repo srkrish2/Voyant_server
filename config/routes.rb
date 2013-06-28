@@ -26,6 +26,9 @@ Crowddesign::Application.routes.draw do
     end
 
     resources :goal_feedbacks do
+    end
+
+    resources :guideline_feedbacks do
 
     end
   end
