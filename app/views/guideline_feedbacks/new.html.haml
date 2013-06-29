@@ -15,14 +15,14 @@
           %p
             %strong Negative example:
             = GuidelineFeedback::ExampleNegativeExplanation[@configuration_index] if @configuration_index
-          %image(src="#{image_path("guideline_examples/#{GuidelineFeedback::ExampleNegativeImage[@configuration_index]}")}")
+          %image(src="#{image_path("guideline_examples/#{GuidelineFeedback::ExampleNegativeImage[@configuration_index] if @configuration_index}")}")
       .row.text-center
         .span10
           %hr
           %p
             %strong Postive example:
             = GuidelineFeedback::ExamplePositiveExplanation[@configuration_index] if @configuration_index
-          %image(src="#{image_path("guideline_examples/#{GuidelineFeedback::ExamplePositiveImage[@configuration_index]}")}")
+          %image(src="#{image_path("guideline_examples/#{GuidelineFeedback::ExamplePositiveImage[@configuration_index]}") if @configuration_index}")
     .row
       .span6.offset2
         .step1.hide

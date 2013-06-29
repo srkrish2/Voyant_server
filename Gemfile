@@ -44,3 +44,4 @@ gem "paperclip", "~> 3.4.2"
 gem "best_in_place", "~> 2.1.0"
 
 gem "coffee-rails-source-maps", "~> 1.3.6", :group => :development
+gem "turkee", "~> 2.0.2"
