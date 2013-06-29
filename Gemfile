@@ -46,3 +46,5 @@ gem "best_in_place", "~> 2.1.0"
 gem "coffee-rails-source-maps", "~> 1.3.6", :group => :development
 gem "rturk", "~> 2.10.2"
 gem "turkee", "~> 2.0.2"
+
+gem "twitter-bootstrap-rails-confirm", "~> 1.0.1"
