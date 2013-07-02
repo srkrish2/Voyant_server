@@ -216,9 +216,9 @@
 
 }
 
-.explaintxt div{ border: 0px solid #000; 	background-color: #f0f0f0;}
+.explaintxt .txt{ /*border: 0px solid #000;*/ min-height:40px;}
 
-.explaintxt  div:Hover { border: 0px solid #000; background-color: #E8DDCB;}
+.explaintxt  .txt:Hover { /*border: 0px solid #000;*/ background-color: #E8DDCB;}
 
 ::-webkit-scrollbar {
     width: 0.5em;

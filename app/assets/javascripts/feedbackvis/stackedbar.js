@@ -725,10 +725,10 @@ var svg =
         return text;
       });
      $('[data-toggle=tooltip]').tooltip({
-    'container': 'body',
-    'placement': 'right'
-});
-    
+	    'container': 'body',
+	    'placement': 'right'
+		});
+	    
     
 //    $(function() {
 //    	$( document ).tooltip();

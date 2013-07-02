@@ -14,7 +14,24 @@
     	//var cords[0] = new Array(jsonArray[i].cord);
     
     	
-    	$(divID).append('<div class="comment more" id = "'+id+'" data-cord ="'+cord+'">'+txt+'</div>');
+    	$(divID).append('\
+    	<div style= "padding-left:10px">\
+	    	<div class="comment more span10 txt" id = "'+id+'" data-cord ="'+cord+'">'+txt+'\
+	    	</div>\
+	    	<div class = "span1" style = "width:30px; margin:5px 0 0 0">\
+	    	  <div style = "width:20px; height:20px">\
+	    	  <a><i class="icon-thumbs-up icon-1x span1" style = "color:red; margin:0px"></i></a>\
+	    	  </div>\
+	    	  <div style = "width:20px; height:20px">\
+	    	  <a><i class="icon-thumbs-down icon-1x span1" style = "color:red; margin:0px"></i></a>\
+	    	  </div>\
+	    	</div>\
+    	</div>\
+    	');
+
+		///* top=1em, right=2em, bottom=3em, left=2em */
+    	//<i class="icon-camera-retro icon-1x" style = "color:red; width:10px"></i>
+    	// <a class="btn btn-success" href="#"> <i class="icon-camera-retro icon-3x" style = "color:red"></i> </a>
     	
 
     }
@@ -46,7 +63,7 @@
 			 	heatmap("#overlay", img_width, img_height,cords);
 		})
 		.mouseover(function(e) {
-			console.log("1111111:"+e.which);
+			//console.log("1111111:"+e.which);
 			
 			// if (mouseUpDown == 0)//if left buttons is not clicked
 		   	// { 

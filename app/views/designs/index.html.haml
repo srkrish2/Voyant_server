@@ -26,11 +26,53 @@
     .span12
       %ul.thumbnails
         - @designs.each do |design|
-          %li.span2(style="background: #eef")
-            %a.thumbnail(href="#{edit_design_path(design)}")
-              %image(src="#{design.picture.url(:thumb)}")
-            %h3= design.name
-            %p= design.description
-            = link_to 'Publish', request_feedback_for_design_path(design), :method => :post, :class => "btn btn-primary", :confirm => 'You really want to publish?',"data-confirm-fade" => true, "data-confirm-title" => "Confirmation" if !design.is_published
-            = link_to 'Feedbacks', feedbacks_design_path(design), :class => "btn btn-primary" if design.is_published && design.is_feedback_done
-            = link_to 'Delete', design_path(design), :method => :delete, :class => "btn btn-danger", :confirm => 'You really want to Delete?',"data-confirm-fade" => true, "data-confirm-title" => "Confirmation"
+          %li.span2
+            .thumbnail(href="")
+              %image.a_design(src="#{design.picture.url(:thumb)}")
+            -# %h3= design.name
+            -# %p= design.description
+            - if !design.is_published
+              %a.btn_config.btn{:href => "#{edit_design_path(design)}"}
+                %i.icon-cog.icon-1x{:style => "color:black"}
+              %a.btn.btn_request(href="#{request_feedback_for_design_path(design)}" data-method="post" data-confirm-fade="true" data-confirm="You really want to publish?" data-confirm-title="Confirmation")
+                %i.icon-hand-up.icon-1x{:style => "color:black"}
+            - else
+              %button.btn_config.btn.disabled
+                %i.icon-cog.icon-1x{:style => "color:grey"}
+              %button.btn.btn_request.disabled
+                %i.icon-hand-up.icon-1x{:style => "color:grey"}
+            - if design.is_published && design.is_feedback_done
+              %a.btn_viewfeedback.btn{:href => "#"}
+                %i.icon-comments-alt.icon-1x{:style => "color:black"}
+            - else
+              %button.btn_viewfeedback.btn.disabled
+                %i.icon-comments-alt.icon-1x{:style => "color:gray"}
+            %a.btn_dele.btn(href="design_path(design)" data-method="delete" data-confirm="You really want to delete?" data-confirm-fade="true" data-confirm-title="Confirmation")
+              %i.icon-trash.icon-1x{:style => "color:black"}  
+:javascript
+
+  $(function() {
+    $('.a_design')
+      .css({'backgroundColor': 'white', 'color': 'white','height':'100px' });
+      
+    $('.btn_config')
+      .attr("data-toggle", "tooltip")
+      .attr("title", "config feedback");
+
+    $('.btn_request')
+      .attr("data-toggle", "tooltip")
+      .attr("title", "request feedback");
+
+    $('.btn_viewfeedback')
+      .attr("data-toggle", "tooltip")
+      .attr("title", "view feedback");
+
+    $('.btn_dele')
+    .attr("data-toggle", "tooltip")
+    .attr("title", "delete");
+
+    $('[data-toggle=tooltip]').tooltip({
+      'container': 'body',
+      'placement': 'bottom'
+    });
+  });

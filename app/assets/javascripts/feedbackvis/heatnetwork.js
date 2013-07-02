@@ -475,8 +475,10 @@
 //					}
 					
 //					if(displyType != "guide")////anbang to make the fig
-					jsonArray_sorted=$(jsonArray).sort(sortScoreDesc);
-					console.log("data1111111111111:"+JSON.stringify(jsonArray_sorted));
+					var jsonArray_sorted = [];
+					jsonArray_sorted = $(jsonArray).sort(sortScoreDesc);
+					//console.log("jsonArray for explaination:"+JSON.stringify(jsonArray));
+					console.log("jsonArray_sorted for explaination:"+JSON.stringify(jsonArray_sorted));
 					
 					//var crurrentexplains = explain("#explain_heatnetwork",jsonArray_sorted, width, height);
 					var crurrentexplains = explain(explain_feedbackTypes[current_tab],jsonArray_sorted, width, height);
