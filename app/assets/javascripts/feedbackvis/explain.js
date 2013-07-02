@@ -16,7 +16,7 @@
     	
     	$(divID).append('\
     	<div style= "padding-left:10px">\
-	    	<div class="comment more span10" id = "'+id+'" data-cord ="'+cord+'">'+txt+'\
+	    	<div class="comment more span10 txt" id = "'+id+'" data-cord ="'+cord+'">'+txt+'\
 	    	</div>\
 	    	<div class = "span1" style = "width:30px; margin:5px 0 0 0">\
 	    	  <div style = "width:20px; height:20px">\

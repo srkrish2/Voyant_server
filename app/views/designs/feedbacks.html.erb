@@ -20,7 +20,7 @@
 		<div id='panel_heatnetwork'>
 
 
-		<div id='explain_heatnetwork' class="explaintxt" style ="max-height: 400px; overflow-y:auto;"></div>
+		<div id='explain_heatnetwork' class="explaintxt" style ="overflow-y:auto;"></div>
 			
 
 		</div>
@@ -274,9 +274,10 @@ var json_all =
     	    .attr("xlink:href", path_design)
     	    .attr("id", "imageID")
     	    .attr("width", img_width)
-    	    .attr("height", img_height)
-    	    ;
-
+    	    .attr("height", img_height);
+    	    
+            //if((img_height - 300)>=400)
+			//$('.explaintxt').css('max-height', '400px');
 
         
         var iWordsContent = [];		
