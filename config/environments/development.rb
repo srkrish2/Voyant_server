@@ -1,5 +1,6 @@
 # Configure for Paperclip
 Paperclip.options[:command_path] = "/usr/local/bin/"
+Rails.application.routes.default_url_options[:host] = 'localhost:3000'
 Crowddesign::Application.configure do
   # Settings specified here will take precedence over those in config/application.rb
 

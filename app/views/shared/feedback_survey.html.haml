@@ -1,0 +1,7 @@
+.span12.text-center
+  = link_to "Feedback", @feedback_url, :target => "_blank"
+  = turkee_form_for(@feedback_survey, params, :html => {:class => "form-inline"}) do |f|
+    -#= f.hidden_field :feedback_type
+    = f.hidden_field :feedback_controller
+    = f.text_field :code, :disabled => @disabled, :class => "span2"
+    = f.submit "Submit", :disabled => @disabled, :class => "btn"

@@ -8,27 +8,45 @@ Crowddesign::Application.routes.draw do
   resources :designs do
     member do
       get :feedbacks
+      post :request_feedback_for
     end
     resources :element_feedbacks do
       collection do
         post :batch_create
+        get :survey
       end
     end
 
     resources :first_notice_feedbacks do
+      collection do
+        get :survey
+      end
     end
 
     resources :impression_feedbacks do
       collection do
         post :batch_create
         get :vote
+        get :survey
+      end
+    end
+
+    resources :impression_vote_feedbacks do
+      collection do
+        get :survey
       end
     end
 
     resources :goal_feedbacks do
+      collection do
+        get :survey
+      end
     end
 
     resources :guideline_feedbacks do
+      collection do
+        get :survey
+      end
 
     end
   end

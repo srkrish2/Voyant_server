@@ -14,6 +14,7 @@
 //= require jquery_ujs
 //= require jquery.ui.all
 //= require bootstrap
+//= require twitter/bootstrap/rails/confirm
 //= require best_in_place
 //= require d3
 //= require jshashtable

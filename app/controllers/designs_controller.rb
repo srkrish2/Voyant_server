@@ -155,6 +155,25 @@ class DesignsController < ApplicationController
     end
   end
 
+  def request_feedback_for
+    Design.transaction do
+      respond_to do |format|
+        begin
+          @design.publish!
+
+          flash[:notice] = 'Design was successfully published.'
+          format.html { redirect_to(designs_url) }
+        rescue
+          flash[:notice] = 'Design can not be published.'
+          format.html { redirect_to(designs_url) }
+        end
+      end
+
+    end
+
+
+  end
+
   private
     def find_design
       @design = Design.find(params[:id])

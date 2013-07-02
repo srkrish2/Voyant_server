@@ -97,12 +97,13 @@
           $.ajax {
             type: "post",
             url: "#{design_goal_feedbacks_path(@design)}",
-            data: JSON.stringify({worker_id: window.current_worker_id, configuration_id: "#{@configuration.id}", description: description_str,rating: rating, x1: current_selection.getSelection().x1, y1: current_selection.getSelection().y1, x2: current_selection.getSelection().x2, y2: current_selection.getSelection().y2}),
+            data: JSON.stringify({access_code: "#{params[:access_code]}", worker_id: window.current_worker_id, configuration_id: "#{@configuration.id}", description: description_str,rating: rating, x1: current_selection.getSelection().x1, y1: current_selection.getSelection().y1, x2: current_selection.getSelection().x2, y2: current_selection.getSelection().y2}),
             dataType: "json",
             contentType: 'application/json',
             success: (data) =>
               $("#step-feedback").hide()
               $("#step-feedback-result").show()
+              $("#code").html(data.code)
           }
 
           return true

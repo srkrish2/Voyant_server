@@ -21,6 +21,7 @@ class Boxarea < ActiveRecord::Base
   # Associations
   belongs_to :turker
   belongs_to :feedback, :polymorphic => true
+  belongs_to :feedback_survey
   # Validations
   validates :turker_id, :presence => {:message => "Turker ID is required"}
   validates :feedback_id, :presence => {:message => "Feedback ID is required"}

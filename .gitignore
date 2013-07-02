@@ -11,7 +11,7 @@
 #----------------------------------------------------------------------------
 
 public/assets/source_maps/
-
+config/initializers/turkee.rb
 .project
 
 # RVM configure file

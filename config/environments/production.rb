@@ -1,3 +1,4 @@
+Rails.application.routes.default_url_options[:host] = 'ec2-54-245-143-145.us-west-2.compute.amazonaws.com:3000'
 Crowddesign::Application.configure do
   # Settings specified here will take precedence over those in config/application.rb
 
