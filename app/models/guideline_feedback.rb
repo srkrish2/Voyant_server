@@ -8,10 +8,17 @@
 #  rating           :integer          default(1)
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
+#  code             :string(255)
 #
 
-class GuidelineFeedback < ActiveRecord::Base
+require "models/feedback_with_code"
 
+class GuidelineFeedback < ActiveRecord::Base
+  include FeedbackWithCode
+  # callbacks
+  before_create :generate_code
+  
+  # Constants
   ExampleText = [
     'A design should closely group elements that have relationships. The design should use space to clearly define groups of elements.',
     'Elements of a design should be aligned. You should be able to see an invisible line connects them.',
@@ -54,6 +61,7 @@ class GuidelineFeedback < ActiveRecord::Base
   has_one :boxarea, :as => :feedback, :dependent => :destroy
   belongs_to :design
   belongs_to :configuration, :class_name => "GuidelineConfiguration"
+  has_one :survey, :class_name => "FeedbackSurvey", :as => :feedback, :dependent => :destroy
   # Validations
   validates :design_id, :presence => {:message => "Design is required"}
   validates :configuration_id, :presence => {:message => "Configuration is required"}

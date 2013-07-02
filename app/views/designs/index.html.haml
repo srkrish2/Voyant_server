@@ -5,7 +5,7 @@
     %h3#new-design-modal-label Add Design
   .modal-body
     = simple_form_for @design, html: {class: "form-horizontal", id: "new-design-form"} do |f|
-      = f.input :name, inline_label: "dde"
+      = f.input :name
       = f.input :picture, label: "Design Picture"
       = f.input :description, input_html: {rows:3}
   .modal-footer
@@ -31,6 +31,6 @@
               %image(src="#{design.picture.url(:thumb)}")
             %h3= design.name
             %p= design.description
-            %button.btn.btn-success Publish
-            = link_to 'Delete', design_path(design), :method => :delete, :class => "btn btn-danger", :confirm => 'Confirm to Delete?'
-
+            = link_to 'Publish', request_feedback_for_design_path(design), :method => :post, :class => "btn btn-primary", :confirm => 'You really want to publish?',"data-confirm-fade" => true, "data-confirm-title" => "Confirmation" if !design.is_published
+            = link_to 'Feedbacks', feedbacks_design_path(design), :class => "btn btn-primary" if design.is_published && design.is_feedback_done
+            = link_to 'Delete', design_path(design), :method => :delete, :class => "btn btn-danger", :confirm => 'You really want to Delete?',"data-confirm-fade" => true, "data-confirm-title" => "Confirmation"

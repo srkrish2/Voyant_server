@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130629155819) do
+ActiveRecord::Schema.define(:version => 20130702003648) do
 
   create_table "audience_configurations", :force => true do |t|
     t.integer  "design_id",         :null => false
@@ -24,30 +24,45 @@ ActiveRecord::Schema.define(:version => 20130629155819) do
   end
 
   create_table "boxareas", :force => true do |t|
-    t.integer  "turker_id",      :null => false
-    t.integer  "feedback_id",    :null => false
-    t.string   "feedback_type",  :null => false
-    t.float    "top_left_x",     :null => false
-    t.float    "top_left_y",     :null => false
-    t.float    "bottom_right_x", :null => false
-    t.float    "bottom_right_y", :null => false
+    t.integer  "turker_id",          :null => false
+    t.integer  "feedback_id",        :null => false
+    t.string   "feedback_type",      :null => false
+    t.float    "top_left_x",         :null => false
+    t.float    "top_left_y",         :null => false
+    t.float    "bottom_right_x",     :null => false
+    t.float    "bottom_right_y",     :null => false
     t.text     "description"
-    t.datetime "created_at",     :null => false
-    t.datetime "updated_at",     :null => false
+    t.datetime "created_at",         :null => false
+    t.datetime "updated_at",         :null => false
+    t.string   "code"
+    t.integer  "feedback_survey_id"
   end
 
   create_table "designs", :force => true do |t|
     t.integer  "project_id"
-    t.integer  "user_id",                                 :null => false
-    t.string   "name",                                    :null => false
+    t.integer  "user_id",                                                  :null => false
+    t.string   "name",                                                     :null => false
     t.text     "description"
-    t.datetime "created_at",                              :null => false
-    t.datetime "updated_at",                              :null => false
+    t.datetime "created_at",                                               :null => false
+    t.datetime "updated_at",                                               :null => false
     t.string   "picture_file_name"
     t.string   "picture_content_type"
     t.integer  "picture_file_size"
     t.datetime "picture_updated_at"
-    t.boolean  "is_published",         :default => false
+    t.boolean  "is_published",                          :default => false
+    t.string   "element_feedbacks_access_code"
+    t.string   "first_notice_feedbacks_access_code"
+    t.string   "impression_feedbacks_access_code"
+    t.string   "goal_feedbacks_access_code"
+    t.string   "guideline_feedbacks_access_code"
+    t.string   "impression_vote_feedbacks_access_code"
+    t.integer  "element_feedbacks_hit_id"
+    t.integer  "first_notice_feedbacks_hit_id"
+    t.integer  "impression_feedbacks_hit_id"
+    t.integer  "impression_vote_feedbacks_hit_id"
+    t.integer  "goal_feedbacks_hit_id"
+    t.integer  "guideline_feedbacks_hit_id"
+    t.boolean  "is_feedback_done",                      :default => false
   end
 
   create_table "element_configurations", :force => true do |t|
@@ -67,14 +82,16 @@ ActiveRecord::Schema.define(:version => 20130629155819) do
     t.integer  "vote",             :default => 0
     t.datetime "created_at",                      :null => false
     t.datetime "updated_at",                      :null => false
+    t.string   "code"
   end
 
-  create_table "feedback_codes", :force => true do |t|
-    t.string   "code",          :null => false
-    t.string   "feedback_type", :null => false
-    t.integer  "feedback_id",   :null => false
-    t.datetime "created_at",    :null => false
-    t.datetime "updated_at",    :null => false
+  create_table "feedback_surveys", :force => true do |t|
+    t.string   "code",                :null => false
+    t.string   "feedback_type"
+    t.integer  "feedback_id"
+    t.datetime "created_at",          :null => false
+    t.datetime "updated_at",          :null => false
+    t.string   "feedback_controller"
   end
 
   create_table "first_notice_configurations", :force => true do |t|
@@ -91,6 +108,7 @@ ActiveRecord::Schema.define(:version => 20130629155819) do
     t.integer  "element_feedback_id", :null => false
     t.datetime "created_at",          :null => false
     t.datetime "updated_at",          :null => false
+    t.string   "code"
   end
 
   create_table "goal_configurations", :force => true do |t|
@@ -110,6 +128,7 @@ ActiveRecord::Schema.define(:version => 20130629155819) do
     t.integer  "rating",           :default => 1
     t.datetime "created_at",                      :null => false
     t.datetime "updated_at",                      :null => false
+    t.string   "code"
   end
 
   create_table "guideline_configurations", :force => true do |t|
@@ -129,6 +148,7 @@ ActiveRecord::Schema.define(:version => 20130629155819) do
     t.integer  "rating",           :default => 1
     t.datetime "created_at",                      :null => false
     t.datetime "updated_at",                      :null => false
+    t.string   "code"
   end
 
   create_table "guideline_templates", :force => true do |t|
@@ -156,6 +176,7 @@ ActiveRecord::Schema.define(:version => 20130629155819) do
     t.integer  "vote",       :default => 0
     t.datetime "created_at",                :null => false
     t.datetime "updated_at",                :null => false
+    t.string   "code"
   end
 
   create_table "projects", :force => true do |t|

@@ -99,12 +99,13 @@
       $.ajax {
         type: "post",
         url: "#{batch_create_design_impression_feedbacks_path(@design)}",
-        data: JSON.stringify({worker_id: window.current_worker_id, feedbacks:impression_data}),
+        data: JSON.stringify({access_code: "#{params[:access_code]}", worker_id: window.current_worker_id, feedbacks:impression_data}),
         dataType: "json",
         contentType: 'application/json',
         success: (data) =>
           $("#step-feedback").hide()
           $("#step-feedback-result").show()
+          $("#code").html(data.code)
       }
 
     steps = [step1, step2]
