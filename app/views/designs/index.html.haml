@@ -26,11 +26,49 @@
     .span12
       %ul.thumbnails
         - @designs.each do |design|
-          %li.span2(style="background: #eef")
+          %li.span2
             %a.thumbnail(href="#{edit_design_path(design)}")
-              %image(src="#{design.picture.url(:thumb)}")
-            %h3= design.name
-            %p= design.description
-            %button.btn.btn-success Publish
+              %image.a_design(src="#{design.picture.url(:thumb)}")
+            -# %h3= design.name
+            -# %p= design.description
+            %a.btn_config.btn{:href => "#"}
+              %i.icon-cog.icon-1x{:style => "color:black"}
+            %a.btn_request.btn{:href => "#"}
+              %i.icon-hand-up.icon-1x{:style => "color:black"}                
+            %a.btn_viewfeedback.btn{:href => "#"}
+              %i.icon-comments-alt.icon-1x{:style => "color:gray"}
+            -# %a.btn.btn-danger{:href => "#"}  
+            %a.btn_dele.btn{:href => "#"}
+              %i.icon-trash.icon-1x{:style => "color:black"}  
+            %button.btn.btn-success Publish  
             = link_to 'Delete', design_path(design), :method => :delete, :class => "btn btn-danger", :confirm => 'Confirm to Delete?'
+:javascript
+
+      
+$(function() {
+    $('.a_design')
+      .css({'backgroundColor': 'white', 'color': 'white','height':'100px' });
+      
+    $('.btn_config')
+      .attr("data-toggle", "tooltip")
+      .attr("title", "config feedback");
+      
+     $('.btn_request')
+      .attr("data-toggle", "tooltip")
+      .attr("title", "request feedback");
+      
+     $('.btn_viewfeedback')
+      .attr("data-toggle", "tooltip")
+      .attr("title", "view feedback");
+      
+      $('.btn_dele')
+      .attr("data-toggle", "tooltip")
+      .attr("title", "delete");
+            
+    $('[data-toggle=tooltip]').tooltip({
+      'container': 'body',
+      'placement': 'bottom'
+    });
+});
+        
 
