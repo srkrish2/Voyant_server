@@ -16,7 +16,7 @@
             %strong.text-warning.impression-feedback-name
     .row.text-center
       .span10
-        %image.img-polaroid#picture{src: @design.picture.url}
+        %image.img-polaroid#picture{src: URI.join(request.url, @design.picture.url)}
     .row.step1
       .span8.offset1
         %hr

@@ -1,6 +1,6 @@
 .span12.row-fluid
   .span2.offset3
-    %image(src="#{@design.picture.url(:thumb)}")
+    %image(src="#{URI.join(request.url, @design.picture.url(:thumb))}")
   #accordion.accordion.span4
     .accordion-group
       .accordion-heading

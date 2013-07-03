@@ -191,7 +191,7 @@ var json_all =
         	});
 
     //need data
-    var path_design = "<%= @design.picture.url(:thumb) %>";
+    var path_design = "<%= URI.join(request.url, @design.picture.url) %>";
     var img_width;
     var img_height;
     

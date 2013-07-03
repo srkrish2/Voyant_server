@@ -28,7 +28,7 @@
         - @designs.each do |design|
           %li.span2
             .thumbnail(href="")
-              %image.a_design(src="#{design.picture.url(:thumb)}")
+              %image.a_design(src="#{URI.join(request.url, design.picture.url(:thumb))}")
             -# %h3= design.name
             -# %p= design.description
             - if !design.is_published
@@ -42,7 +42,7 @@
               %button.btn.btn_request.disabled
                 %i.icon-hand-up.icon-1x{:style => "color:grey"}
             - if design.is_published && design.is_feedback_done
-              %a.btn_viewfeedback.btn{:href => "#"}
+              %a.btn_viewfeedback.btn{:href => "#{feedbacks_design_path(design)}"}
                 %i.icon-comments-alt.icon-1x{:style => "color:black"}
             - else
               %button.btn_viewfeedback.btn.disabled

@@ -14,7 +14,7 @@
           %p You can easily move and resize the drawn box. If your drawn box is not related to the element you described, your result could be rejected.
     .row.text-center
       .span10
-        %image.img-polaroid#picture{src: @design.picture.url}
+        %image.img-polaroid#picture{src: URI.join(request.url, @design.picture.url)}
     .row
       .span6.offset2
         .step1

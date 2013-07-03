@@ -12,7 +12,7 @@
             %strong.text-warning.impression_name
     .row.text-center
       .span10
-        %image.img-polaroid#picture{src: @design.picture.url}
+        %image.img-polaroid#picture{src: URI.join(request.url, @design.picture.url)}
     .row
       .span6.offset2
         %p
