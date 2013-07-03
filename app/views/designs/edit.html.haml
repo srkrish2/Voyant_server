@@ -65,7 +65,7 @@
 .span12.offset6
   %input#submit-btn{:type => "submit", :value => "Save"}/
 :javascript
-  var fed_config = {is_required:{audience:true, element:true, impression:true, first_notice:true, guideline: true, goal: true}, audience:{gender:[true,false],age:[true,true,true,true,true,true],country:[true,true,true,true,true]}, element:[{name:'object',is_required:true},{name:'color',is_required:true},{name:'activity',is_required:true},{name:'shape',is_required:true}], goal:[{is_required:true,title:'goal1',description:'desb1'},{is_required:true,title:'goal2',description:'desb2'}], guideline:[{is_required:true,title:'guideline1',description:'desb1'},{is_required:true,title:'guideline2',description:'desb2'}]};
+  var fed_config = {is_required:{audience:true, element:true, impression:true, first_notice:true, guideline: true, goal: true}, audience:{gender:[true,false],age:[true,true,true,true,true,true],country:[true,true,true,true,true]}, element:[{name:'object',is_required:true},{name:'color',is_required:true},{name:'activity',is_required:true},{name:'shape',is_required:true}], goal:[{is_required:true,title:'try new drink',description:'This poster in a dessert station can make you excited about trying out this new drink.'},{is_required:true,title:'attract attention',description:'This poster was simply to make fun signs for a dessert station.'}], guideline:[{is_required:true,title:'guideline1',description:'desb1'},{is_required:true,title:'guideline2',description:'desb2'}, {is_required:true,title:'guideline3',description:'desb3'}, {is_required:true,title:'guideline4',description:'desb4'}]};
   
   $(function() {
   		
@@ -95,7 +95,7 @@
       }
   		//addCheckbox("eletype","object",true);
       
-      $('#cb_notice').prop("checked", fed_config.is_required.first_notice);
+      //$('#cb_notice').prop("checked", fed_config.is_required.first_notice);
       
       $('#cb_notice').prop("checked", fed_config.is_required.first_notice);
       $('#cb_imp').prop("checked", fed_config.is_required.impression);
@@ -109,9 +109,11 @@
   	    });
   
   	
-      
-      var goalcontent = [{"title":"g1","content":"Click to edit1"},{"title":"g2","content":"Click to edit1"}];
-      var guidecontent = [{"title":"guide1","content":"guide1 content"},{"title":"guide2","content":"Click to edit"}];
+      //var goalcontent = [{"title":"g1","content":"Click to edit1"},{"title":"g2","content":"Click to edit1"}];
+      //var guidecontent = [{"title":"guide1","content":"guide1 content"},{"title":"guide2","content":"Click to edit"}];
+
+      var goalcontent =  fed_config.goal;
+      var guidecontent = fed_config.guideline;//[{is_required:true,title:'guideline1',description:'desb1'}
   
       //goal
       addRowContent(goalcontent,'goal',true);
@@ -182,6 +184,7 @@
      fed_config.is_required.goal =  getValuefromCheckboxes('cb_goal');
      fed_config.is_required.guideline =  getValuefromCheckboxes('cb_guide');
      
+     fed_config.element = getValuefromCheckboxes('eletype');
      fed_config.goal = getValuefromCheckboxes('goal');
      fed_config.guideline = getValuefromCheckboxes('guide');
      console.log(fed_config);
@@ -304,7 +307,7 @@
           		<tr>\
           		    <td id = "'+'cbcontainer_'+mode+'_'+i+'" style="width:10px;"></td>\
           		    <td id = "'+'td_'+mode+'_title_'+i+'">'+arrcontent[i].title+'</td>\
-         		        <td id = "'+'td_'+mode+'_content_'+i+'">'+arrcontent[i].content+'</td>\
+         		        <td id = "'+'td_'+mode+'_content_'+i+'">'+arrcontent[i].description+'</td>\
          		    </tr>');
           
           if(isEditable)
