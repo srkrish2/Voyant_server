@@ -3,7 +3,7 @@
   %p
     Please follow this
     = link_to "link", @feedback_url, :target => "_blank"
-    to finish our task. After that you will get a random code to fill this form to submit.
+    to finish our task. After that you will get a random code to fill this form to submit and earn your reward.
   = turkee_form_for(@feedback_survey, params, :html => {:class => "form-inline"}) do |f|
     -#= f.hidden_field :feedback_type
     = f.hidden_field :feedback_controller
