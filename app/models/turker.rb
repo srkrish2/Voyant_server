@@ -10,10 +10,13 @@
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
 #  worker_id         :string(255)
+#  email             :string(255)
 #
 
+require "validators/email_validator"
+
 class Turker < ActiveRecord::Base
-  attr_accessible :age, :gender, :country, :design_experience, :worker_id
+  attr_accessible :age, :gender, :country, :design_experience, :worker_id, :email
 
   # Validations
   validates :age, :presence => {:message => "Age is required"},
@@ -25,6 +28,9 @@ class Turker < ActiveRecord::Base
                                 :presence => {:message => "Design experience is required"}
   validates :worker_id, :presence => {:message => "Worker ID is required"},
                         :uniqueness => {:message => "The Turker has already exist"}
+  validates :email, :email => true,
+                    :uniqueness => {:case_sensitive => false, :message => "This email has been used"},
+                    :allow_blank => true
   # Associations
   has_many :boxareas
 end

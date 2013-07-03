@@ -48,3 +48,5 @@ gem "rturk", "~> 2.10.2"
 gem "turkee", "~> 2.0.2"
 
 gem "twitter-bootstrap-rails-confirm", "~> 1.0.1"
+
+gem "whenever", "~> 0.8.2"

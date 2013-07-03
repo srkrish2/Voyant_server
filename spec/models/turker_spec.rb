@@ -10,6 +10,7 @@
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
 #  worker_id         :string(255)
+#  email             :string(255)
 #
 
 require 'spec_helper'

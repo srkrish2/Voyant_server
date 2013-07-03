@@ -59,6 +59,11 @@ class Design < ActiveRecord::Base
   belongs_to :impression_vote_feedbacks_hit, :class_name => "Turkee::TurkeeTask"
   belongs_to :goal_feedbacks_hit, :class_name => "Turkee::TurkeeTask"
   belongs_to :guideline_feedbacks_hit, :class_name => "Turkee::TurkeeTask"
+  # Validations
+  validates :user_id, :presence => { :message => "User is required" }
+  validates :name, :presence => {:message => "Name is required" }
+  validates_attachment :picture, :presence => true,
+                                 :content_type => { :content_type => ["image/jpg", "image/jpeg","image/png"] }
 
 
   def publish!
@@ -66,7 +71,7 @@ class Design < ActiveRecord::Base
     self.is_published = true
     # create HIT
     form_url = survey_design_element_feedbacks_url(self, :access_code => self.element_feedbacks_access_code)
-    hit = self.create_hit!(form_url: form_url)
+    hit = self.create_hit!(form_url: form_url, title: "Element - #{self.name} (#{self.id})", num_assignments: 20)
     self.element_feedbacks_hit = hit
     self.save!
   end
@@ -75,26 +80,30 @@ class Design < ActiveRecord::Base
     case feedback_controller
     when "ElementFeedbacks"
       form_url = survey_design_first_notice_feedbacks_url(self, :access_code => self.first_notice_feedbacks_access_code)
-      hit = self.create_hit!(form_url: form_url)
+      hit = self.create_hit!(form_url: form_url, title: "First Notice - #{self.name} (#{self.id})", num_assignments: 30 )
       self.first_notice_feedbacks_hit = hit
 
       form_url = survey_design_impression_feedbacks_url(self, :access_code => self.impression_feedbacks_access_code)
-      hit = self.create_hit!(form_url: form_url)
+      hit = self.create_hit!(form_url: form_url, title: "Impression - #{self.name} (#{self.id})", num_assignments: 20)
       self.impression_feedbacks_hit = hit
 
       form_url = survey_design_goal_feedbacks_url(self, :access_code => self.goal_feedbacks_access_code)
-      hit = self.create_hit!(form_url: form_url)
+      num_assignments = 0
+      self.goal_configurations.each {|configuration| num_assignments += configuration.feedbacks_num}
+      hit = self.create_hit!(form_url: form_url, title: "Goal - #{self.name} (#{self.id})", num_assignments: num_assignments)
       self.goal_feedbacks_hit = hit
 
       form_url = survey_design_guideline_feedbacks_url(self, :access_code => self.guideline_feedbacks_access_code)
-      hit = self.create_hit!(form_url: form_url)
+      num_assignments = 0
+      self.guideline_configurations.each {|configuration| num_assignments += configuration.feedbacks_num}
+      hit = self.create_hit!(form_url: form_url, title: "Guideline - #{self.name} (#{self.id})", num_assignments: num_assignments)
       self.guideline_feedbacks_hit = hit
 
       self.save!
     when "FirstNoticeFeedbacks"
     when "ImpressionFeedbacks"
       form_url = survey_design_impression_vote_feedbacks_url(self, :access_code => self.impression_vote_feedbacks_access_code)
-      hit = self.create_hit!(form_url: form_url)
+      hit = self.create_hit!(form_url: form_url, title: "Impression Vote - #{self.name} (#{self.id})", num_assignments: 30)
       self.impression_vote_feedbacks_hit = hit
 
       self.save!
@@ -117,12 +126,13 @@ class Design < ActiveRecord::Base
   end
 
   def create_hit!(options)
-    title = options[:title] || "Design Feedbacks: #{self.name}"
+    title = options[:title] || "#{self.name}"
+    title = "Design Feedback: #{title}"
     description = options[:description] || self.description
     num_assignments = options[:num_assignments] || 1
-    reward = options[:reward] || 0.05
+    reward = options[:reward] || 0.06
     lifetime = options[:lifetime] || 7.days.seconds
-    duration = options[:duration] || 24.hours.seconds
+    duration = options[:duration] || 5.minutes.seconds
     form_url = options[:form_url] || (raise "No form_url provided")
 
     h = RTurk::Hit.create do |hit|
@@ -133,6 +143,7 @@ class Design < ActiveRecord::Base
       hit.lifetime = lifetime.to_i
       hit.duration = duration.to_i
       hit.question(form_url, :frame_height => 300)
+      hit.qualifications.add :approval_rate, { :gt => 95 }
       #unless qualifications.empty?
         #qualifications.each do |key, value|
           #hit.qualifications.add key, value

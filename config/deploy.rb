@@ -1,4 +1,8 @@
 require "bundler/capistrano"
+
+set :whenever_command, "bundle exec whenever"
+require "whenever/capistrano"
+
 set :application, "Crowddesign"
 set :repository,  "ubuntu@ec2-54-245-143-145.us-west-2.compute.amazonaws.com:/home/ubuntu/repository/crowddesign.git"
 
@@ -79,7 +83,7 @@ namespace :deploy do
 
 
   desc "Links the application configuration file"
-  task :link_app_configuration_file, :roles => :db do
+  task :link_app_configuration_file, :roles => :app do
     run "ln -nsf #{shared_config_path}/application.yml #{release_path}/config/application.yml"
   end
 
@@ -87,3 +91,21 @@ end
 
 after "deploy:setup", "deploy:make_shared_config_folder"
 after "deploy:assets:symlink", "deploy:link_app_configuration_file"
+
+namespace :deploy do
+  desc "Links the turkee configuration file"
+  task :link_turkee_configuration_file, :roles => :app do
+    run "ln -nsf #{shared_config_path}/turkee.rb #{release_path}/config/initializers/turkee.rb"
+  end
+end
+after "deploy:assets:symlink", "deploy:link_turkee_configuration_file"
+
+# Paperclip
+namespace :deploy do
+  desc "build missing paperclip styles"
+  task :build_missing_paperclip_styles, :roles => :app do
+    run "cd #{release_path}; RAILS_ENV=production bundle exec rake paperclip:refresh:missing_styles"
+  end
+end
+
+after("deploy:update_code", "deploy:build_missing_paperclip_styles")

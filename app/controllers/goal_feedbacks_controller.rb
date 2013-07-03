@@ -11,7 +11,7 @@ class GoalFeedbacksController < ApplicationController
   def new
     return if !check_turker
     get_element_boxareas
-    @configuration = @design.goal_configurations.sample
+    @configuration = @design.goal_configurations.where("feedbacks_num > 0").sample
 
     respond_to do |format|
       format.html {render :layout => "feedback"}
@@ -36,6 +36,9 @@ class GoalFeedbacksController < ApplicationController
           boxarea.turker = turker
           boxarea.code = code
           boxarea.save!
+          
+          configuration.feedbacks_num -= 1
+          configuration.save!
 
           format.json  { render :json => {:message => "Save Successfully", :code => code}, :status => :ok}
         rescue

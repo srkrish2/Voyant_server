@@ -10,6 +10,26 @@ class FirstNoticeFeedbacksController < ApplicationController
 
   def new
     return if !check_turker
+
+    qulify = true
+    catch :break do
+      @design.element_feedbacks.each do |element_feedback|
+        element_feedback.boxareas.each do |boxarea|
+          if boxarea.turker == @turker
+            qulify = false
+            throw :break
+          end
+        end
+      end
+    end
+
+    if !qulify
+      respond_to do |format|
+        format.html { render :text => "You are not qulified to perform this task, sorry." }
+      end
+      return
+    end
+
     @configuration = @design.element_configurations.sample
     @element_feedbacks = @design.element_feedbacks.where(:configuration_id => @configuration.id)
 

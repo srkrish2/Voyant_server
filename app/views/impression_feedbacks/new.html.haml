@@ -12,7 +12,7 @@
             %strong.text-warning.impression_name
     .row.text-center
       .span10
-        %image.img-polaroid#picture{src: @design.picture.url}
+        %image.img-polaroid#picture{src: URI.join(request.url, @design.picture.url)}
     .row
       .span6.offset2
         %p
@@ -83,6 +83,7 @@
           impression_data.push {name: impressions[current_impression-1], description: description_str, x1: current_selection.getSelection().x1, y1: current_selection.getSelection().y1, x2: current_selection.getSelection().x2, y2: current_selection.getSelection().y2}
           console.log(impression_data[current_impression - 1])
           current_selection.cancelSelection()
+          $("#step-description").hide()
           $("#boxarea-description").val("")
           $("#process-btn").addClass("disabled")
 

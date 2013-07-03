@@ -10,6 +10,27 @@ class ImpressionVoteFeedbacksController < ApplicationController
 
   def new
     return if !check_turker
+
+
+    qulify = true
+    catch :break do
+      @design.impression_feedbacks.each do |impression_feedback|
+        impression_feedback.boxareas.each do |boxarea|
+          if boxarea.turker == @turker
+            qulify = false
+            throw :break
+          end
+        end
+      end
+    end
+
+    if !qulify
+      respond_to do |format|
+        format.html { render :text => "You are not qulified to perform this task, sorry." }
+      end
+      return
+    end
+
     get_element_boxareas
     @design.reload
     @impression_feedbacks = @design.impression_feedbacks

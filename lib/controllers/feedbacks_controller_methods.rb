@@ -41,7 +41,7 @@ module FeedbacksControllerMethods
 
   def authorize_design
     feedback_controller_name = self.class.name.sub(/Controller/,"")
-    if !@design.is_published || @design.send("#{feedback_controller_name.underscore}_access_code") != params[:access_code]
+    if !@design.is_published || @design.is_feedback_done || @design.send("#{feedback_controller_name.underscore}_access_code") != params[:access_code]
       respond_to do |format|
         message = "No Authorization."
         format.html {render :text => message }
