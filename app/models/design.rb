@@ -143,6 +143,7 @@ class Design < ActiveRecord::Base
       hit.lifetime = lifetime.to_i
       hit.duration = duration.to_i
       hit.question(form_url, :frame_height => 300)
+      hit.qualifications.add :approval_rate, { :gt => 95 }
       #unless qualifications.empty?
         #qualifications.each do |key, value|
           #hit.qualifications.add key, value
