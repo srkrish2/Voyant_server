@@ -1,12 +1,15 @@
 - if @turker.new_record?
   .row.span6.offset2.step-create-turker
     = simple_form_for @turker, :html => {:class => "form-horizontal", :id => "new-turker-form"}, :remote => true do |f|
-      %p.text-info.text-center Please Tell Something About You :)
+      %p.text-info.text-center 
+        Please Tell Something About You :)
+      %p.text-warning
+        Please fill in your true information. It's used to assess your qulification for now and for the future. We respect your privacy and won't use them for other purpose.
       = f.input :worker_id, :as => :hidden
-      = f.input :age, :collection => 1..150, :selected => 20
-      = f.input :gender, :collection => 0..1, :label_method => lambda {|v| User::GenderNames[v]}
-      = f.input :country, :collection => User::CountryNames, :selected => User::CountryNames[0]
-      = f.input :design_experience, :collection => 0..2, :label_method => lambda {|v| User::DesignExperienceNames[v]}
+      = f.input :age, :collection => 1..150, :selected => 20, :include_blank => "Please Select", :selected => nil
+      = f.input :gender, :collection => 0..1, :label_method => lambda {|v| User::GenderNames[v]}, :include_blank => "Please Select", :selected => nil
+      = f.input :country, :collection => User::CountryNames, :selected => User::CountryNames[0], :include_blank => "Please Select", :selected => nil
+      = f.input :design_experience, :collection => 0..2, :label_method => lambda {|v| User::DesignExperienceNames[v]}, :include_blank => "Please Select", :selected => nil
       .form-actions
         = f.button :submit, "Next", :class => "btn btn-primary"
 :coffee
