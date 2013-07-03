@@ -83,7 +83,7 @@ namespace :deploy do
 
 
   desc "Links the application configuration file"
-  task :link_app_configuration_file, :roles => :db do
+  task :link_app_configuration_file, :roles => :app do
     run "ln -nsf #{shared_config_path}/application.yml #{release_path}/config/application.yml"
   end
 
@@ -91,6 +91,14 @@ end
 
 after "deploy:setup", "deploy:make_shared_config_folder"
 after "deploy:assets:symlink", "deploy:link_app_configuration_file"
+
+namespace :deploy do
+  desc "Links the turkee configuration file"
+  task :link_turkee_configuration_file, :roles => :app do
+    run "ln -nsf #{shared_config_path}/turkee.rb #{release_path}/config/initializers/turkee.rb"
+  end
+end
+after "deploy:assets:symlink", "deploy:link_turkee_configuration_file"
 
 # Paperclip
 namespace :deploy do
