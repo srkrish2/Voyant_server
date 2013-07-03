@@ -28,7 +28,7 @@ class FeedbackSurvey < ActiveRecord::Base
   validates :feedback_controller, :presence => {:message => "Feedback controller is required"}
 
   def approve?
-    return !Boxarea.where(:code => self.code).empty?
+    return !self.boxareas.empty?
   end
 
   def self.hit_complete(turkee_task)

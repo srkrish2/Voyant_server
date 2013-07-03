@@ -23,6 +23,6 @@ set :output, "log/cron.log"
   #rake 'turkee:get_all_results'
 #end
 
-every 2.hours do
+every 1.hours do
   rake 'turkee:get_all_results'
 end
