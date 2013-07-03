@@ -1,4 +1,8 @@
 require "bundler/capistrano"
+
+set :whenever_command, "bundle exec whenever"
+require "whenever/capistrano"
+
 set :application, "Crowddesign"
 set :repository,  "ubuntu@ec2-54-245-143-145.us-west-2.compute.amazonaws.com:/home/ubuntu/repository/crowddesign.git"
 
