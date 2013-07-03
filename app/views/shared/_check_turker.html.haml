@@ -10,6 +10,7 @@
       = f.input :gender, :collection => 0..1, :label_method => lambda {|v| User::GenderNames[v]}, :include_blank => "Please Select", :selected => nil
       = f.input :country, :collection => User::CountryNames, :selected => User::CountryNames[0], :include_blank => "Please Select", :selected => nil
       = f.input :design_experience, :collection => 0..2, :label_method => lambda {|v| User::DesignExperienceNames[v]}, :include_blank => "Please Select", :selected => nil
+      = f.input :email
       .form-actions
         = f.button :submit, "Next", :class => "btn btn-primary"
 :coffee
