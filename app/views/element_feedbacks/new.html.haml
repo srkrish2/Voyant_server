@@ -43,11 +43,18 @@
     step1 = () ->
       elements_str = $("#elements").val().trim()
       if elements_str
-        elements = elements_str.split(",")
+        elements = split_words_by_comma(elements_str)
         if elements.length < 2
           warning("You should name at least two #{@configuration.name.pluralize}.")
           return false
         else
+          is_valid = true
+          $.each elements, (index, element) =>
+            if split_words_from_str(element).length > 1
+              warning "Please only use one word to describe one #{@configuration.name}: " + element
+              is_valid = false
+              return
+          return false if !is_valid
           $(".step1").hide()
           $(".step2").show()
           num = elements.length - 1
