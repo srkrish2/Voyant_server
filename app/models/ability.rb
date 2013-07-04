@@ -32,6 +32,8 @@ class Ability
     if user.has_role? :user
       # Design
       can [:read, :update, :destroy, :index, :request_feedback_for], Design, :user_id => user.id
+      can [:request_feedback_for], Design, :user_id => user.id, :is_published => false
+      can [:feedbacks], Design, :user_id => user.id, :is_published => true
       can :create, Design
 
     end

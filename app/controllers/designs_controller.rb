@@ -175,9 +175,9 @@ class DesignsController < ApplicationController
   end
 
   private
-    def find_design
-      @design = Design.find(params[:id])
-    end
+  def find_design
+    @design = Design.find(params[:id])
+  end
 
 end
 
