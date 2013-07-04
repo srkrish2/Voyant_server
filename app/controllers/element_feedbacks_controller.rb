@@ -28,7 +28,7 @@ class ElementFeedbacksController < ApplicationController
           code = rand_code
           element_feedback = nil
           params[:feedbacks].each do |feedback|
-            feedback[:name] = feedback[:name].singularize.downcase
+            feedback[:name] = feedback[:name].strip.singularize.downcase
             configuration = @design.element_configurations.find(params[:configuration_id])
             element_feedback = ElementFeedback.where(:design_id => @design.id, :configuration_id => configuration.id, :name => feedback[:name]).first
             if element_feedback.nil?

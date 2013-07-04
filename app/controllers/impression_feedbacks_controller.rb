@@ -27,7 +27,7 @@ class ImpressionFeedbacksController < ApplicationController
         code = rand_code
         begin
           params[:feedbacks].each do |feedback|
-            feedback[:name] = feedback[:name].singularize.downcase
+            feedback[:name] = feedback[:name].strip.singularize.downcase
             impression_feedback = @design.impression_feedbacks.where(:name => feedback[:name]).first
             if impression_feedback.nil?
               impression_feedback = ImpressionFeedback.new(:name => feedback[:name])
