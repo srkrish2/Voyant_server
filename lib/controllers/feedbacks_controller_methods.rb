@@ -29,18 +29,24 @@ module FeedbacksControllerMethods
         format.html { render :text => message }
         format.json { render :json => {:error => message }, :status => :unprocessable_entity }
       end
-      return false
     end
     @turker = Turker.where(:worker_id => params[:workerId]).first
     if @turker.nil?
       @turker = Turker.new
       @turker.worker_id = params[:workerId]
     end
-    return true
+  end
+
+  def authorize_feedback_for_turker
+    feedback_model_name = feedback_controller_name.singularize
+    feedback_model_name = "ImpressionFeedback" if feedback_model_name == "ImpressionFeedbackVote"
+    feedback_model = feedback_model_name.constantize
+
+
+
   end
 
   def authorize_design
-    feedback_controller_name = self.class.name.sub(/Controller/,"")
     if !@design.is_published || @design.is_feedback_done || @design.send("#{feedback_controller_name.underscore}_access_code") != params[:access_code]
       respond_to do |format|
         message = "No Authorization."
@@ -49,5 +55,10 @@ module FeedbacksControllerMethods
       end
     end
 
+  end
+
+  private
+  def feedback_controller_name
+    return self.class.name.sub(/Controller/,"")
   end
 end

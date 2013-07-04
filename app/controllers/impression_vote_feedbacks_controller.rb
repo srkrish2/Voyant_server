@@ -6,12 +6,10 @@ class ImpressionVoteFeedbacksController < ApplicationController
   include RandCode
   load_resource :design
   before_filter :authorize_design
+  before_filter :check_turker
   load_resource :impression_feedback, :through => :design, :parent => false
 
   def new
-    return if !check_turker
-
-
     qulify = true
     catch :break do
       @design.impression_feedbacks.each do |impression_feedback|
