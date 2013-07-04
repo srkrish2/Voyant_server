@@ -68,7 +68,7 @@ class FeedbackSurvey < ActiveRecord::Base
   #end
 
   def reset_boxarea!
-    Boxarea.where(:code => self.code).each do |boxarea|
+    Boxarea.where(:code => self.code.strip).each do |boxarea|
       boxarea.feedback_survey = self
       boxarea.code = nil
       boxarea.save!
