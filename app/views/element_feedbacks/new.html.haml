@@ -24,9 +24,9 @@
             you see in the design. Use a comma(,)to separate the #{@configuration.name.pluralize}.
           %p.text-warning
             If a #{@configuration.name} is not in the desgin, your result could be rejected.
+          %input.input-block-level.step1#elements
     .row
       .span10
-        %input.input-block-level.step1#elements
         %hr
         %a.btn.btn-primary#process-btn Next
 = render 'shared/feedback_result'
