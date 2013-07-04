@@ -30,8 +30,7 @@ class FirstNoticeFeedbacksController < ApplicationController
       return
     end
 
-    @configuration = @design.element_configurations.sample
-    @element_feedbacks = @design.element_feedbacks.where(:configuration_id => @configuration.id)
+    @element_feedbacks = @design.element_feedbacks.shuffle
 
     respond_to do |format|
       format.html {render :layout => "feedback"}
