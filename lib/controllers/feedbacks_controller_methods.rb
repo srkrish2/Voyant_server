@@ -29,20 +29,45 @@ module FeedbacksControllerMethods
         format.html { render :text => message }
         format.json { render :json => {:error => message }, :status => :unprocessable_entity }
       end
+      return false
     end
     @turker = Turker.where(:worker_id => params[:workerId]).first
     if @turker.nil?
       @turker = Turker.new
       @turker.worker_id = params[:workerId]
     end
+
+    return false if !authorize_feedback_for_turker
+
+    return true
   end
 
   def authorize_feedback_for_turker
     feedback_model_name = feedback_controller_name.singularize
-    feedback_model_name = "ImpressionFeedback" if feedback_model_name == "ImpressionFeedbackVote"
-    feedback_model = feedback_model_name.constantize
+    feedback_model_name = "ImpressionFeedback" if feedback_model_name == "ImpressionVoteFeedback"
+    found = false
+    @design.reload
+    @design.send(feedback_model_name.pluralize.underscore).each do |feedback|
+      if feedback.respond_to?(:boxareas) && !feedback.send(:boxareas).where(:turker_id => @turker.id).empty?
+        found = true
+        break
+      end
 
+      if feedback.respond_to?(:boxarea) && (feedback.send(:boxarea).turker == @turker)
+        found = true
+        break
+      end
+    end
 
+    if found
+      respond_to do |format|
+        message = "Sorry, you have performed this task before."
+        format.html {render :text => message}
+        format.json {render :json => {:error => message }, :status => :unprocessable_entity }
+      end
+      return false
+    end
+    return true
 
   end
 

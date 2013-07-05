@@ -6,10 +6,10 @@ class FirstNoticeFeedbacksController < ApplicationController
   include RandCode
   load_resource :design
   before_filter :authorize_design
-  before_filter :check_turker
   load_resource :first_notice_feedback, :through => :design, :expecpt => :batch_create
 
   def new
+    return if !check_turker
     qulify = true
     catch :break do
       @design.element_feedbacks.each do |element_feedback|

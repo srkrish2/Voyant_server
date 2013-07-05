@@ -6,10 +6,10 @@ class ImpressionFeedbacksController < ApplicationController
   include RandCode
   load_resource :design
   before_filter :authorize_design
-  before_filter :check_turker
   load_resource :impression_feedback, :through => :design, :expecpt => :batch_create
 
   def new
+    return if !check_turker
     get_element_boxareas
 
     respond_to do |format|

@@ -6,10 +6,10 @@ class ElementFeedbacksController < ApplicationController
   include RandCode
   load_resource :design
   before_filter :authorize_design
-  before_filter :check_turker
   load_resource :element_feedback, :through => :design, :new => [:survey]
 
   def new
+    return if !check_turker
     @configuration = @design.element_configurations.where("feedbacks_num > 0").sample
 
     respond_to do |format|
