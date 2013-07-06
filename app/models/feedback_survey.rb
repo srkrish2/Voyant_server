@@ -13,11 +13,13 @@
 
 class FeedbackSurvey < ActiveRecord::Base
   # callbacks
-  #before_validation :find_feedback_id, :on => :create
+  #before_validation :validate_code, :on => :create
+  before_create :find_design
   after_create :reset_boxarea!
   # acceesible
   attr_accessible :code, :feedback_type, :feedback_controller
   # Associations
+  belongs_to :design
   belongs_to :feedback, :polymorphic => true
   has_one :imported_assignment, :class_name => "Turkee:TurkeeImportedAssignment", :foreign_key => "result_id"
   has_many :boxareas
@@ -28,7 +30,12 @@ class FeedbackSurvey < ActiveRecord::Base
   validates :feedback_controller, :presence => {:message => "Feedback controller is required"}
 
   def approve?
-    return !self.boxareas.empty?
+    is_valid = !self.boxareas.empty?
+    if is_valid
+      self.is_approved = true
+      self.save!
+    end
+    return is_valid
   end
 
   def self.hit_complete(turkee_task)
@@ -62,10 +69,14 @@ class FeedbackSurvey < ActiveRecord::Base
   end
 
   protected
-  #def find_feedback_id
-    #feedback = self.feedback_type.constantize.where(:code => self.code).first
-    #self.feedback_id = feedback.id if feedback
-  #end
+  def validate_code
+    return !Boxarea.where(:code => self.code.strip).empty?
+  end
+
+  def find_design
+    boxarea = Boxarea.where(:code => self.code.strip).first
+    self.design = boxarea.feedback.design if boxarea
+  end
 
   def reset_boxarea!
     Boxarea.where(:code => self.code.strip).each do |boxarea|

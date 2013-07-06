@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130704195708) do
+ActiveRecord::Schema.define(:version => 20130705213552) do
 
   create_table "audience_configurations", :force => true do |t|
     t.integer  "design_id",         :null => false
@@ -87,12 +87,14 @@ ActiveRecord::Schema.define(:version => 20130704195708) do
   end
 
   create_table "feedback_surveys", :force => true do |t|
-    t.string   "code",                :null => false
+    t.string   "code",                                   :null => false
     t.string   "feedback_type"
     t.integer  "feedback_id"
-    t.datetime "created_at",          :null => false
-    t.datetime "updated_at",          :null => false
+    t.datetime "created_at",                             :null => false
+    t.datetime "updated_at",                             :null => false
     t.string   "feedback_controller"
+    t.integer  "design_id"
+    t.boolean  "is_approved",         :default => false
   end
 
   create_table "first_notice_configurations", :force => true do |t|

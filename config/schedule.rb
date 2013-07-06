@@ -19,10 +19,6 @@ set :output, "log/cron.log"
 # end
 
 # Learn more: http://github.com/javan/whenever
-#every 1.minutes do
-  #rake 'turkee:get_all_results'
-#end
-
-every 1.hours do
-  rake 'turkee:get_all_results'
+every 20.minutes do
+  runner "Design.process_hits"
 end

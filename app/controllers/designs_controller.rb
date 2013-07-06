@@ -158,15 +158,15 @@ class DesignsController < ApplicationController
   def request_feedback_for
     Design.transaction do
       respond_to do |format|
-        begin
+        #begin
           @design.publish!
 
           flash[:notice] = 'Design was successfully published.'
           format.html { redirect_to(designs_url) }
-        rescue
-          flash[:notice] = 'Design can not be published.'
-          format.html { redirect_to(designs_url) }
-        end
+        #rescue
+          #flash[:notice] = 'Design can not be published.'
+          #format.html { redirect_to(designs_url) }
+        #end
       end
 
     end

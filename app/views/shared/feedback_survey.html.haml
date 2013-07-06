@@ -2,8 +2,17 @@
   %h2 Perform a easy task to give your feedback of a design
   %p
     Please follow this
-    = link_to "link", @feedback_url, :target => "_blank"
-    to finish our task. After that you will get a random code to fill this form to submit and earn your reward.
+    = link_to "link", @feedback_url, :target => "_blank", :style => "font-size: 24px"
+    to finish our task. 
+  %p
+    After that you will get a 
+    %span.text-warning
+      random code 
+    to fill this form to submit and earn your reward.
+  %p
+    You may finish the task in 
+    %span.text-warning
+      5 minutes.
   = turkee_form_for(@feedback_survey, params, :html => {:class => "form-inline"}) do |f|
     -#= f.hidden_field :feedback_type
     = f.hidden_field :feedback_controller
