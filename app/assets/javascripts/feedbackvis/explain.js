@@ -96,6 +96,25 @@
     	
 
     }
+    
+     $('.icon-thumbs-up')
+      .attr("data-toggle", "tooltip")
+      .attr("title", "helpful");
+     $('.icon-thumbs-down')
+      .attr("data-toggle", "tooltip")
+      .attr("title", "unhelpful");
+      
+     $('.icon-thumbs-up').tooltip({
+      'container': 'body',
+      'placement': 'top'
+   	 });
+   	 
+     $('.icon-thumbs-down').tooltip({
+      'container': 'body',
+      'placement': 'bottom'
+     }); 
+      
+      
     	var showChar = 320;
     	var ellipsestext = "...";
     	var moretext = "more";

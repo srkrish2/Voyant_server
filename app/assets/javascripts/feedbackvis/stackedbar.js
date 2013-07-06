@@ -19,25 +19,8 @@
 		console.log("click:"+target);
 		if (target == "svg" && lastclicked !="")
 		{	
-			optFilters[json_mode[mode]].subtypescore = [];
-			
-			for (var j = 0; j < arrLegendChecked.length; j++) {
-		    	if(arrLegendChecked[j] == 1)
-		    		{//add one subtype
-		    			addOneSubtype(j,num_samples);
-		    		
-		    		}
-		    }
-
-			d3.select("#"+lastclicked).style("stroke-width",0);
-			lastclicked = "";
-			optFilters[json_mode[mode]].isClickedTextPanel =  false;
-			if ( isHeatmapvisible == "true")
-	    	 {
-		    	 object_heatnetwork.showOneTypeNodes(json_feedbackTypes[current_tab],true);
-	    	 }
-
-			}
+			resetBarchart();
+		}
         });
     
     var arrOrg = []; while(arrOrg.push([]) < arrs.length);
@@ -355,6 +338,8 @@ var svg =
 	    	 }
     		 
         		
+    	}else{
+    		resetBarchart();
     	}
     	
 		 	
@@ -502,32 +487,7 @@ var svg =
 			//if (target == "svg" && lastclicked !="")
 			if (target != "text")
 			{	
-			  d3.select("#"+mode+"switch").style("font-weight","normal");
-			  d3.select("#"+mode+"switch").attr("checked",false);
-  			  arrLegendChecked_atSummary();// for the nodes in the heatnetwork
-  			  
-  			  addAllRows();//for the barchart
-  			  isUpdateTextPanel = true;
-  			  
-		  		  if(lastclicked != "")
-		  		  {
-		  			d3.select("#"+lastclicked).style("stroke-width",0);
-				    lastclicked = "";
-					optFilters[json_mode[mode]].isClickedTextPanel =  false;
-		  		  }
-		  		  
-		  	 	  if(isUpdateTextPanel && isHeatmapvisible == "true")
-			  	  {
-				  		if(sumArr(arrLegendChecked) == arrLegendChecked.length)
-				  		{ optFilters[json_mode[mode]].isClickedLegendPanel = false;}else{
-				  		  optFilters[json_mode[mode]].isClickedLegendPanel = true;
-				  		}
-
-					 	console.log("optFilters:"+optFilters[json_mode[mode]].subtypescore);
-
-				    	object_heatnetwork.showOneTypeNodes(json_feedbackTypes[current_tab],true);
-			  		  
-			  	  }
+				resetLegend();
 
 			}
 	    });
@@ -686,6 +646,8 @@ var svg =
 //			  		  isUpdateTextPanel = true;
 			  		  
 			  		  
+		  		}else{
+		  			resetLegend();
 		  		}
 		  		  
 		
@@ -809,6 +771,8 @@ var svg =
 	          		  //d3.select(this).style("opacity", 1);
 	          		  //transitionStacked(500, yStackMax);
 
+	          	  }else{
+	          	  	resetLegend();
 	          	  }
         		 //else{
         			  //d3.select(this).style("opacity", 0.2);
@@ -966,6 +930,56 @@ function emptyExceptRow(i){
 			}
 	    }
     	return false;
+    }
+    
+    function resetBarchart(){
+    		optFilters[json_mode[mode]].subtypescore = [];
+			
+			for (var j = 0; j < arrLegendChecked.length; j++) {
+		    	if(arrLegendChecked[j] == 1)
+		    		{//add one subtype
+		    			addOneSubtype(j,num_samples);
+		    		
+		    		}
+		    }
+
+			d3.select("#"+lastclicked).style("stroke-width",0);
+			lastclicked = "";
+			optFilters[json_mode[mode]].isClickedTextPanel =  false;
+			if ( isHeatmapvisible == "true")
+	    	 {
+		    	 object_heatnetwork.showOneTypeNodes(json_feedbackTypes[current_tab],true);
+	    	 }
+
+    }
+    
+    function resetLegend(){
+    				  d3.select("#"+mode+"switch").style("font-weight","normal");
+			  d3.select("#"+mode+"switch").attr("checked",false);
+  			  arrLegendChecked_atSummary();// for the nodes in the heatnetwork
+  			  
+  			  addAllRows();//for the barchart
+  			  isUpdateTextPanel = true;
+  			  
+		  		  if(lastclicked != "")
+		  		  {
+		  			d3.select("#"+lastclicked).style("stroke-width",0);
+				    lastclicked = "";
+					optFilters[json_mode[mode]].isClickedTextPanel =  false;
+		  		  }
+		  		  
+		  	 	  if(isUpdateTextPanel && isHeatmapvisible == "true")
+			  	  {
+				  		if(sumArr(arrLegendChecked) == arrLegendChecked.length)
+				  		{ optFilters[json_mode[mode]].isClickedLegendPanel = false;}else{
+				  		  optFilters[json_mode[mode]].isClickedLegendPanel = true;
+				  		}
+
+					 	console.log("optFilters:"+optFilters[json_mode[mode]].subtypescore);
+
+				    	object_heatnetwork.showOneTypeNodes(json_feedbackTypes[current_tab],true);
+			  		  
+			  	  }
     }	      
 	
 return self;
