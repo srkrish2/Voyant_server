@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130705213552) do
+ActiveRecord::Schema.define(:version => 20130706201915) do
 
   create_table "audience_configurations", :force => true do |t|
     t.integer  "design_id",         :null => false
@@ -98,12 +98,13 @@ ActiveRecord::Schema.define(:version => 20130705213552) do
   end
 
   create_table "first_notice_configurations", :force => true do |t|
-    t.integer  "design_id",                      :null => false
-    t.boolean  "is_required",  :default => true
-    t.integer  "turker_num",   :default => 0
-    t.float    "turker_price", :default => 0.0
-    t.datetime "created_at",                     :null => false
-    t.datetime "updated_at",                     :null => false
+    t.integer  "design_id",                       :null => false
+    t.boolean  "is_required",   :default => true
+    t.integer  "turker_num",    :default => 0
+    t.float    "turker_price",  :default => 0.0
+    t.datetime "created_at",                      :null => false
+    t.datetime "updated_at",                      :null => false
+    t.integer  "feedbacks_num", :default => 30
   end
 
   create_table "first_notice_feedbacks", :force => true do |t|
@@ -165,14 +166,16 @@ ActiveRecord::Schema.define(:version => 20130705213552) do
   end
 
   create_table "impression_configurations", :force => true do |t|
-    t.integer  "design_id",                       :null => false
-    t.boolean  "is_required",   :default => true
-    t.integer  "turker_num1",   :default => 0
-    t.float    "turker_price1", :default => 0.0
-    t.integer  "turker_num2",   :default => 0
-    t.float    "turker_price2", :default => 0.0
-    t.datetime "created_at",                      :null => false
-    t.datetime "updated_at",                      :null => false
+    t.integer  "design_id",                            :null => false
+    t.boolean  "is_required",        :default => true
+    t.integer  "turker_num1",        :default => 0
+    t.float    "turker_price1",      :default => 0.0
+    t.integer  "turker_num2",        :default => 0
+    t.float    "turker_price2",      :default => 0.0
+    t.datetime "created_at",                           :null => false
+    t.datetime "updated_at",                           :null => false
+    t.integer  "feedbacks_num",      :default => 20
+    t.integer  "feedbacks_vote_num", :default => 30
   end
 
   create_table "impression_feedbacks", :force => true do |t|

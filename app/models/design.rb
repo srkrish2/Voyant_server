@@ -105,7 +105,7 @@ class Design < ActiveRecord::Base
 
 
   def self.process_hits
-    puts "Process Hits #{Time.now}============================================"
+    puts "Process Hits #{Time.zone.now}============================================"
     hits = RTurk::Hit.all_reviewable
     puts "#{hits.size} reviewable hits."
     hits.each do |hit|
@@ -114,29 +114,36 @@ class Design < ActiveRecord::Base
       Turkee::TurkeeTask.process_hits(task)
       puts "Task ID: #{task.id}"
 
+      not_process_num = 0
       if design = Design.where(:element_feedbacks_hit_id => task.id).first
         feedback_type = "ElementFeedbacks"
+        design.element_configurations.each {|c| not_process_num += c.feedbacks_num}
       elsif design = Design.where(:first_notice_feedbacks_hit_id => task.id).first
         feedback_type = "FirstNoticeFeedbacks"
+        not_process_num = design.first_notice_configuration.feedbacks_num
       elsif design = Design.where(:impression_feedbacks_hit_id => task.id).first
         feedback_type = "ImpressionFeedbacks"
+        not_process_num = design.impression_configuration.feedbacks_num
       elsif design = Design.where(:impression_vote_feedbacks_hit_id => task.id).first
         feedback_type = "ImpressionVoteFeedbacks"
+        not_process_num = design.impression_configuration.feedbacks_vote_num
       elsif design = Design.where(:goal_feedbacks_hit_id => task.id).first
         feedback_type = "GoalFeedbacks"
+        design.goal_configurations.each {|c| not_process_num += c.feedbacks_num}
       elsif design = Design.where(:guideline_feedbacks_hit_id => task.id).first
         feedback_type = "GuidelineFeedbacks"
+        design.guideline_configurations.each {|c| not_process_num += c.feedbacks_num}
       end
 
-      approve_num = FeedbackSurvey.joins(:imported_assignment).where("design_id=:design_id 
-                                                                     AND feedback_controller=:feedback_type 
-                                                                     AND is_approved=:is_approved 
-                                                                     AND turkee_task_id=:task_id",
-                                                                    :design_id => design.id,
-                                                                    :feedback_type => feedback_type,
-                                                                    :is_approved => true,
-                                                                    :task_id => task.id).count
-      not_process_num = task.hit_num_assignments - approve_num
+      #approve_num = FeedbackSurvey.joins(:imported_assignment).where("design_id=:design_id 
+                                                                     #AND feedback_controller=:feedback_type 
+                                                                     #AND is_approved=:is_approved 
+                                                                     #AND turkee_task_id=:task_id",
+                                                                    #:design_id => design.id,
+                                                                    #:feedback_type => feedback_type,
+                                                                    #:is_approved => true,
+                                                                    #:task_id => task.id).count
+      #not_process_num = task.hit_num_assignments - approve_num
 
       if not_process_num > 0
         old_task = design.send("#{feedback_type.underscore}_hit")

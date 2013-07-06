@@ -10,7 +10,7 @@ class ElementFeedbacksController < ApplicationController
 
   def new
     return if !check_turker
-    @configuration = @design.element_configurations.where("feedbacks_num > 0").sample
+    @configuration = @design.element_configurations.where("feedbacks_num > 0").sample || @design.element_configurations.sample
 
     respond_to do |format|
       format.html {render :layout => "feedback"}# new.html.erb

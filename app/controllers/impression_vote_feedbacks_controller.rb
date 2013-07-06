@@ -54,6 +54,10 @@ class ImpressionVoteFeedbacksController < ApplicationController
           boxarea.code = code
           boxarea.save!
 
+          configuration = @design.impression_configuration
+          configuration.feedbacks_vote_num -= 1
+          configuration.save!
+
           format.json  { render :json => {:message => "Save Successfully", :code => code}, :status => :ok}
         rescue
           format.json  { render :json => {:error => "Can not save the data"}, :status => :unprocessable_entity }

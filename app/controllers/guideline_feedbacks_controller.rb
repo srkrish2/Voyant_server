@@ -11,7 +11,7 @@ class GuidelineFeedbacksController < ApplicationController
   def new
     return if !check_turker
     get_element_boxareas
-    @configuration = @design.guideline_configurations.where("feedbacks_num > 0").sample
+    @configuration = @design.guideline_configurations.where("feedbacks_num > 0").sample || @design.guideline_configurations.sample
     @configuration_index = @design.guideline_configurations.index(@configuration)
     @configuration_index = nil if @configuration_index > 3
 
