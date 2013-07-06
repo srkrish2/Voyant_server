@@ -128,7 +128,14 @@ class Design < ActiveRecord::Base
         feedback_type = "GuidelineFeedbacks"
       end
 
-      approve_num = design.feedback_surveys.where(:feedback_controller => feedback_type).count
+      approve_num = FeedbackSurvey.joins(:imported_assignment).where("design_id=:design_id 
+                                                                     AND feedback_controller=:feedback_type 
+                                                                     AND is_approved=:is_approved 
+                                                                     AND turkee_task_id=:task_id",
+                                                                    :design_id => design.id,
+                                                                    :feedback_type => feedback_type,
+                                                                    :is_approved => true,
+                                                                    :task_id => task.id).count
       not_process_num = task.hit_num_assignments - approve_num
 
       if not_process_num > 0

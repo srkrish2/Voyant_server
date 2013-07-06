@@ -9,6 +9,9 @@
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null
 #  feedback_controller :string(255)
+#  design_id           :integer
+#  is_approved         :boolean          default(FALSE)
+#  turkee_task_id      :integer
 #
 
 class FeedbackSurvey < ActiveRecord::Base
@@ -21,7 +24,7 @@ class FeedbackSurvey < ActiveRecord::Base
   # Associations
   belongs_to :design
   belongs_to :feedback, :polymorphic => true
-  has_one :imported_assignment, :class_name => "Turkee:TurkeeImportedAssignment", :foreign_key => "result_id"
+  has_one :imported_assignment, :class_name => "Turkee::TurkeeImportedAssignment", :foreign_key => "result_id"
   has_many :boxareas
   # Validations
   validates :code, :presence => {:message => "Code is required"}
@@ -75,7 +78,10 @@ class FeedbackSurvey < ActiveRecord::Base
 
   def find_design
     boxarea = Boxarea.where(:code => self.code.strip).first
-    self.design = boxarea.feedback.design if boxarea
+    if boxarea
+      design = boxarea.feedback.design
+      self.design = design
+    end
   end
 
   def reset_boxarea!
