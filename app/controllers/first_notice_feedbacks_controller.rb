@@ -58,7 +58,7 @@ class FirstNoticeFeedbacksController < ApplicationController
           boxarea.code = code
           boxarea.save!
 
-          configuration = design.first_notice_configuration
+          configuration = @design.first_notice_configuration
           configuration.feedbacks_num -= 1
           configuration.save!
 
