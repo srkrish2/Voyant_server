@@ -15,17 +15,18 @@
     
     	
     	$(divID).append('\
-    	<div style= "padding-left:10px">\
+    	<div style= "padding-left:15px;">\
 	    	<div class="comment more span10 txt" id = "'+id+'" data-cord ="'+cord+'">'+txt+'\
 	    	</div>\
-	    	<div class = "span1" style = "width:30px; margin:5px 0 0 0">\
-	    	  <div style = "width:20px; height:20px">\
-	    	  <a><i class="icon-thumbs-up icon-1x span1" style = "color:red; margin:0px"></i></a>\
-	    	  </div>\
-	    	  <div style = "width:20px; height:20px">\
-	    	  <a><i class="icon-thumbs-down icon-1x span1" style = "color:red; margin:0px"></i></a>\
-	    	  </div>\
-	    	</div>\
+            <div class="dropdown btn-group" style = "margin-bottom:50px;margin-left:-18px; padding-left:0px;">\
+			    <button class="btn btn-mini dropdown-toggle" data-toggle="dropdown">\
+			    <span class="caret"></span>\
+			    </button>\
+			    <ul class="dropdown-menu"  style = "min-width: 0px;">\
+			        <li><a href="#" style = "padding:0 0 0 0"><i class="icon-thumbs-up" value = "'+id+'"  style = "color:green; padding:0 5px 0 5px;"></i></a></li>\
+			        <li><a href="#" style = "padding:0 0 0 0"><i class="icon-thumbs-down" value = "'+id+'" style = "color:red; padding:0 5px 0 5px;"></i></a></li>\
+			    </ul>\
+			</div>\
     	</div>\
     	');
 
@@ -99,10 +100,17 @@
     
      $('.icon-thumbs-up')
       .attr("data-toggle", "tooltip")
-      .attr("title", "helpful");
+      .attr("title", "helpful")
+      .click(function() {
+      	
+		alert("thumb up:"+$(this).attr("value"));
+	  });
      $('.icon-thumbs-down')
       .attr("data-toggle", "tooltip")
-      .attr("title", "unhelpful");
+      .attr("title", "unhelpful")
+      .click(function() {
+		alert("thumb down:"+$(this).attr("value"));
+	  });
       
      $('.icon-thumbs-up').tooltip({
       'container': 'body',
