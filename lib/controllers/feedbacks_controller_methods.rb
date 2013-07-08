@@ -36,11 +36,42 @@ module FeedbacksControllerMethods
       @turker = Turker.new
       @turker.worker_id = params[:workerId]
     end
+
+    return false if !authorize_feedback_for_turker
+
     return true
   end
 
+  def authorize_feedback_for_turker
+    feedback_model_name = feedback_controller_name.singularize
+    feedback_model_name = "ImpressionFeedback" if feedback_model_name == "ImpressionVoteFeedback"
+    found = false
+    @design.reload
+    @design.send(feedback_model_name.pluralize.underscore).each do |feedback|
+      if feedback.respond_to?(:boxareas) && !feedback.send(:boxareas).where(:turker_id => @turker.id).empty?
+        found = true
+        break
+      end
+
+      if feedback.respond_to?(:boxarea) && (feedback.send(:boxarea).turker == @turker)
+        found = true
+        break
+      end
+    end
+
+    if found
+      respond_to do |format|
+        message = "Sorry, you have performed this task before."
+        format.html {render :text => message}
+        format.json {render :json => {:error => message }, :status => :unprocessable_entity }
+      end
+      return false
+    end
+    return true
+
+  end
+
   def authorize_design
-    feedback_controller_name = self.class.name.sub(/Controller/,"")
     if !@design.is_published || @design.is_feedback_done || @design.send("#{feedback_controller_name.underscore}_access_code") != params[:access_code]
       respond_to do |format|
         message = "No Authorization."
@@ -49,5 +80,10 @@ module FeedbacksControllerMethods
       end
     end
 
+  end
+
+  private
+  def feedback_controller_name
+    return self.class.name.sub(/Controller/,"")
   end
 end

@@ -95,6 +95,15 @@ function split_words_from_str(str){
   return str.trim().split(/\s+|\n/)
 }
 
+function split_words_by_comma(str){
+  tmp = str.split(/\s*,\s*/);
+  result = [];
+  $.each(tmp, function(index, value){
+    if(value) result.push(value);
+  });
+  return result;
+}
+
 function nearest_elements_names(current_boxarea, element_boxareas, num) {
   selection_center_point = {};
   selection_center_point.x = (current_boxarea.x1 + current_boxarea.x2) * 0.5;

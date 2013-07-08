@@ -8,7 +8,7 @@
           %p Look at the design and the word cloud carefully.
           %p 
             Select the word from the list below that best describes the  
-            %strong.text-warning= "first #{@configuration.name.singularize}"
+            %strong.text-warning first element
             you see in the design.
         .step2.hide
           %p
@@ -18,11 +18,11 @@
       .span10
         %image.img-polaroid#picture{src: URI.join(request.url, @design.picture.url)}
     .row.step1
-      .span8.offset1
+      .span8.offset1.pull-left
         %hr
-        .btn-group#element-feedbacks-select(data-toggle="buttons-radio")
+        #element-feedbacks-select(data-toggle="buttons-radio")
           - @element_feedbacks.each do |element_feedback|
-            %button.btn(type="button" value="#{element_feedback.id}")= element_feedback.name
+            %button.btn.btn-vote(type="button" value="#{element_feedback.id}")= element_feedback.name
     .row
       .span10
         %hr

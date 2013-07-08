@@ -27,7 +27,7 @@ class ImpressionFeedbacksController < ApplicationController
         code = rand_code
         begin
           params[:feedbacks].each do |feedback|
-            feedback[:name] = feedback[:name].singularize.downcase
+            feedback[:name] = feedback[:name].strip.singularize.downcase
             impression_feedback = @design.impression_feedbacks.where(:name => feedback[:name]).first
             if impression_feedback.nil?
               impression_feedback = ImpressionFeedback.new(:name => feedback[:name])
@@ -44,6 +44,11 @@ class ImpressionFeedbacksController < ApplicationController
             boxarea.save!
 
           end
+
+          configuration = @design.impression_configuration
+          configuration.feedbacks_num -= 1
+          configuration.save!
+
           format.json  { render :json => {:message => "Save Successfully", :code => code}, :status => :ok}
         rescue
           format.json  { render :json => {:error => "Can not save the data"}, :status => :unprocessable_entity }

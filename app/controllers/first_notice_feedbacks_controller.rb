@@ -10,7 +10,6 @@ class FirstNoticeFeedbacksController < ApplicationController
 
   def new
     return if !check_turker
-
     qulify = true
     catch :break do
       @design.element_feedbacks.each do |element_feedback|
@@ -30,8 +29,7 @@ class FirstNoticeFeedbacksController < ApplicationController
       return
     end
 
-    @configuration = @design.element_configurations.sample
-    @element_feedbacks = @design.element_feedbacks.where(:configuration_id => @configuration.id)
+    @element_feedbacks = @design.element_feedbacks.shuffle
 
     respond_to do |format|
       format.html {render :layout => "feedback"}
@@ -59,6 +57,11 @@ class FirstNoticeFeedbacksController < ApplicationController
           boxarea.turker = turker
           boxarea.code = code
           boxarea.save!
+
+          configuration = @design.first_notice_configuration
+          configuration.feedbacks_num -= 1
+          configuration.save!
+
           format.json {render :json => {:message => "Save Successfully", :code => code}, :status => :ok}
         rescue
           format.json  { render :json => {:error => "Can not save the data"}, :status => :unprocessable_entity }

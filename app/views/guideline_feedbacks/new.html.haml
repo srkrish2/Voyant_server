@@ -117,7 +117,6 @@
           warning "Please provide at 15 words to describe your selected part"
           return false
         else
-          current_selection.cancelSelection()
           $.ajax {
             type: "post",
             url: "#{design_guideline_feedbacks_path(@design)}",
@@ -128,6 +127,7 @@
               $("#step-feedback").hide()
               $("#step-feedback-result").show()
               $("#code").html(data.code)
+              current_selection.cancelSelection()
           }
 
           return true

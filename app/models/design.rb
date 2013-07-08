@@ -34,10 +34,12 @@ require "models/rand_code"
 class Design < ActiveRecord::Base
   include RandCode
   include Rails.application.routes.url_helpers
+  # callbacks
+  after_destroy :expire_all_hit!
   # Accessible
   attr_accessible :picture, :name, :description
   # Associations
-  has_attached_file :picture, :styles => {:medium => "300x300", :thumb => "100x100"}, :default_url => "/images/:style/missing.png"
+  has_attached_file :picture, :styles => {:medium => "300x300", :thumb => "100x100"}
   belongs_to :user
   belongs_to :project
   has_one :audience_configuration, :dependent => :destroy
@@ -59,6 +61,8 @@ class Design < ActiveRecord::Base
   belongs_to :impression_vote_feedbacks_hit, :class_name => "Turkee::TurkeeTask"
   belongs_to :goal_feedbacks_hit, :class_name => "Turkee::TurkeeTask"
   belongs_to :guideline_feedbacks_hit, :class_name => "Turkee::TurkeeTask"
+
+  has_many :feedback_surveys, :dependent => :destroy
   # Validations
   validates :user_id, :presence => { :message => "User is required" }
   validates :name, :presence => {:message => "Name is required" }
@@ -70,43 +74,27 @@ class Design < ActiveRecord::Base
     self.generate_feedbacks_access_codes
     self.is_published = true
     # create HIT
-    form_url = survey_design_element_feedbacks_url(self, :access_code => self.element_feedbacks_access_code)
-    hit = self.create_hit!(form_url: form_url, title: "Element - #{self.name} (#{self.id})", num_assignments: 20)
-    self.element_feedbacks_hit = hit
-    self.save!
+    self.create_hit_with_type!("ElementFeedbacks", {num_assignments: self.element_configurations.count * 5})
   end
 
   def finish_feedback(feedback_controller)
     case feedback_controller
     when "ElementFeedbacks"
-      form_url = survey_design_first_notice_feedbacks_url(self, :access_code => self.first_notice_feedbacks_access_code)
-      hit = self.create_hit!(form_url: form_url, title: "First Notice - #{self.name} (#{self.id})", num_assignments: 30 )
-      self.first_notice_feedbacks_hit = hit
+      self.create_hit_with_type!("FirstNoticeFeedbacks", {num_assignments: 30})
 
-      form_url = survey_design_impression_feedbacks_url(self, :access_code => self.impression_feedbacks_access_code)
-      hit = self.create_hit!(form_url: form_url, title: "Impression - #{self.name} (#{self.id})", num_assignments: 20)
-      self.impression_feedbacks_hit = hit
+      self.create_hit_with_type!("ImpressionFeedbacks", {num_assignments: 20})
 
-      form_url = survey_design_goal_feedbacks_url(self, :access_code => self.goal_feedbacks_access_code)
       num_assignments = 0
       self.goal_configurations.each {|configuration| num_assignments += configuration.feedbacks_num}
-      hit = self.create_hit!(form_url: form_url, title: "Goal - #{self.name} (#{self.id})", num_assignments: num_assignments)
-      self.goal_feedbacks_hit = hit
+      self.create_hit_with_type!("GoalFeedbacks", {num_assignments: num_assignments})
 
-      form_url = survey_design_guideline_feedbacks_url(self, :access_code => self.guideline_feedbacks_access_code)
       num_assignments = 0
       self.guideline_configurations.each {|configuration| num_assignments += configuration.feedbacks_num}
-      hit = self.create_hit!(form_url: form_url, title: "Guideline - #{self.name} (#{self.id})", num_assignments: num_assignments)
-      self.guideline_feedbacks_hit = hit
+      self.create_hit_with_type!("GuidelineFeedbacks", {num_assignments: num_assignments})
 
-      self.save!
     when "FirstNoticeFeedbacks"
     when "ImpressionFeedbacks"
-      form_url = survey_design_impression_vote_feedbacks_url(self, :access_code => self.impression_vote_feedbacks_access_code)
-      hit = self.create_hit!(form_url: form_url, title: "Impression Vote - #{self.name} (#{self.id})", num_assignments: 30)
-      self.impression_vote_feedbacks_hit = hit
-
-      self.save!
+      self.create_hit_with_type!("ImpressionVoteFeedbacks", {num_assignments: 30})
     when "ImpressionVoteFeedbacks"
     when "GoalFeedbacks"
     when "GuidelineFeedbacks"
@@ -115,7 +103,82 @@ class Design < ActiveRecord::Base
     self.check_feedback_finish!
   end
 
+
+  def self.process_hits
+    puts "Process Hits #{Time.zone.now}============================================"
+    hits = RTurk::Hit.all_reviewable
+    puts "#{hits.size} reviewable hits."
+    unless hits.empty?
+      hits.each do |hit|
+        puts "HIT ID: #{hit.id}"
+        task = Turkee::TurkeeTask.where(:hit_id => hit.id).first
+        next if task.nil?
+        Turkee::TurkeeTask.process_hits(task)
+        puts "Task ID: #{task.id}"
+
+        not_process_num = 0
+        if design = Design.where(:element_feedbacks_hit_id => task.id).first
+          feedback_type = "ElementFeedbacks"
+          design.element_configurations.each {|c| not_process_num += c.feedbacks_num}
+        elsif design = Design.where(:first_notice_feedbacks_hit_id => task.id).first
+          feedback_type = "FirstNoticeFeedbacks"
+          not_process_num = design.first_notice_configuration.feedbacks_num
+        elsif design = Design.where(:impression_feedbacks_hit_id => task.id).first
+          feedback_type = "ImpressionFeedbacks"
+          not_process_num = design.impression_configuration.feedbacks_num
+        elsif design = Design.where(:impression_vote_feedbacks_hit_id => task.id).first
+          feedback_type = "ImpressionVoteFeedbacks"
+          not_process_num = design.impression_configuration.feedbacks_vote_num
+        elsif design = Design.where(:goal_feedbacks_hit_id => task.id).first
+          feedback_type = "GoalFeedbacks"
+          design.goal_configurations.each {|c| not_process_num += c.feedbacks_num}
+        elsif design = Design.where(:guideline_feedbacks_hit_id => task.id).first
+          feedback_type = "GuidelineFeedbacks"
+          design.guideline_configurations.each {|c| not_process_num += c.feedbacks_num}
+        end
+
+        task.reload
+        if !task.complete
+          hit.dispose!
+          task.expired = true
+          task.save!
+        end
+        if not_process_num > 0
+          design.create_hit_with_type!(feedback_type, {num_assignments: not_process_num})
+        else
+          design.finish_feedback(feedback_type)
+        end
+      end
+    end
+  end
+
+  def expire_hit!(task)
+    hit = RTurk::Hit.new(task.hit_id)
+    unless hit.status == "Disposed"
+      hit.expire!
+      hit.dispose!
+      task.expired = true
+      task.save!
+    end
+  end
+
+  def create_hit_with_type!(feedback_type, options)
+    form_url = send("survey_design_#{feedback_type.underscore}_url", self, :access_code => self.send("#{feedback_type.underscore}_access_code"))
+    hit = self.create_hit!(form_url: form_url, title: "#{feedback_type.underscore.split("_").join(" ")} - #{self.name} (#{self.id})", num_assignments: options[:num_assignments])
+    self.send("#{feedback_type.underscore}_hit=",hit)
+    self.save!
+  end
+
   protected
+  def expire_all_hit!
+    self.expire_hit!(self.element_feedbacks_hit) if self.element_feedbacks_hit
+    self.expire_hit!(self.first_notice_feedbacks_hit) if self.first_notice_feedbacks_hit
+    self.expire_hit!(self.impression_feedbacks_hit) if self.impression_feedbacks_hit
+    self.expire_hit!(self.impression_vote_feedbacks_hit) if self.impression_vote_feedbacks_hit
+    self.expire_hit!(self.goal_feedbacks_hit) if self.goal_feedbacks_hit
+    self.expire_hit!(self.guideline_feedbacks_hit) if self.guideline_feedbacks_hit
+  end
+
   def generate_feedbacks_access_codes
     self.element_feedbacks_access_code = rand_code
     self.first_notice_feedbacks_access_code = rand_code
@@ -131,7 +194,7 @@ class Design < ActiveRecord::Base
     description = options[:description] || self.description
     num_assignments = options[:num_assignments] || 1
     reward = options[:reward] || 0.06
-    lifetime = options[:lifetime] || 7.days.seconds
+    lifetime = options[:lifetime] || 1.hours.seconds
     duration = options[:duration] || 5.minutes.seconds
     form_url = options[:form_url] || (raise "No form_url provided")
 
@@ -172,21 +235,52 @@ class Design < ActiveRecord::Base
   def check_feedback_finish!
     finish = true
 
-    finish = false if self.element_feedbacks_hit.nil? || !self.element_feedbacks_hit.complete
-    
-    finish = false if self.first_notice_feedbacks_hit.nil? || !self.first_notice_feedbacks_hit.complete
+    catch :break do
+      not_process_num = 0
+      self.element_configurations.each {|c| not_process_num += c.feedbacks_num}
+      if not_process_num > 0
+        finish = false
+        throw :break
+      end
 
-    finish = false if self.impression_feedbacks_hit.nil? || !self.impression_feedbacks_hit.complete
+      not_process_num = self.first_notice_configuration.feedbacks_num
+      if not_process_num > 0
+        finish = false
+        throw :break
+      end
 
-    finish = false if self.impression_vote_feedbacks_hit.nil? || !self.impression_vote_feedbacks_hit.complete
+      not_process_num = self.impression_configuration.feedbacks_num
+      if not_process_num > 0
+        finish = false
+        throw :break
+      end
 
-    finish = false if self.goal_feedbacks_hit.nil? || !self.goal_feedbacks_hit.complete
+      not_process_num = self.impression_configuration.feedbacks_vote_num
+      if not_process_num > 0
+        finish = false
+        throw :break
+      end
 
-    finish = false if self.guideline_feedbacks_hit.nil? || !self.guideline_feedbacks_hit.complete
+      not_process_num = 0
+      self.goal_configurations.each {|c| not_process_num += c.feedbacks_num}
+      if not_process_num > 0
+        finish = false
+        throw :break
+      end
 
-    self.is_feedback_done = finish
+      not_process_num = 0
+      self.guideline_configurations.each {|c| not_process_num += c.feedbacks_num}
+      if not_process_num > 0
+        finish = false
+        throw :break
+      end
 
-    self.save!
+    end
+
+    if finish
+      self.is_feedback_done = finish
+      self.save!
+    end
 
   end
 end

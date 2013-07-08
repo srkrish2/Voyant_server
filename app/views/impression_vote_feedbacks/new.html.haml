@@ -20,9 +20,9 @@
     .row.step1
       .span8.offset1
         %hr
-        .btn-group#impression-feedbacks-select(data-toggle="buttons-radio")
+        #impression-feedbacks-select(data-toggle="buttons-radio")
           - @impression_feedbacks.each do |impression_feedback|
-            %button.btn(type="button" value="#{impression_feedback.id}")= impression_feedback.name
+            %button.btn.btn-vote(type="button" value="#{impression_feedback.id}")= impression_feedback.name
     .row
       .span6.offset2
         .step2.hide

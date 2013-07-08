@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130703164100) do
+ActiveRecord::Schema.define(:version => 20130706201915) do
 
   create_table "audience_configurations", :force => true do |t|
     t.integer  "design_id",         :null => false
@@ -66,13 +66,14 @@ ActiveRecord::Schema.define(:version => 20130703164100) do
   end
 
   create_table "element_configurations", :force => true do |t|
-    t.integer  "design_id",                      :null => false
-    t.string   "name",                           :null => false
-    t.boolean  "is_required",  :default => true
-    t.integer  "turker_num",   :default => 0
-    t.float    "turker_price", :default => 0.0
-    t.datetime "created_at",                     :null => false
-    t.datetime "updated_at",                     :null => false
+    t.integer  "design_id",                       :null => false
+    t.string   "name",                            :null => false
+    t.boolean  "is_required",   :default => true
+    t.integer  "turker_num",    :default => 0
+    t.float    "turker_price",  :default => 0.0
+    t.datetime "created_at",                      :null => false
+    t.datetime "updated_at",                      :null => false
+    t.integer  "feedbacks_num", :default => 5
   end
 
   create_table "element_feedbacks", :force => true do |t|
@@ -86,21 +87,24 @@ ActiveRecord::Schema.define(:version => 20130703164100) do
   end
 
   create_table "feedback_surveys", :force => true do |t|
-    t.string   "code",                :null => false
+    t.string   "code",                                   :null => false
     t.string   "feedback_type"
     t.integer  "feedback_id"
-    t.datetime "created_at",          :null => false
-    t.datetime "updated_at",          :null => false
+    t.datetime "created_at",                             :null => false
+    t.datetime "updated_at",                             :null => false
     t.string   "feedback_controller"
+    t.integer  "design_id"
+    t.boolean  "is_approved",         :default => false
   end
 
   create_table "first_notice_configurations", :force => true do |t|
-    t.integer  "design_id",                      :null => false
-    t.boolean  "is_required",  :default => true
-    t.integer  "turker_num",   :default => 0
-    t.float    "turker_price", :default => 0.0
-    t.datetime "created_at",                     :null => false
-    t.datetime "updated_at",                     :null => false
+    t.integer  "design_id",                       :null => false
+    t.boolean  "is_required",   :default => true
+    t.integer  "turker_num",    :default => 0
+    t.float    "turker_price",  :default => 0.0
+    t.datetime "created_at",                      :null => false
+    t.datetime "updated_at",                      :null => false
+    t.integer  "feedbacks_num", :default => 30
   end
 
   create_table "first_notice_feedbacks", :force => true do |t|
@@ -162,14 +166,16 @@ ActiveRecord::Schema.define(:version => 20130703164100) do
   end
 
   create_table "impression_configurations", :force => true do |t|
-    t.integer  "design_id",                       :null => false
-    t.boolean  "is_required",   :default => true
-    t.integer  "turker_num1",   :default => 0
-    t.float    "turker_price1", :default => 0.0
-    t.integer  "turker_num2",   :default => 0
-    t.float    "turker_price2", :default => 0.0
-    t.datetime "created_at",                      :null => false
-    t.datetime "updated_at",                      :null => false
+    t.integer  "design_id",                            :null => false
+    t.boolean  "is_required",        :default => true
+    t.integer  "turker_num1",        :default => 0
+    t.float    "turker_price1",      :default => 0.0
+    t.integer  "turker_num2",        :default => 0
+    t.float    "turker_price2",      :default => 0.0
+    t.datetime "created_at",                           :null => false
+    t.datetime "updated_at",                           :null => false
+    t.integer  "feedbacks_num",      :default => 20
+    t.integer  "feedbacks_vote_num", :default => 30
   end
 
   create_table "impression_feedbacks", :force => true do |t|

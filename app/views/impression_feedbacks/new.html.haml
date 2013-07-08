@@ -55,7 +55,15 @@
     step1 = () ->
       impressions_str = $("#impressions").val().trim()
       if impressions_str
-        impressions = impressions_str.split(",")
+        impressions = split_words_by_comma(impressions_str)
+        is_valid = true
+        $.each impressions, (index, impression) =>
+          if split_words_from_str(impression).length > 2
+            warning "A phase should only include one or two words. Please shorten your phase: " + impression
+            is_valid = false
+            return
+        return false if !is_valid
+
         $(".step1").hide()
         $(".step2").show()
         num = impressions.length - 1

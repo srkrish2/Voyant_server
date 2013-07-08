@@ -10,8 +10,6 @@ class ImpressionVoteFeedbacksController < ApplicationController
 
   def new
     return if !check_turker
-
-
     qulify = true
     catch :break do
       @design.impression_feedbacks.each do |impression_feedback|
@@ -55,6 +53,10 @@ class ImpressionVoteFeedbacksController < ApplicationController
           boxarea.turker = turker
           boxarea.code = code
           boxarea.save!
+
+          configuration = @design.impression_configuration
+          configuration.feedbacks_vote_num -= 1
+          configuration.save!
 
           format.json  { render :json => {:message => "Save Successfully", :code => code}, :status => :ok}
         rescue

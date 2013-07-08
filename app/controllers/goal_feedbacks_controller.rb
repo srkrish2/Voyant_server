@@ -11,7 +11,7 @@ class GoalFeedbacksController < ApplicationController
   def new
     return if !check_turker
     get_element_boxareas
-    @configuration = @design.goal_configurations.where("feedbacks_num > 0").sample
+    @configuration = @design.goal_configurations.where("feedbacks_num > 0").sample || @design.goal_configurations.sample
 
     respond_to do |format|
       format.html {render :layout => "feedback"}

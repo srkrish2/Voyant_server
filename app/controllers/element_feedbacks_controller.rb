@@ -10,7 +10,7 @@ class ElementFeedbacksController < ApplicationController
 
   def new
     return if !check_turker
-    @configuration = @design.element_configurations.sample
+    @configuration = @design.element_configurations.where("feedbacks_num > 0").sample || @design.element_configurations.sample
 
     respond_to do |format|
       format.html {render :layout => "feedback"}# new.html.erb
@@ -24,12 +24,12 @@ class ElementFeedbacksController < ApplicationController
   def batch_create
     ElementFeedback.transaction do
       respond_to do |format|
-        #begin
+        begin
           code = rand_code
           element_feedback = nil
+          configuration = @design.element_configurations.find(params[:configuration_id])
           params[:feedbacks].each do |feedback|
-            feedback[:name] = feedback[:name].singularize.downcase
-            configuration = @design.element_configurations.find(params[:configuration_id])
+            feedback[:name] = feedback[:name].strip.singularize.downcase
             element_feedback = ElementFeedback.where(:design_id => @design.id, :configuration_id => configuration.id, :name => feedback[:name]).first
             if element_feedback.nil?
               element_feedback = ElementFeedback.new(:name => feedback[:name])
@@ -42,12 +42,15 @@ class ElementFeedbacksController < ApplicationController
             boxarea.turker = turker
             boxarea.code = code
             boxarea.save!
-
           end
+
+          configuration.feedbacks_num -= 1
+          configuration.save!
+
           format.json  { render :json => {:message => "Save Successfully", :code => code}, :status => :ok}
-        #rescue
-          #format.json  { render :json => {:error => "Can not save the data"}, :status => :unprocessable_entity }
-        #end
+        rescue
+          format.json  { render :json => {:error => "Can not save the data"}, :status => :unprocessable_entity }
+        end
       end
     end
 
