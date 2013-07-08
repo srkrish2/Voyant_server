@@ -72,6 +72,7 @@ module FeedbacksControllerMethods
   end
 
   def authorize_design
+    return if Rails.env == "development"
     if !@design.is_published || @design.is_feedback_done || @design.send("#{feedback_controller_name.underscore}_access_code") != params[:access_code]
       respond_to do |format|
         message = "No Authorization."
