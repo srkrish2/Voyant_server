@@ -183,6 +183,38 @@ class DesignsController < ApplicationController
 
   # GET /designs/1/edit
   def edit
+    json_data = {}
+    
+    json_data[:is_required] = {audience:true, element:true, impression:true, first_notice:true, guideline: true, goal: true}
+
+    audience_configuration = @design.audience_configuration
+    json_data[:audience] = {
+      gender: [audience_configuration.gender.include?("0"), audience_configuration.gender.include?("1")],
+      age: [audience_configuration.age.include?("0"), audience_configuration.age.include?("1"), audience_configuration.age.include?("2"), audience_configuration.age.include?("3"), audience_configuration.age.include?("4"), audience_configuration.age.include?("5")],
+      country: [audience_configuration.country.include?("0"), audience_configuration.country.include?("1"), audience_configuration.country.include?("2"), audience_configuration.country.include?("3"), audience_configuration.country.include?("4")]
+    }
+
+    json_data[:element] = []
+    @design.element_configurations.each do |configuration|
+      json_data[:element] << {name: configuration.name, is_required: configuration.is_required}
+    end
+
+    json_data[:goal] = []
+    @design.goal_configurations.each do |configuration|
+      json_data[:goal] << {is_required: configuration.is_required, title: configuration.title, description: configuration.description}
+    end
+
+    json_data[:guideline] = []
+    @design.guideline_configurations.each do |configuration|
+      json_data[:guideline] << {is_required: configuration.is_required, title: configuration.title, description: configuration.description}
+    end
+
+    gon.fed_config = json_data
+
+    respond_to do |format|
+      format.html
+    end
+
   end
 
   # POST /designs
@@ -191,16 +223,54 @@ class DesignsController < ApplicationController
     @design = Design.new(params[:design])
     @design.user_id = current_user.id
 
-    respond_to do |format|
-      if @design.save
-        flash[:notice] = 'Design was successfully created.'
-        format.html { redirect_to(edit_design_url(@design)) }
-        format.json  { render :json => @design, :status => :created, :location => @design }
-      else
-        format.html { render :action => "new" }
-        format.json  { render :json => {:model_error => @design.errors}, :status => :unprocessable_entity }
+    Design.transaction do
+      respond_to do |format|
+        #begin
+          @design.save!
+          audience_configuration = @design.build_audience_configuration({gender: "0;1", age: "0;1;2;3;4;5", country: "0;1;2;3;4;5", design_experience: ""})
+          audience_configuration.save!
+
+          element_configuration = @design.element_configurations.build(:name => "object", :is_required => true)
+          element_configuration.save!
+
+          element_configuration = @design.element_configurations.build(:name => "color", :is_required => true)
+          element_configuration.save!
+
+          element_configuration = @design.element_configurations.build(:name => "activity", :is_required => true)
+          element_configuration.save!
+
+          element_configuration = @design.element_configurations.build(:name => "shape", :is_required => true)
+          element_configuration.save!
+
+          first_notice_configuration = @design.build_first_notice_configuration(:is_required => true)
+          first_notice_configuration.save!
+
+          impression_configuration = @design.build_impression_configuration(:is_required => true)
+          impression_configuration.save!
+
+          guideline_configuration = @design.guideline_configurations.build(title: "proximity", description: GuidelineFeedback::ExampleText[0] )
+          guideline_configuration.save!
+
+          guideline_configuration = @design.guideline_configurations.build(title: "alignment", description: GuidelineFeedback::ExampleText[1] )
+          guideline_configuration.save!
+
+          guideline_configuration = @design.guideline_configurations.build(title: "repetition", description: GuidelineFeedback::ExampleText[2] )
+          guideline_configuration.save!
+
+          guideline_configuration = @design.guideline_configurations.build(title: "contrast", description: GuidelineFeedback::ExampleText[3] )
+          guideline_configuration.save!
+
+          flash[:notice] = 'Design was successfully created.'
+          format.html { redirect_to(edit_design_url(@design)) }
+          format.json  { render :json => @design, :status => :created, :location => @design }
+        #rescue
+          #format.html { render :action => "new" }
+          #format.json  { render :json => {:model_error => @design.errors}, :status => :unprocessable_entity }
+        #end
+
       end
     end
+
   end
 
   # PUT /designs/1
@@ -273,8 +343,10 @@ class DesignsController < ApplicationController
           goal_configurations.each {|g| g.save!}
           guideline_configurations.each {|g| g.save!}
 
-          flash[:notice] = 'Design was successfully updated.'
-          format.html { redirect_to(@design) }
+          format.html do 
+            flash[:notice] = 'Design was successfully updated.'
+            redirect_to(@design)
+          end
           format.json  { render :json => {:status => :ok }}
 
         rescue
