@@ -225,7 +225,7 @@ class DesignsController < ApplicationController
 
     Design.transaction do
       respond_to do |format|
-        #begin
+        begin
           @design.save!
           audience_configuration = @design.build_audience_configuration({gender: "0;1", age: "0;1;2;3;4;5", country: "0;1;2;3;4;5", design_experience: ""})
           audience_configuration.save!
@@ -263,10 +263,10 @@ class DesignsController < ApplicationController
           flash[:notice] = 'Design was successfully created.'
           format.html { redirect_to(edit_design_url(@design)) }
           format.json  { render :json => @design, :status => :created, :location => @design }
-        #rescue
-          #format.html { render :action => "new" }
-          #format.json  { render :json => {:model_error => @design.errors}, :status => :unprocessable_entity }
-        #end
+        rescue
+          format.html { render :action => "new" }
+          format.json  { render :json => {:model_error => @design.errors}, :status => :unprocessable_entity }
+        end
 
       end
     end
@@ -278,25 +278,27 @@ class DesignsController < ApplicationController
   def update
     respond_to do |format|
       # Set audience_configuration
-      audience_configuration = AudienceConfiguration.new
-      genders = []
-      params[:audience][:gender].each_with_index {|gender,index| genders << index if gender }
-      audience_configuration.gender = genders.join(";")
+      if params[:audience]
+        audience_configuration = AudienceConfiguration.new
+        genders = []
+        params[:audience][:gender].each_with_index {|gender,index| genders << index if gender }
+        audience_configuration.gender = genders.join(";")
 
-      ages = []
-      params[:audience][:age].each_with_index {|age, index| ages << index if age}
-      audience_configuration.age = ages.join(";")
+        ages = []
+        params[:audience][:age].each_with_index {|age, index| ages << index if age}
+        audience_configuration.age = ages.join(";")
 
-      countries = []
-      params[:audience][:country].each_with_index {|country, index| countries << index if country}
-      audience_configuration.country = countries.join(";")
-      audience_configuration.design_experience = ""
+        countries = []
+        params[:audience][:country].each_with_index {|country, index| countries << index if country}
+        audience_configuration.country = countries.join(";")
+        audience_configuration.design_experience = ""
 
-      audience_configuration.design = @design
+        audience_configuration.design = @design
+      end
 
       # Set element_configuration
       element_configurations = []
-      params[:element].each do |index,e|
+      params[:element] && params[:element].each do |index,e|
         element_configuration = ElementConfiguration.new(e)
         element_configuration.design = @design
         element_configurations << element_configuration
@@ -312,7 +314,7 @@ class DesignsController < ApplicationController
 
       # Set goal_configuration
       goal_configurations = []
-      params[:goal].each do |key,g|
+      params[:goal] && params[:goal].each do |key,g|
         goal_configuration = GoalConfiguration.new(g)
         goal_configuration.design = @design
         goal_configurations << goal_configuration
@@ -320,7 +322,7 @@ class DesignsController < ApplicationController
 
       # Set guideline_configuration
       guideline_configurations = []
-      params[:guideline].each do |key,g|
+      params[:guideline] && params[:guideline].each do |key,g|
         guideline_configuration = GuidelineConfiguration.new(g)
         guideline_configuration.design = @design
         guideline_configurations << guideline_configuration
