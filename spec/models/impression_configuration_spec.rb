@@ -2,15 +2,17 @@
 #
 # Table name: impression_configurations
 #
-#  id            :integer          not null, primary key
-#  design_id     :integer          not null
-#  is_required   :boolean          default(TRUE)
-#  turker_num1   :integer          default(0)
-#  turker_price1 :float            default(0.0)
-#  turker_num2   :integer          default(0)
-#  turker_price2 :float            default(0.0)
-#  created_at    :datetime         not null
-#  updated_at    :datetime         not null
+#  id                 :integer          not null, primary key
+#  design_id          :integer          not null
+#  is_required        :boolean          default(TRUE)
+#  turker_num1        :integer          default(0)
+#  turker_price1      :float            default(0.0)
+#  turker_num2        :integer          default(0)
+#  turker_price2      :float            default(0.0)
+#  created_at         :datetime         not null
+#  updated_at         :datetime         not null
+#  feedbacks_num      :integer          default(20)
+#  feedbacks_vote_num :integer          default(30)
 #
 
 require 'spec_helper'
