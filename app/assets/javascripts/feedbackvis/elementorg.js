@@ -11,11 +11,7 @@
 		console.log("click:"+target);
 		if (target != "TEXT" && lastclicked !="")
 		{	
-			d3.select("#"+lastclicked).style("color","black" );
-			d3.select("#"+lastclicked).style("font-weight","normal");
-			$('#heatmapID_eleorg').remove();
-			
-			lastclicked = "";
+			reset();
 		}
     });
     for (var i =0; i <= count(json_allColor.ele); i++)
@@ -39,10 +35,10 @@
            	 
            	d3.select('#eletype'+jsonArr_labelsNkeys[i].key)
            	.append("div")
-           	.attr("class","legendtext")
            	.attr("align","left")
            	.append("text")
          	.text(jsonArray[j].element)
+         	.attr("class","legendtext")
          	.attr("id","org"+jsonArray[j].id)
          	.on("click", function(){
          		if (lastclicked != this.id)
@@ -60,6 +56,8 @@
 					
 					lastclicked = this.id		
 					console.log(this.id);
+         		}else{
+         			reset();
          		}
          	})
             .on("mouseover", function(d){
@@ -99,10 +97,17 @@
     	    resizeable:false 
     	  });
     	  
-    	  $(tableID).height(365);
+    	  $(tableID).height(400);//tmp anbang
     	});
 
 
+	function reset(){
+			d3.select("#"+lastclicked).style("color","black" );
+			d3.select("#"+lastclicked).style("font-weight","normal");
+			$('#heatmapID_eleorg').remove();		
+			//lastclicked = "";
+	}
+	
     function predicatBy(prop){
     	   return function(a,b){
     	      if( a[prop] > b[prop]){
