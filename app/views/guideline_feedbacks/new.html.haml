@@ -36,9 +36,9 @@
         %p#guideline.hide
           %strong Guideline:
           = @configuration.description
-    .row.text-center#picture.hide
+    .row.text-center
       .span10
-        %image.img-polaroid#picture{src: URI.join(request.url, @design.picture.url)}
+        %image.img-polaroid#picture.hide{src: URI.join(request.url, @design.picture.url)}
     .row
       .span6.offset2
         .step1.hide
