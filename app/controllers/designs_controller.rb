@@ -27,8 +27,8 @@ class DesignsController < ApplicationController
       end
     end
     
-    min_vote = -10000000
-    max_vote = 10000000
+    min_vote = 10000000
+    max_vote = -10000000
 
     @design.first_notice_feedbacks.each do |feedback|
       boxarea = feedback.boxarea
@@ -52,8 +52,8 @@ class DesignsController < ApplicationController
 
     @json_data[:range][:ele] = [min_vote, max_vote]
 
-    min_vote = -1000000000
-    max_vote = 1000000000
+    min_vote = 1000000000
+    max_vote = -1000000000
     @design.impression_feedbacks.each do |feedback|
       feedback.boxareas.each do |boxarea|
         node = {}
@@ -96,7 +96,7 @@ class DesignsController < ApplicationController
 
     end
 
-    @json_data[:range][:goal] = [-3,3]
+    @json_data[:range][:goal] = [0,6]
 
     guideline_configurations = @design.guideline_configurations
     @design.guideline_feedbacks.each do |feedback|
@@ -117,7 +117,7 @@ class DesignsController < ApplicationController
       @json_data[:nodes] << node
     end
 
-    @json_data[:range][:guide] = [-3,3]
+    @json_data[:range][:guide] = [0,6]
 
     @json_data[:isshown] = {}
     @json_data[:isshown][:eleorg] = true
