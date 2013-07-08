@@ -144,6 +144,20 @@ class DesignsController < ApplicationController
     @json_data[:legend][:guide] = {title: guide_title, content: guide_content}
     gon.json_data = @json_data
 
+    @element_feedbacks_num = 0
+    @design.element_configurations.each {|c| @element_feedbacks_num += c.feedbacks_num}
+
+    @first_notice_feedbacks_num = @design.first_notice_configuration.feedbacks_num
+
+    @impression_feedbacks_num = @design.impression_configuration.feedbacks_num
+    @impression_feedbacks_vote_num = @design.impression_configuration.feedbacks_vote_num
+
+    @goal_feedbacks_num = 0
+    @design.goal_configurations.each {|c| @goal_feedbacks_num += c.feedbacks_num}
+
+    @guideline_feedbacks_num = 0
+    @design.guideline_configurations.each {|c| @guideline_feedbacks_num += c.feedbacks_num}
+
     respond_to do |format|
       format.html
     end
