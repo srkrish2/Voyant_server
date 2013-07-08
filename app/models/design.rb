@@ -39,7 +39,7 @@ class Design < ActiveRecord::Base
   # Accessible
   attr_accessible :picture, :name, :description
   # Associations
-  has_attached_file :picture, :styles => {:medium => "300x300", :thumb => "100x100"}, :default_url => "/images/:style/missing.png"
+  has_attached_file :picture, :styles => {:medium => "300x300", :thumb => "100x100"}
   belongs_to :user
   belongs_to :project
   has_one :audience_configuration, :dependent => :destroy

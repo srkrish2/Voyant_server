@@ -33,7 +33,7 @@ class Ability
       # Design
       can [:read, :update, :destroy, :index, :request_feedback_for], Design, :user_id => user.id
       can [:request_feedback_for], Design, :user_id => user.id, :is_published => false
-      can [:feedbacks], Design, :user_id => user.id, :is_published => true
+      can [:feedbacks], Design, :user_id => user.id, :is_published => true, :is_feedback_done => true
       can :create, Design
 
     end

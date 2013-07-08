@@ -1,9 +1,152 @@
 class DesignsController < ApplicationController
   #before_filter :find_design, :only => [:show, :edit, :update, :destroy]
-  load_and_authorize_resource :except => :feedbacks
+  load_and_authorize_resource
 
   def feedbacks
-    @design = Design.find(params[:id])
+    #@design = Design.find(params[:id])
+
+    @json_data = {}
+    @json_data[:nodes] = []
+    @json_data[:range] = {}
+
+    @design.element_feedbacks.each do |feedback|
+      feedback.boxareas.each do |boxarea|
+        node = {}
+        node[:id] = boxarea.id
+        node[:type] = "eleorg"
+        node[:cord] = [boxarea.top_left_x, boxarea.top_left_y, boxarea.bottom_right_x, boxarea.bottom_right_y]
+        node[:x] = (boxarea.top_left_x + boxarea.bottom_right_x) * 0.5
+        node[:y] = (boxarea.top_left_y + boxarea.bottom_right_y) * 0.5
+        node[:size] = (boxarea.bottom_right_x - boxarea.top_left_x) * (boxarea.bottom_right_y - boxarea.top_left_y)
+        node[:content] = {}
+        node[:content][:subtype] = feedback.configuration.name
+        node[:content][:score] = 0
+        node[:content][:txt] = feedback.name
+        node[:quality] = 0
+        @json_data[:nodes] << node
+      end
+    end
+    
+    min_vote = -10000000
+    max_vote = 10000000
+
+    @design.first_notice_feedbacks.each do |feedback|
+      boxarea = feedback.boxarea
+      element_feedback = feedback.element_feedback
+      node = {}
+      node[:id] = boxarea.id
+      node[:type] = "ele"
+      node[:cord] = [boxarea.top_left_x, boxarea.top_left_y, boxarea.bottom_right_x, boxarea.bottom_right_y]
+      node[:x] = (boxarea.top_left_x + boxarea.bottom_right_x) * 0.5
+      node[:y] = (boxarea.top_left_y + boxarea.bottom_right_y) * 0.5
+      node[:size] = (boxarea.bottom_right_x - boxarea.top_left_x) * (boxarea.bottom_right_y - boxarea.top_left_y)
+      node[:content] = {}
+      node[:content][:subtype] = element_feedback.configuration.name
+      node[:content][:score] = element_feedback.vote
+      min_vote = element_feedback.vote if min_vote > element_feedback.vote
+      max_vote = element_feedback.vote if max_vote < element_feedback.vote
+      node[:content][:txt] = element_feedback.name
+      node[:quality] = 0
+      @json_data[:nodes] << node
+    end
+
+    @json_data[:range][:ele] = [min_vote, max_vote]
+
+    min_vote = -1000000000
+    max_vote = 1000000000
+    @design.impression_feedbacks.each do |feedback|
+      feedback.boxareas.each do |boxarea|
+        node = {}
+        node[:id] = boxarea.id
+        node[:type] = "imp"
+        node[:cord] = [boxarea.top_left_x, boxarea.top_left_y, boxarea.bottom_right_x, boxarea.bottom_right_y]
+        node[:x] = (boxarea.top_left_x + boxarea.bottom_right_x) * 0.5
+        node[:y] = (boxarea.top_left_y + boxarea.bottom_right_y) * 0.5
+        node[:size] = (boxarea.bottom_right_x - boxarea.top_left_x) * (boxarea.bottom_right_y - boxarea.top_left_y)
+        node[:content] = {}
+        node[:content][:subtype] = feedback.name
+        node[:content][:score] = feedback.vote
+        min_vote = feedback.vote if min_vote > feedback.vote
+        max_vote = feedback.vote if max_vote < feedback.vote
+        node[:content][:txt] = boxarea.description
+        node[:quality] = 0
+        @json_data[:nodes] << node
+      end
+    end
+    
+    @json_data[:range][:imp] = [min_vote, max_vote]
+
+    goal_configurations = @design.goal_configurations
+    @design.goal_feedbacks.each do |feedback|
+      boxarea = feedback.boxarea
+      configuration = feedback.configuration
+      node = {}
+      node[:id] = boxarea.id
+      node[:type] = "goal"
+      node[:cord] = [boxarea.top_left_x, boxarea.top_left_y, boxarea.bottom_right_x, boxarea.bottom_right_y]
+      node[:x] = (boxarea.top_left_x + boxarea.bottom_right_x) * 0.5
+      node[:y] = (boxarea.top_left_y + boxarea.bottom_right_y) * 0.5
+      node[:size] = (boxarea.bottom_right_x - boxarea.top_left_x) * (boxarea.bottom_right_y - boxarea.top_left_y)
+      node[:content] = {}
+      node[:content][:subtype] = "goal#{goal_configurations.index(configuration)}"
+      node[:content][:score] = feedback.rating + 3
+      node[:content][:txt] = boxarea.description
+      node[:quality] = 0
+      @json_data[:nodes] << node
+
+    end
+
+    @json_data[:range][:goal] = [-3,3]
+
+    guideline_configurations = @design.guideline_configurations
+    @design.guideline_feedbacks.each do |feedback|
+      boxarea = feedback.boxarea
+      configuration = feedback.configuration
+      node = {}
+      node[:id] = boxarea.id
+      node[:type] = "guide"
+      node[:cord] = [boxarea.top_left_x, boxarea.top_left_y, boxarea.bottom_right_x, boxarea.bottom_right_y]
+      node[:x] = (boxarea.top_left_x + boxarea.bottom_right_x) * 0.5
+      node[:y] = (boxarea.top_left_y + boxarea.bottom_right_y) * 0.5
+      node[:size] = (boxarea.bottom_right_x - boxarea.top_left_x) * (boxarea.bottom_right_y - boxarea.top_left_y)
+      node[:content] = {}
+      node[:content][:subtype] = "guide#{guideline_configurations.index(configuration)}"
+      node[:content][:score] = feedback.rating + 3
+      node[:content][:txt] = boxarea.description
+      node[:quality] = 0
+      @json_data[:nodes] << node
+    end
+
+    @json_data[:range][:guide] = [-3,3]
+
+    @json_data[:isshown] = {}
+    @json_data[:isshown][:eleorg] = true
+    @json_data[:isshown][:notice] = true
+    @json_data[:isshown][:imp] = true
+    @json_data[:isshown][:goal] = true
+    @json_data[:isshown][:criteria] = true
+
+    @json_data[:legend] = {}
+    goal_title = []
+    goal_content = []
+    @design.goal_configurations.each do |configuration|
+      goal_title << configuration.title 
+      goal_content << configuration.description
+    end
+    @json_data[:legend][:goal] = {title: goal_title, content: goal_content}
+
+    guide_title = []
+    guide_content = []
+    @design.guideline_configurations.each do |configuration|
+      guide_title << configuration.title
+      guide_content << configuration.description
+    end
+    @json_data[:legend][:guide] = {title: guide_title, content: guide_content}
+    gon.json_data = @json_data
+
+    respond_to do |format|
+      format.html
+    end
 
   end
 
