@@ -1,8 +1,32 @@
 <% content_for :head do %>
   <%= stylesheet_link_tag :fedone %>
 <% end %>
-<table class="table">
-</table>
+<div class="row">
+  <div class="span10 offset1">
+    <table class="table .table-bordered">
+      <thead>
+        <tr>
+          <th>Element</th>
+          <th>First Notice</th>
+          <th>Impression</th>
+          <th>Impression Vote</th>
+          <th>Goal</th>
+          <th>Guideline</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><%= @element_feedbacks_num %></td>
+          <td><%= @first_notice_feedbacks_num %></td>
+          <td><%= @impression_feedbacks_num %></td>
+          <td><%= @impression_feedbacks_vote_num %></td>
+          <td><%= @goal_feedbacks_num %></td>
+          <td><%= @guideline_feedbacks_num %></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
 <div class = "text-center">
 	<div id="container" >
 		<div id="viz" class="heatnetwork">
