@@ -47,6 +47,7 @@ class User < ActiveRecord::Base
   has_many :projects, :dependent => :destroy
   has_many :designs, :dependent => :destroy
   has_many :guide_templates, :dependent => :destroy
+  has_many :system_feedbacks, :as => :user, :dependent => :destroy
   
 
   protected

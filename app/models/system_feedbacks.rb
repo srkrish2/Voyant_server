@@ -11,5 +11,10 @@
 #
 
 class SystemFeedbacks < ActiveRecord::Base
-  # attr_accessible :title, :body
+  # Accessible
+  attr_accessible :comment
+  # Associations
+  belongs_to :user, :polymorphic => true
+
+
 end

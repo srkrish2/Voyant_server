@@ -33,4 +33,5 @@ class Turker < ActiveRecord::Base
                     :allow_blank => true
   # Associations
   has_many :boxareas
+  has_many :system_feedbacks, :as => :user, :dependent => :destroy
 end
