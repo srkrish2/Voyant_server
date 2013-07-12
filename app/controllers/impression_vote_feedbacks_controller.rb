@@ -31,7 +31,7 @@ class ImpressionVoteFeedbacksController < ApplicationController
 
     get_element_boxareas
     @design.reload
-    @impression_feedbacks = @design.impression_feedbacks
+    @impression_feedbacks = @design.impression_feedbacks.shuffle
 
     respond_to do |format|
       format.html {render :layout => "feedback"}
