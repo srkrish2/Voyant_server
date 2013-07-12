@@ -11,7 +11,6 @@
 #  feedback_controller :string(255)
 #  design_id           :integer
 #  is_approved         :boolean          default(FALSE)
-#  turkee_task_id      :integer
 #
 
 class FeedbackSurvey < ActiveRecord::Base
