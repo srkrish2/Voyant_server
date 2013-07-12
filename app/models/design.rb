@@ -39,7 +39,7 @@ class Design < ActiveRecord::Base
   # Accessible
   attr_accessible :picture, :name, :description
   # Associations
-  has_attached_file :picture, :styles => {:medium => "300x300", :thumb => "100x100"}, :default_url => "/images/:style/missing.png"
+  has_attached_file :picture, :styles => {:medium => "300x300", :thumb => "100x100"}
   belongs_to :user
   belongs_to :project
   has_one :audience_configuration, :dependent => :destroy
@@ -108,61 +108,58 @@ class Design < ActiveRecord::Base
     puts "Process Hits #{Time.zone.now}============================================"
     hits = RTurk::Hit.all_reviewable
     puts "#{hits.size} reviewable hits."
-    hits.each do |hit|
-      puts "HIT ID: #{hit.id}"
-      task = Turkee::TurkeeTask.where(:hit_id => hit.id).first
-      Turkee::TurkeeTask.process_hits(task)
-      puts "Task ID: #{task.id}"
+    unless hits.empty?
+      hits.each do |hit|
+        puts "HIT ID: #{hit.id}"
+        task = Turkee::TurkeeTask.where(:hit_id => hit.id).first
+        next if task.nil?
+        Turkee::TurkeeTask.process_hits(task)
+        puts "Task ID: #{task.id}"
 
-      not_process_num = 0
-      if design = Design.where(:element_feedbacks_hit_id => task.id).first
-        feedback_type = "ElementFeedbacks"
-        design.element_configurations.each {|c| not_process_num += c.feedbacks_num}
-      elsif design = Design.where(:first_notice_feedbacks_hit_id => task.id).first
-        feedback_type = "FirstNoticeFeedbacks"
-        not_process_num = design.first_notice_configuration.feedbacks_num
-      elsif design = Design.where(:impression_feedbacks_hit_id => task.id).first
-        feedback_type = "ImpressionFeedbacks"
-        not_process_num = design.impression_configuration.feedbacks_num
-      elsif design = Design.where(:impression_vote_feedbacks_hit_id => task.id).first
-        feedback_type = "ImpressionVoteFeedbacks"
-        not_process_num = design.impression_configuration.feedbacks_vote_num
-      elsif design = Design.where(:goal_feedbacks_hit_id => task.id).first
-        feedback_type = "GoalFeedbacks"
-        design.goal_configurations.each {|c| not_process_num += c.feedbacks_num}
-      elsif design = Design.where(:guideline_feedbacks_hit_id => task.id).first
-        feedback_type = "GuidelineFeedbacks"
-        design.guideline_configurations.each {|c| not_process_num += c.feedbacks_num}
-      end
-
-      #approve_num = FeedbackSurvey.joins(:imported_assignment).where("design_id=:design_id 
-                                                                     #AND feedback_controller=:feedback_type 
-                                                                     #AND is_approved=:is_approved 
-                                                                     #AND turkee_task_id=:task_id",
-                                                                    #:design_id => design.id,
-                                                                    #:feedback_type => feedback_type,
-                                                                    #:is_approved => true,
-                                                                    #:task_id => task.id).count
-      #not_process_num = task.hit_num_assignments - approve_num
-
-      if not_process_num > 0
-        old_task = design.send("#{feedback_type.underscore}_hit")
-        if !old_task.complete
-          RTurk::Hit.new(old_task.hit_id).dispose!
-          old_task.expired = true
-          old_task.save!
+        not_process_num = 0
+        if design = Design.where(:element_feedbacks_hit_id => task.id).first
+          feedback_type = "ElementFeedbacks"
+          design.element_configurations.each {|c| not_process_num += c.feedbacks_num}
+        elsif design = Design.where(:first_notice_feedbacks_hit_id => task.id).first
+          feedback_type = "FirstNoticeFeedbacks"
+          not_process_num = design.first_notice_configuration.feedbacks_num
+        elsif design = Design.where(:impression_feedbacks_hit_id => task.id).first
+          feedback_type = "ImpressionFeedbacks"
+          not_process_num = design.impression_configuration.feedbacks_num
+        elsif design = Design.where(:impression_vote_feedbacks_hit_id => task.id).first
+          feedback_type = "ImpressionVoteFeedbacks"
+          not_process_num = design.impression_configuration.feedbacks_vote_num
+        elsif design = Design.where(:goal_feedbacks_hit_id => task.id).first
+          feedback_type = "GoalFeedbacks"
+          design.goal_configurations.each {|c| not_process_num += c.feedbacks_num}
+        elsif design = Design.where(:guideline_feedbacks_hit_id => task.id).first
+          feedback_type = "GuidelineFeedbacks"
+          design.guideline_configurations.each {|c| not_process_num += c.feedbacks_num}
         end
-        design.create_hit_with_type!(feedback_type, {num_assignments: not_process_num})
+
+        task.reload
+        if !task.complete
+          hit.dispose!
+          task.expired = true
+          task.save!
+        end
+        if not_process_num > 0
+          design.create_hit_with_type!(feedback_type, {num_assignments: not_process_num})
+        else
+          design.finish_feedback(feedback_type)
+        end
       end
     end
   end
 
   def expire_hit!(task)
     hit = RTurk::Hit.new(task.hit_id)
-    hit.expire!
-    hit.dispose!
-    task.expired = true
-    task.save!
+    unless hit.status == "Disposed"
+      hit.expire!
+      hit.dispose!
+      task.expired = true
+      task.save!
+    end
   end
 
   def create_hit_with_type!(feedback_type, options)
@@ -238,21 +235,52 @@ class Design < ActiveRecord::Base
   def check_feedback_finish!
     finish = true
 
-    finish = false if self.element_feedbacks_hit.nil? || !self.element_feedbacks_hit.complete
-    
-    finish = false if self.first_notice_feedbacks_hit.nil? || !self.first_notice_feedbacks_hit.complete
+    catch :break do
+      not_process_num = 0
+      self.element_configurations.each {|c| not_process_num += c.feedbacks_num}
+      if not_process_num > 0
+        finish = false
+        throw :break
+      end
 
-    finish = false if self.impression_feedbacks_hit.nil? || !self.impression_feedbacks_hit.complete
+      not_process_num = self.first_notice_configuration.feedbacks_num
+      if not_process_num > 0
+        finish = false
+        throw :break
+      end
 
-    finish = false if self.impression_vote_feedbacks_hit.nil? || !self.impression_vote_feedbacks_hit.complete
+      not_process_num = self.impression_configuration.feedbacks_num
+      if not_process_num > 0
+        finish = false
+        throw :break
+      end
 
-    finish = false if self.goal_feedbacks_hit.nil? || !self.goal_feedbacks_hit.complete
+      not_process_num = self.impression_configuration.feedbacks_vote_num
+      if not_process_num > 0
+        finish = false
+        throw :break
+      end
 
-    finish = false if self.guideline_feedbacks_hit.nil? || !self.guideline_feedbacks_hit.complete
+      not_process_num = 0
+      self.goal_configurations.each {|c| not_process_num += c.feedbacks_num}
+      if not_process_num > 0
+        finish = false
+        throw :break
+      end
 
-    self.is_feedback_done = finish
+      not_process_num = 0
+      self.guideline_configurations.each {|c| not_process_num += c.feedbacks_num}
+      if not_process_num > 0
+        finish = false
+        throw :break
+      end
 
-    self.save!
+    end
+
+    if finish
+      self.is_feedback_done = finish
+      self.save!
+    end
 
   end
 end

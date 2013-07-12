@@ -42,18 +42,8 @@
 	console.log(target);
 	if ((target == "DIV" || target == "svg") && lastclicked !="")
 	{	
-			optFilters.imp.subtype = [];
-			d3.select('#'+lastclicked).style("stroke-width",0);
-			d3.select('#'+lastclicked).style("fill",function(d) {return assignColorImp(d.vote);});
-
-			lastclicked = "";
-			//optFilters[mode].isClickedTextPanel =  false;
-			if ( isHeatmapvisible == "true")
-	    	 {
-		    	 object_heatnetwork.showOneTypeNodes(json_feedbackTypes[current_tab],true);
-	    	 }
-
-		}
+		reset();
+	}
   });    
   function draw(words) {
     d3.select(divID).append("svg")
@@ -197,6 +187,8 @@
 	    		
 	    		
 		 		
+		 	}else{
+		 		reset();
 		 	}
     	})
         ;
@@ -205,6 +197,21 @@
   self.updateObject_heatnetwork = function(tmp) {
 	  object_heatnetwork = tmp;
 	 }
+	
+
+		function reset() {
+			optFilters.imp.subtype = [];
+			d3.select('#' + lastclicked).style("stroke-width", 0);
+			d3.select('#' + lastclicked).style("fill", function(d) {
+				return assignColorImp(d.vote);
+			});
+
+			lastclicked = "";
+			//optFilters[mode].isClickedTextPanel =  false;
+			if (isHeatmapvisible == "true") {
+				object_heatnetwork.showOneTypeNodes(json_feedbackTypes[current_tab], true);
+			}
+		}
 	
 return self;
   };

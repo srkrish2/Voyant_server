@@ -72,6 +72,24 @@ function error(message){
   });
 }
 
+
+function success(message){
+  n = noty({
+    timeout: false,
+    text: message,
+    layout: "topRight",
+    type: "success",
+    closeWith: ['click','hover'],
+    callback: {
+      afterShow: function(){
+        setTimeout(function(){
+          n.close();
+        },4000);
+      }
+    }
+  });
+}
+
 function make_image_selectable_with_button(element_str, button_str,selectHandle, unSelectHandle){
   current_selection = $(element_str).imgAreaSelect({
     instance: true,

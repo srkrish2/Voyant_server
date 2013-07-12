@@ -41,29 +41,6 @@ class FeedbackSurvey < ActiveRecord::Base
   end
 
   def self.hit_complete(turkee_task)
-    if design = Design.where("element_feedbacks_hit_id=?", turkee_task.id).first
-      design.finish_feedback("ElementFeedbacks")
-    end
-
-    if design = Design.where("first_notice_feedbacks_hit_id=?", turkee_task.id).first
-      design.finish_feedback("FirstNoticeFeedbacks")
-    end
-
-    if design = Design.where("impression_feedbacks_hit_id=?", turkee_task.id).first
-      design.finish_feedback("ImpressionFeedbacks")
-    end
-
-    if design = Design.where("impression_vote_feedbacks_hit_id=?", turkee_task.id).first
-      design.finish_feedback("ImpressionVoteFeedbacks")
-    end
-
-    if design = Design.where("goal_feedbacks_hit_id=?", turkee_task.id).first
-      design.finish_feedback("GoalFeedbacks")
-    end
-
-    if design = Design.where("guideline_feedbacks_hit_id=?", turkee_task.id).first
-      design.finish_feedback("GuidelineFeedbacks")
-    end
   end
 
   def self.hit_expired(turkee_task)

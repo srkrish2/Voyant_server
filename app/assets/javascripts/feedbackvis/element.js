@@ -40,24 +40,8 @@
 	console.log(target);
 	if ((target == "DIV" || target == "TD" || target == "TH" || target == "svg") && lastclicked !="")
 	{	
-			optFilters[mode].subtypetxt = [];
-			console.log("arrLegendChecked:"+arrLegendChecked);
-			for (var j = 0; j < arrLegendChecked.length; j++) {
-		    	if(arrLegendChecked[j] == 1)
-		    		{//add one subtype
-		    			addOneSubtype(j,jsonArray);
-		    		}
-		    }
-
-			d3.select("#"+lastclicked).style("stroke-width",0);
-			lastclicked = "";
-			optFilters[mode].isClickedTextPanel =  false;
-			if ( isHeatmapvisible == "true")
-	    	 {
-		    	 object_heatnetwork.showOneTypeNodes(json_feedbackTypes[current_tab],true);
-	    	 }
-
-		}
+			resetTable();
+	}
     });    
     var max = 5;
 	var color = d3.scale.category10();
@@ -126,30 +110,7 @@
 			//if (target == "svg" && lastclicked !="")
 			if (target != "text")
 			{	
-	  			  arrLegendChecked_atSummary();// for the nodes in the heatnetwork
-	  			  
-	  			  addAllRows();//for the barchart
-	  			  isUpdateTextPanel = true;
-	  			  
-			  		  if(lastclicked != "")
-			  		  {
-			  			d3.select("#"+lastclicked).style("stroke-width",0);
-						lastclicked = "";
-						optFilters[mode].isClickedTextPanel =  false;
-			  		  }
-			  		  
-			  		if(isUpdateTextPanel && isHeatmapvisible == "true")
-				  	  {
-					  		if(sumArr(arrLegendChecked) == arrLegendChecked.length)
-					  		{ optFilters[mode].isClickedLegendPanel = false;}else{
-					  		  optFilters[mode].isClickedLegendPanel = true;
-					  		}
-
-						 	console.log("optFilters:"+optFilters[mode].subtypetxt);
-
-					    	object_heatnetwork.showOneTypeNodes(json_feedbackTypes[current_tab],true);
-				  		  
-				  	  }
+				resetLegend();
 	
 			}
 	 });
@@ -206,7 +167,7 @@
 		  		//var numChecked = sumArr(arrLegendChecked);
 
 		  		
-				console.log("1111111111111111111arrLegendChecked:"+arrLegendChecked);
+				console.log("arrLegendChecked:"+arrLegendChecked);
 
 
 		  		//if (numChecked >1)
@@ -233,6 +194,9 @@
 		  		//}
 		  		  
 		
+		  	  }
+		  	  else{
+		  	  	resetLegend();
 		  	  }
 //		  	  else{
 //		  		  arrLegendChecked[i] = 1;
@@ -275,6 +239,7 @@
 	//console.log(jsonArray);
 
 	$(tableID).empty();
+	
 	 tr = d3.select(tableID).selectAll("tr")
 	.data(jsonArrayTmp)
 	.enter().append("tr")
@@ -340,12 +305,12 @@
 		}
 		//mode_goal_0_3
 
-	    optFilters_subtypetxt_bak = (optFilters.ele.subtypetxt).slice(0);//copy the arry
+	    //optFilters_subtypetxt_bak = (optFilters.ele.subtypetxt).slice(0);//copy the arry
 
-		optFilters.ele.subtypetxt = [];
-		optFilters.ele.subtypetxt.push(convertTextPanelIDtoOptFiltersID(this.id));
-		if(lastclicked !="")
-			{optFilters.ele.subtypetxt.push(convertTextPanelIDtoOptFiltersID(lastclicked));}
+		//optFilters.ele.subtypetxt = [];
+		//optFilters.ele.subtypetxt.push(convertTextPanelIDtoOptFiltersID(this.id));
+		//if(lastclicked !="")
+		//	{optFilters.ele.subtypetxt.push(convertTextPanelIDtoOptFiltersID(lastclicked));}
 				
 		
 		if ( isHeatmapvisible == "true")
@@ -364,17 +329,17 @@
 			d3.select("#votetext"+this.id).attr("display", "none");
 
 		}
-		optFilters.ele.subtypetxt = [];
-		optFilters.ele.subtypetxt = optFilters_subtypetxt_bak.slice(0);
+		//optFilters.ele.subtypetxt = [];
+		//optFilters.ele.subtypetxt = optFilters_subtypetxt_bak.slice(0);
 
     	
-    	if ( isHeatmapvisible == "true")
-    	 {
-	    	 object_heatnetwork.showOneTypeNodes(json_feedbackTypes[current_tab],false);
-    	 }else
-    	{
- 			$('#heatmapID').remove();
-    	}
+    	//if ( isHeatmapvisible == "true")
+    	// {
+	    //	 object_heatnetwork.showOneTypeNodes(json_feedbackTypes[current_tab],false);
+    	// }else
+    	//{
+ 		//	$('#heatmapID').remove();
+    	//}
     	})
     	
     .on("click", function(d){
@@ -406,6 +371,9 @@
 				
 			}
 		    optFilters_subtypetxt_bak = (optFilters.ele.subtypetxt).slice(0);//copy the arry
+		    
+			optFilters.ele.subtypetxt = [];
+			optFilters.ele.subtypetxt.push(convertTextPanelIDtoOptFiltersID(this.id));
 
 			lastclicked = this.id;
 			optFilters.ele.isClickedTextPanel =  true;
@@ -421,6 +389,8 @@
 	    	 }else{ 
 	    		 
 	    	 }
+    	}else{
+    		resetTable();
     	}
     	
 		 	
@@ -619,6 +589,56 @@
 		
 		return num;
   }
+  
+
+function resetTable() {
+	optFilters[mode].subtypetxt = [];
+	console.log("arrLegendChecked:" + arrLegendChecked);
+	for (var j = 0; j < arrLegendChecked.length; j++) {
+		if (arrLegendChecked[j] == 1) {//add one subtype
+			addOneSubtype(j, jsonArray);
+		}
+	}
+
+	d3.select("#" + lastclicked).style("stroke-width", 0);
+	lastclicked = "";
+	optFilters[mode].isClickedTextPanel = false;
+	if (isHeatmapvisible == "true") {
+		object_heatnetwork.showOneTypeNodes(json_feedbackTypes[current_tab], true);
+	}
+
+}
+
+  
+
+function resetLegend() {
+	arrLegendChecked_atSummary();
+	// for the nodes in the heatnetwork
+
+	addAllRows();
+	//for the barchart
+	isUpdateTextPanel = true;
+
+	if (lastclicked != "") {
+		d3.select("#" + lastclicked).style("stroke-width", 0);
+		lastclicked = "";
+		optFilters[mode].isClickedTextPanel = false;
+	}
+
+	if (isUpdateTextPanel && isHeatmapvisible == "true") {
+		if (sumArr(arrLegendChecked) == arrLegendChecked.length) {
+			optFilters[mode].isClickedLegendPanel = false;
+		} else {
+			optFilters[mode].isClickedLegendPanel = true;
+		}
+
+		console.log("optFilters:" + optFilters[mode].subtypetxt);
+
+		object_heatnetwork.showOneTypeNodes(json_feedbackTypes[current_tab], true);
+
+	}
+}
+
 	
 return self;
   };

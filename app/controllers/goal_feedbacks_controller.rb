@@ -14,7 +14,13 @@ class GoalFeedbacksController < ApplicationController
     @configuration = @design.goal_configurations.where("feedbacks_num > 0").sample || @design.goal_configurations.sample
 
     respond_to do |format|
-      format.html {render :layout => "feedback"}
+      format.html do 
+        if @configuration
+          render :layout => "feedback"
+        else
+          render :text => "No configuration."
+        end
+      end
     end
 
   end
