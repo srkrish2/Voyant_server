@@ -28,7 +28,7 @@ require "rvm/capistrano"
 
 role :web, "orchid-research.cs.uiuc.edu"                          # Your HTTP server, Apache/etc
 role :app, "orchid-research.cs.uiuc.edu"                          # This may be the same as your `Web` server
-role :db,  "eorchid-research.cs.uiuc.edu", :primary => true # This is where Rails migrations will run
+role :db,  "orchid-research.cs.uiuc.edu", :primary => true # This is where Rails migrations will run
 #role :db,  "your slave db-server here"
 
 # if you want to clean up old releases on each deploy uncomment this:
