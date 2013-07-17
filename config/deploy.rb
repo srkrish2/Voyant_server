@@ -11,6 +11,7 @@ set :scm, :git # You can set :scm explicitly or Capistrano will make an intellig
 # Or: `accurev`, `bzr`, `cvs`, `darcs`, `git`, `mercurial`, `perforce`, `subversion` or `none`
 
 #set :ssh_options, {:forward_agent => true}
+set :ssh_options, {:port => 3020}
 set :use_sudo, false
 set :deploy_to, "/home/ubuntu/www/RailsApp/#{application}"
 #set :user, "ubuntu"
