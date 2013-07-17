@@ -9,6 +9,7 @@ set :repository,  "ssh://crowddesign@orchid-research.cs.uiuc.edu:3020/home/crowd
 
 set :scm, :git # You can set :scm explicitly or Capistrano will make an intelligent guess based on known version control directory names
 # Or: `accurev`, `bzr`, `cvs`, `darcs`, `git`, `mercurial`, `perforce`, `subversion` or `none`
+set :deploy_via, :remote_cache
 
 #set :ssh_options, {:forward_agent => true}
 set :ssh_options, {:port => 3020}
