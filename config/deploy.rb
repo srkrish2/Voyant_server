@@ -4,15 +4,17 @@ set :whenever_command, "bundle exec whenever"
 require "whenever/capistrano"
 
 set :application, "Crowddesign"
-set :repository,  "ubuntu@ec2-54-245-143-145.us-west-2.compute.amazonaws.com:/home/ubuntu/repository/crowddesign.git"
+#set :repository,  "ubuntu@ec2-54-245-143-145.us-west-2.compute.amazonaws.com:/home/ubuntu/repository/crowddesign.git"
+set :repository,  "crowddesign@orchid-research.cs.uiuc.edu:3020/home/crowddesign/repository/crowddesign.git"
 
 set :scm, :git # You can set :scm explicitly or Capistrano will make an intelligent guess based on known version control directory names
 # Or: `accurev`, `bzr`, `cvs`, `darcs`, `git`, `mercurial`, `perforce`, `subversion` or `none`
 
-set :ssh_options, {:forward_agent => true}
+#set :ssh_options, {:forward_agent => true}
 set :use_sudo, false
 set :deploy_to, "/home/ubuntu/www/RailsApp/#{application}"
-set :user, "ubuntu"
+#set :user, "ubuntu"
+set :user, "crowddesign"
 
 set :rvm_ruby_string, :local               # use the same ruby as used locally for deployment
 set :rvm_autolibs_flag, "read-only"        # more info: rvm help autolibs
@@ -23,9 +25,9 @@ before 'deploy:setup', 'rvm:install_ruby'  # install Ruby and create gemset, OR:
 
 require "rvm/capistrano"
 
-role :web, "ec2-54-245-143-145.us-west-2.compute.amazonaws.com"                          # Your HTTP server, Apache/etc
-role :app, "ec2-54-245-143-145.us-west-2.compute.amazonaws.com"                          # This may be the same as your `Web` server
-role :db,  "ec2-54-245-143-145.us-west-2.compute.amazonaws.com", :primary => true # This is where Rails migrations will run
+role :web, "orchid-research.cs.uiuc.edu"                          # Your HTTP server, Apache/etc
+role :app, "orchid-research.cs.uiuc.edu"                          # This may be the same as your `Web` server
+role :db,  "eorchid-research.cs.uiuc.edu", :primary => true # This is where Rails migrations will run
 #role :db,  "your slave db-server here"
 
 # if you want to clean up old releases on each deploy uncomment this:

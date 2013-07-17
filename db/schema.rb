@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130706201915) do
+ActiveRecord::Schema.define(:version => 20130706212434) do
 
   create_table "audience_configurations", :force => true do |t|
     t.integer  "design_id",         :null => false
@@ -205,6 +205,14 @@ ActiveRecord::Schema.define(:version => 20130706201915) do
 
   add_index "roles", ["name", "resource_type", "resource_id"], :name => "index_roles_on_name_and_resource_type_and_resource_id"
   add_index "roles", ["name"], :name => "index_roles_on_name"
+
+  create_table "system_feedbacks", :force => true do |t|
+    t.string   "user_type"
+    t.integer  "user_id"
+    t.text     "comment"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
 
   create_table "turkee_imported_assignments", :force => true do |t|
     t.string   "assignment_id"
