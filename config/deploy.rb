@@ -5,7 +5,7 @@ require "whenever/capistrano"
 
 set :application, "Crowddesign"
 #set :repository,  "ubuntu@ec2-54-245-143-145.us-west-2.compute.amazonaws.com:/home/ubuntu/repository/crowddesign.git"
-set :repository,  "crowddesign@orchid-research.cs.uiuc.edu:3020/home/crowddesign/repository/crowddesign.git"
+set :repository,  "ssh://crowddesign@orchid-research.cs.uiuc.edu:3020/home/crowddesign/repository/crowddesign.git"
 
 set :scm, :git # You can set :scm explicitly or Capistrano will make an intelligent guess based on known version control directory names
 # Or: `accurev`, `bzr`, `cvs`, `darcs`, `git`, `mercurial`, `perforce`, `subversion` or `none`
